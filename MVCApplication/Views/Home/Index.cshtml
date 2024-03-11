@@ -2,24 +2,13 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<link rel="stylesheet" href="/lib/shoelace/dist/themes/light.css" />
-<script type="module" src="/lib/shoelace/dist/shoelace.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 
 <div class="text-center">
     <h1 class="display-4">Welcome to the Hair Salon!</h1>
     <h2 class="display-6">Please log in as a demo user.</h2>
-    <sl-button>Click me</sl-button>
-    <md-checkbox></md-checkbox>
-
-    <form asp-controller="Home" asp-action="Index">
-        <md-outlined-field></md-outlined-field>
-        <!-- Input and Submit elements -->
-        <label asp-for="Client"></label>
-        <input type="text" asp-for="Client"/>
-
-        
-
-        <button type="submit">Schedule Appointment</button>
+    <form asp-action="Schedule" asp-controller="Appointment">
+            <sl-button type="submit">Log in</sl-button>
     </form>
-
 </div>

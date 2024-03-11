@@ -1,0 +1,77 @@
+﻿@model HairApplication.MVC.Models.AppointmentEntryViewModel
+@{
+    ViewData["Title"] = "Schedule an Appointment";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+
+<div class="text-center">
+    <sl-card class="card-header">
+        <div slot="header">
+            Schedule an Appointment
+        </div>
+        <form class=".input-validation-required" asp-controller="Appointment" asp-action="Schedule">
+            <!-- Input and Submit elements -->
+            <sl-dropdown name="SelectedStylist">
+                <sl-button slot="trigger" caret>Dropdown</sl-button>
+                <sl-menu>
+                    <sl-menu-item>Dropdown Item 1</sl-menu-item>
+                    <sl-menu-item>Dropdown Item 2</sl-menu-item>
+                    <sl-menu-item>Dropdown Item 3</sl-menu-item>
+                </sl-menu>
+            </sl-dropdown>
+            <br />
+            <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+            <br />
+            <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+            <br />
+            <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+            <br />
+            <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+            <br />
+            <sl-input name="TimeOfAppointment" label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" type="time" placeholder="Date" pill required></sl-input>
+            <br />
+            <sl-button type="submit">Schedule Appointment</sl-button>
+        </form>
+    </sl-card>
+
+    <style>
+        .card-header {
+            max-width: 600px;
+            width:500px;
+            --padding:20px;
+        }
+
+            .card-header [slot='header'] {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .card-header h3 {
+                margin: 0;
+            }
+    </style>
+
+</div>
+
+
+<script type="module">
+    const form = document.querySelector('.input-validation-required');
+
+    // Wait for controls to be defined before attaching form listeners
+    await Promise.all([
+      customElements.whenDefined('sl-button'),
+      customElements.whenDefined('sl-checkbox'),
+      customElements.whenDefined('sl-input'),
+      customElements.whenDefined('sl-option'),
+      customElements.whenDefined('sl-select'),
+      customElements.whenDefined('sl-dropdown'),
+      customElements.whenDefined('sl-textarea')
+    ]).then(() => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        alert('All fields are valid!');
+      });
+    });
+</script>

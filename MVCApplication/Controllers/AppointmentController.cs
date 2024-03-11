@@ -4,18 +4,28 @@ using System.Diagnostics;
 
 namespace HairApplication.MVC.Controllers
 {
-    public class HomeController : Controller
+    public class AppointmentController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public AppointmentController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Schedule()
         {
+            return View(new AppointmentEntryViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Schedule(AppointmentEntryViewModel viewModel)
+        {
+            //validation
+
+
+
             return View();
         }
 
