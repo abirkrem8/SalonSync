@@ -2,11 +2,16 @@
     ViewData["Title"] = "Home Page";
 }
 
-<style src="~/lib/material/button/_filled-button.scss"></style>
+<script type="text/javascript" src="./lib/"></script>
 
 <div class="text-center">
     <h1 class="display-4">Welcome to the Hair Salon!</h1>
     <h2 class="display-6">Please log in as a demo user.</h2>
-    <a type="button" href="@Url.Action("Test", "Home")">Log In</a>
+    <a type="" href="@Url.Action("Test", "Home")">Log In</a>
+
+    <form asp-controller="Home" asp-action="Index">
+        <md-outlined-field></md-outlined-field>
+        <!-- Input and Submit elements -->
+    </form>
 
 </div>
