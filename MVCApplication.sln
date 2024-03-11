@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairApplication.MVC", "MVCApplication\HairApplication.MVC.csproj", "{EE4D464F-A6B6-4543-BFFA-E44C488E28F8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{48684D74-6042-47C9-A6FE-721DAF098FEA} = {48684D74-6042-47C9-A6FE-721DAF098FEA}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HairApplication.Models", "HairApplication.Models\HairApplication.Models.csproj", "{48684D74-6042-47C9-A6FE-721DAF098FEA}"
 EndProject
