@@ -1,4 +1,4 @@
-namespace MVCApplication.Models
+namespace HairApplication.MVC.Models
 {
     public class ErrorViewModel
     {

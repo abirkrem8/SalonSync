@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MVCApplication.Models;
+﻿using HairApplication.MVC.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace MVCApplication.Controllers
+namespace HairApplication.MVC.Controllers
 {
     public class HomeController : Controller
     {
