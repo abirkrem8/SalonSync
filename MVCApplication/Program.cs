@@ -9,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"<PATH_TO_CREDENTIALS_FILE");
+
+builder.Services.AddSingleton<IFirestoreService>(s => new FirestoreService(
+    FirestoreDb.Create("<PROJECT_ID>")
+    ));
+
 string connectionString = builder.Configuration.GetValue<string>("ConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
 
