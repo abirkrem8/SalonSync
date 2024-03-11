@@ -1,8 +1,18 @@
+using BookList.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.SqlServer;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//builder.Services.AddTransient<>();
+
+string connectionString = builder.Configuration.GetValue<string>("ConnectionString");
+builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
+
+builder.Services.AddTransient<ApplicationDbContext>();
 
 var app = builder.Build();
 
