@@ -13,14 +13,18 @@ namespace HairApplication.MVC.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Test()
+        [HttpPost]
+        public IActionResult Index(AppointmentEntryViewModel viewModel)
         {
-            return RedirectToAction("Index");
+            //validation
+
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
