@@ -7,6 +7,7 @@ using HairApplication.MVC.Logic;
 using HairApplication.Logic.AppointmentSchedule;
 using HairApplication.Logic.Shared;
 using AutoMapper;
+using HairApplication.Logic.AppointmentConfirmation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServe
 builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
+builder.Services.AddTransient<AppointmentConfirmationHandler>();
 
 var app = builder.Build();
 

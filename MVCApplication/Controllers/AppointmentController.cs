@@ -6,6 +6,7 @@ using AutoMapper;
 using HairApplication.Logic.AppointmentSchedule;
 using HairApplication.Models.Entities;
 using HairApplication.Logic.Shared;
+using HairApplication.Logic.AppointmentConfirmation;
 
 namespace HairApplication.MVC.Controllers
 {
@@ -15,14 +16,19 @@ namespace HairApplication.MVC.Controllers
         private IMapper _mapper;
         private FirestoreProvider _firestoreProvider;
         private AppointmentScheduleHandler _appointmentScheduleHandler;
+        private AppointmentConfirmationHandler _appointmentConfirmationHandler;
+        private CancellationToken _cancellationToken;
 
         public AppointmentController(ILogger<HomeController> logger, IMapper mappingProfile,
-            FirestoreProvider firestoreProvider, AppointmentScheduleHandler appointmentScheduleHandler)
+            FirestoreProvider firestoreProvider, AppointmentScheduleHandler appointmentScheduleHandler,
+            AppointmentConfirmationHandler appointmentConfirmationHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
             _firestoreProvider = firestoreProvider;
             _appointmentScheduleHandler = appointmentScheduleHandler;
+            _appointmentConfirmationHandler = appointmentConfirmationHandler;
+            _cancellationToken = new CancellationTokenSource().Token;
         }
 
         [HttpGet]
@@ -38,7 +44,8 @@ namespace HairApplication.MVC.Controllers
                 viewModel.AvailableStylists = stylists.Result.ToList();
 
                 return View(viewModel);
-            } else
+            }
+            else
             {
                 _logger.LogError("No Available Stylists!");
                 return RedirectToAction("Error");
@@ -53,6 +60,15 @@ namespace HairApplication.MVC.Controllers
             var appointmentScheduleResult = _appointmentScheduleHandler.Handle(appointmentScheduleItem);
 
             return View();
+        }
+
+        public IActionResult Confirm(AppointmentEntryViewModel appointmentSubmission)
+        {
+            var item = _mapper.Map<AppointmentConfirmationItem>(appointmentSubmission);
+            var result = _appointmentConfirmationHandler.Handle(item);
+
+            var viewModel = _mapper.Map<AppointmentConfirmationViewModel>(result);
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

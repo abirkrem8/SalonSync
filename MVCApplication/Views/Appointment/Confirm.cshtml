@@ -1,0 +1,73 @@
+﻿@model HairApplication.MVC.Models.AppointmentConfirmationViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+    <div>
+        
+        <h2>Client</h2>
+        <p>Existing Client Found? @Model.ExistingClientFound</p>
+        <p>@Model.ClientFirstName @Model.ClientLastName</p>
+        <p>@Model.ClientPhoneNumber</p>
+        <h2>Hair Stylist</h2>
+        <p>@Model.HairStylistFirstName @Model.HairStylistLastName</p>
+        <h4>@Model.DateTimeOfAppointment.ToShortDateString() @Model.DateTimeOfAppointment.ToShortTimeString()</h4>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <form id="confirm-form" asp-controller="Appointment" asp-action="Confirm">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Confirm Appointment</h2>
+                </div>
+                @*<div class="modal-body">
+                    <h2>Client</h2>
+                    <p>@Model.Client.FirstName @Model.Client.LastName</p>
+                    <p>@Model.Client.PhoneNumber</p>
+                    <h2>Hair Stylist</h2>
+                    <p>@Model.HairStylist.FirstName @Model.HairStylist.LastName</p>
+                    <h4>@Model.DateOfAppointment.ToShortDateString() @Model.TimeOfAppointment.ToShortTimeString()</h4>
+                </div>*@
+                <div class="modal-footer">
+                    <sl-button id="confirm-btn" type="submit">Confirm Appointment</sl-button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+
+        // When the user clicks on <span> (x), close the modal and redirect to blank appointment form
+        span.onclick = function() {
+            window.location.href = '@Url.Action("Schedule", "Appointment");
+        }
+
+
+        //// When the user clicks anywhere outside of the modal, close it
+        //window.onclick = function(event) {
+        //  if (event.target == modal) {
+        //    modal.style.display = "none";
+        //  }
+        //}
+    </script>
+
+</body>
+</html>

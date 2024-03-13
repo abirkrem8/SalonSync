@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HairApplication.Logic.AppointmentConfirmation;
 using HairApplication.Logic.AppointmentSchedule;
 using HairApplication.MVC.Models;
 
@@ -18,6 +19,12 @@ namespace HairApplication.MVC.Logic
                     src.TimeOfAppointment.Second)))
                 .ForMember(dest => dest.HairStylist,  opt => opt.MapFrom(src => src.SelectedStylist))
                 ;
+
+            CreateMap<AppointmentEntryViewModel, AppointmentConfirmationItem>()
+                ;
+
+            CreateMap<AppointmentConfirmationResult, AppointmentConfirmationViewModel>()
+               ;
             /*etc...*/
         }
     }
