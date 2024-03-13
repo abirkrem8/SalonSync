@@ -52,23 +52,24 @@ namespace HairApplication.MVC.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Schedule(AppointmentEntryViewModel viewModel)
-        {
-            //validation rules applied in the form
-            AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(viewModel);
-            var appointmentScheduleResult = _appointmentScheduleHandler.Handle(appointmentScheduleItem);
-
-            return View();
-        }
-
         public IActionResult Confirm(AppointmentEntryViewModel appointmentSubmission)
         {
+            // The appointment form has been filled out and now we need to validate the submission
+            // and show the user the submitted information before creating it in our database.
             var item = _mapper.Map<AppointmentConfirmationItem>(appointmentSubmission);
             var result = _appointmentConfirmationHandler.Handle(item);
 
             var viewModel = _mapper.Map<AppointmentConfirmationViewModel>(result);
             return View(viewModel);
+        }
+
+        public IActionResult Confirm(AppointmentConfirmationViewModel appointmentConfirmation)
+        {
+            // Now we must schedule the appointment
+            AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(appointmentConfirmation);
+            var appointmentScheduleResult = _appointmentScheduleHandler.Handle(appointmentScheduleItem);
+
+            return View();
         }
 
         public IActionResult Privacy()
