@@ -16,7 +16,7 @@ namespace HairApplication.MVC.Logic
                     new DateTime(src.DateOfAppointment.Year,src.DateOfAppointment.Month, 
                     src.DateOfAppointment.Day, src.TimeOfAppointment.Hour, src.TimeOfAppointment.Minute, 
                     src.TimeOfAppointment.Second)))
-                .ForMember(dest => dest.HairStylist,  opt => opt.MapFrom(src => src.SelectedSytlist))
+                .ForMember(dest => dest.HairStylist,  opt => opt.MapFrom(src => src.SelectedStylist))
                 ;
             /*etc...*/
         }

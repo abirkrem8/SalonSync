@@ -15,7 +15,7 @@ namespace HairApplication.Logic.Shared
 
         public async Task AddOrUpdate<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
         {
-            var document = _fireStoreDb.Collection($"{typeof(T).Name}s").Document(entity.Id.ToString());
+            var document = _fireStoreDb.Collection($"{typeof(T).Name}s").Document(entity.Id);
             await document.SetAsync(entity, cancellationToken: ct);
         }
 
@@ -30,7 +30,16 @@ namespace HairApplication.Logic.Shared
         {
             var collection = _fireStoreDb.Collection($"{typeof(T).Name}s");
             var snapshot = await collection.GetSnapshotAsync(ct);
-            return snapshot.Documents.Select(x => x.ConvertTo<T>()).ToList();
+
+            var results = new List<T>();
+
+            foreach (var document in snapshot.Documents)
+            {
+                T entity = document.ConvertTo<T>();
+                entity.Id = document.Id;
+                results.Add(entity);
+            }
+            return results;
         }
 
         public async Task<IReadOnlyCollection<T>> WhereEqualTo<T>(string fieldPath, object value, CancellationToken ct) where T : IFirebaseEntity

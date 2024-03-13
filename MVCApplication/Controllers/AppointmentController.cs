@@ -32,9 +32,17 @@ namespace HairApplication.MVC.Controllers
 
             CancellationTokenSource source = new CancellationTokenSource();
             var stylists = _firestoreProvider.GetAll<HairStylist>(source.Token);
-            viewModel.AvailableStylists = stylists.Result.ToList();
 
-            return View(new AppointmentEntryViewModel());
+            if (stylists != null && stylists.Result.Count > 0)
+            {
+                viewModel.AvailableStylists = stylists.Result.ToList();
+
+                return View(viewModel);
+            } else
+            {
+                _logger.LogError("No Available Stylists!");
+                return RedirectToAction("Error");
+            }
         }
 
         [HttpPost]

@@ -8,7 +8,7 @@ namespace HairApplication.MVC.Models
         public List<HairStylist> AvailableStylists { get; set; }
 
         [Display(Name = "Hair Stylist")]
-        public string SelectedSytlist { get; set; }
+        public string SelectedStylist { get; set; }
         [Display(Name = "Client First Name")]
         public string ClientFirstName { get; set; }
 

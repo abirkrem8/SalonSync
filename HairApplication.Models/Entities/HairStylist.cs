@@ -11,8 +11,11 @@ namespace HairApplication.Models.Entities
     public class HairStylist : IFirebaseEntity
     {
         // In the form of a GUID, easily convertable to a string
+        //[FirestoreProperty]
+        //public DocumentReference Id { get; set; }
+
         [FirestoreProperty]
-        public DocumentReference Id { get; set; }
+        public string Id { get; set; }
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]

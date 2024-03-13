@@ -12,15 +12,14 @@
         </div>
         <form class=".input-validation-required" asp-controller="Appointment" asp-action="Schedule">
             <!-- Input and Submit elements -->
-            @*<sl-dropdown name="SelectedStylist">
-                <sl-button slot="trigger" caret>Dropdown</sl-button>
-                <sl-menu>
-                    <sl-menu-item>Dropdown Item 1</sl-menu-item>
-                    <sl-menu-item>Dropdown Item 2</sl-menu-item>
-                    <sl-menu-item>Dropdown Item 3</sl-menu-item>
-                </sl-menu>
-            </sl-dropdown>*@
             <sl-checkbox name="IsNewClient">@Html.DisplayNameFor(x=>x.IsNewClient)</sl-checkbox>
+            <br />
+            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required>
+                @foreach (var stylist in Model.AvailableStylists)
+                {
+                    <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
+                }
+            </sl-select>
             <br />
             <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
             <br />
@@ -39,8 +38,8 @@
     <style>
         .card-header {
             max-width: 600px;
-            width:500px;
-            --padding:20px;
+            width: 500px;
+            --padding: 20px;
         }
 
             .card-header [slot='header'] {

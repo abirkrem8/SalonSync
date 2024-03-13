@@ -12,7 +12,7 @@ namespace HairApplication.Models.Entities
     {
         // In the form of a GUID, easily convertable to a string
         [FirestoreProperty]
-        public DocumentReference Id { get; set; }
+        public string Id { get; set; }
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]

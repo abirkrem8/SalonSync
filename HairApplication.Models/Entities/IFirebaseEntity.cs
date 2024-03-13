@@ -9,7 +9,7 @@ namespace HairApplication.Models.Entities
 {
     public interface IFirebaseEntity
     {
-        public DocumentReference Id { get; set; }
+        public string Id { get; set; }
         public DateTime CreationTimestamp { get; set; }
         public string CreatedByUserName { get; set; }
     }
