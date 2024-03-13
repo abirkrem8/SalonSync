@@ -2,27 +2,46 @@ using BookList.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.SqlServer;
-
+using Google.Cloud.Firestore;
+using HairApplication.MVC.Logic;
+using HairApplication.Logic.AppointmentSchedule;
+using HairApplication.Logic.Shared;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"<PATH_TO_CREDENTIALS_FILE");
+// Set up FireDB
+var projectId = builder.Configuration.GetValue<string>("FirebaseProjectId");
+var firebaseJson = File.ReadAllText(builder.Configuration.GetValue<string>("FirebaseCredentials"));
+builder.Services.AddSingleton(_ => new FirestoreProvider(
+    new FirestoreDbBuilder
+    {
+        ProjectId = projectId,
+        JsonCredentials = firebaseJson // <-- service account json file
+    }.Build()
+));
 
-//services.AddSingleton(_ => new FirestoreProvider(
-//    new FirestoreDbBuilder
-//    {
-//        ProjectId = firebaseSettings.ProjectId,
-//        JsonCredentials = firebaseJson // <-- service account json file
-//    }.Build()
-//));
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+    mc.AddProfile(new AppointmentScheduleMappingProfile());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
+builder.Services.AddMvc();
 
 string connectionString = builder.Configuration.GetValue<string>("ConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
 
 builder.Services.AddTransient<ApplicationDbContext>();
+builder.Services.AddTransient<MappingProfile>();
+builder.Services.AddTransient<AppointmentScheduleHandler>();
 
 var app = builder.Build();
 

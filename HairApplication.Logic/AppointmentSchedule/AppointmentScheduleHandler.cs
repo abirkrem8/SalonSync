@@ -1,16 +1,19 @@
-﻿using System;
+﻿using HairApplication.Logic.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HairApplication.Logic.AppointmentSchedule.Implementation
+namespace HairApplication.Logic.AppointmentSchedule
 {
     public class AppointmentScheduleHandler
     {
-        public AppointmentScheduleHandler()
-        {
+        private FirestoreProvider _firestoreProvider;
 
+        public AppointmentScheduleHandler(FirestoreProvider firestoreProvider)
+        {
+            _firestoreProvider = firestoreProvider;
         }
 
         public AppointmentScheduleResult Handle(AppointmentScheduleItem appointmentScheduleItem)
@@ -28,7 +31,7 @@ namespace HairApplication.Logic.AppointmentSchedule.Implementation
             }
 
             // Successful validation, do the handling
-
+            
             // Grab the stylist ID
 
 

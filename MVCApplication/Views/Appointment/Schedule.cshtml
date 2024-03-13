@@ -12,14 +12,15 @@
         </div>
         <form class=".input-validation-required" asp-controller="Appointment" asp-action="Schedule">
             <!-- Input and Submit elements -->
-            <sl-dropdown name="SelectedStylist">
+            @*<sl-dropdown name="SelectedStylist">
                 <sl-button slot="trigger" caret>Dropdown</sl-button>
                 <sl-menu>
                     <sl-menu-item>Dropdown Item 1</sl-menu-item>
                     <sl-menu-item>Dropdown Item 2</sl-menu-item>
                     <sl-menu-item>Dropdown Item 3</sl-menu-item>
                 </sl-menu>
-            </sl-dropdown>
+            </sl-dropdown>*@
+            <sl-checkbox name="IsNewClient">@Html.DisplayNameFor(x=>x.IsNewClient)</sl-checkbox>
             <br />
             <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
             <br />

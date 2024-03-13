@@ -18,6 +18,9 @@ namespace HairApplication.MVC.Models
         [Display(Name = "Client Phone Number")]
         public int ClientPhoneNumber { get; set; }
 
+        [Display(Name = "New Client?")]
+        public bool IsNewClient { get; set; }
+
         [Display(Name = "Date of Appointment")]
         public DateTime DateOfAppointment { get; set; }
 

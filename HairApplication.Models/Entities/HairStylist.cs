@@ -12,7 +12,7 @@ namespace HairApplication.Models.Entities
     {
         // In the form of a GUID, easily convertable to a string
         [FirestoreProperty]
-        public string Id { get; set; }
+        public DocumentReference Id { get; set; }
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]
@@ -30,6 +30,6 @@ namespace HairApplication.Models.Entities
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
-        public List<string> Appointments { get; set; }
+        public List<DocumentReference> Appointments { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Cloud.Firestore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace HairApplication.Models.Entities
 {
     public interface IFirebaseEntity
     {
-        public string Id { get; set; }
+        public DocumentReference Id { get; set; }
         public DateTime CreationTimestamp { get; set; }
         public string CreatedByUserName { get; set; }
     }

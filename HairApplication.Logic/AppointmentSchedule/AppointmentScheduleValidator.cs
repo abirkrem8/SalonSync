@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HairApplication.Logic.AppointmentSchedule.Implementation
+namespace HairApplication.Logic.AppointmentSchedule
 {
     public class AppointmentScheduleValidator : AbstractValidator<AppointmentScheduleItem>
     {
