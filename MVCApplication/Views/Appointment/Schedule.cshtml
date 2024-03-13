@@ -12,7 +12,10 @@
         </div>
         <form class=".input-validation-required" asp-controller="Appointment" asp-action="Schedule">
             <!-- Input and Submit elements -->
-            <sl-checkbox name="IsNewClient">@Html.DisplayNameFor(x=>x.IsNewClient)</sl-checkbox>
+            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required>
+                <sl-option value="false">No</sl-option>
+                <sl-option value="true">Yes</sl-option>
+            </sl-select>
             <br />
             <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required>
                 @foreach (var stylist in Model.AvailableStylists)
