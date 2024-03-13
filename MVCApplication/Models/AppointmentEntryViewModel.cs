@@ -16,7 +16,7 @@ namespace HairApplication.MVC.Models
         public string ClientLastName { get; set; }
 
         [Display(Name = "Client Phone Number")]
-        public int ClientPhoneNumber { get; set; }
+        public string ClientPhoneNumber { get; set; }
 
         [Display(Name = "New Client?")]
         public bool IsNewClient { get; set; }

@@ -9,7 +9,7 @@ namespace HairApplication.Logic.AppointmentSchedule
     public class AppointmentScheduleItem
     {
         // if true, add client to DB
-        public bool NewClient { get; set; }
+        public bool IsNewClient { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }

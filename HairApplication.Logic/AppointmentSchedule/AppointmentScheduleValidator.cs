@@ -12,7 +12,7 @@ namespace HairApplication.Logic.AppointmentSchedule
     {
         public AppointmentScheduleValidator()
         {
-            
+            RuleFor(r => r).NotNull();
         }
     }
 }

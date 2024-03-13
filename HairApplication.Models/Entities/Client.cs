@@ -10,13 +10,25 @@ namespace HairApplication.Models.Entities
     [FirestoreData]
     public class Client : IFirebaseEntity
     {
+        public Client() { }
+
+        public Client(string firstName, string lastName, string phoneNumber, DocumentReference stylist)
+        {
+            Id = Guid.NewGuid().ToString();
+            CreationTimestamp = Timestamp.GetCurrentTimestamp();
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            HairStylist = stylist;
+        }
+
         // In the form of a GUID, easily convertable to a string
         [FirestoreProperty]
         public string Id { get; set; }
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]
-        public DateTime CreationTimestamp { get; set; }
+        public Timestamp CreationTimestamp { get; set; }
 
         // User Name
         [FirestoreProperty]
@@ -28,13 +40,16 @@ namespace HairApplication.Models.Entities
         [FirestoreProperty]
         public string LastName { get; set; }
 
-        // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
-        public string HairStylist { get; set; }
+        public string PhoneNumber { get; set; }
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
-        public List<DocumentReference> Appointments { get; set; }
+        public DocumentReference HairStylist { get; set; }
+
+        // String ID connecting to the other Firestore Data Objects
+        [FirestoreProperty]
+        public List<DocumentReference> Appointments { get; set; } = new List<DocumentReference>();
 
     }
 }

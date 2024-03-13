@@ -19,7 +19,7 @@ namespace HairApplication.Models.Entities
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]
-        public DateTime CreationTimestamp { get; set; }
+        public Timestamp CreationTimestamp { get; set; }
 
         // User Name
         [FirestoreProperty]
@@ -33,6 +33,6 @@ namespace HairApplication.Models.Entities
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
-        public List<DocumentReference> Appointments { get; set; }
+        public List<DocumentReference> Appointments { get; set; } = new List<DocumentReference>();
     }
 }

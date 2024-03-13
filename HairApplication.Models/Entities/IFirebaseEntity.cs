@@ -10,7 +10,7 @@ namespace HairApplication.Models.Entities
     public interface IFirebaseEntity
     {
         public string Id { get; set; }
-        public DateTime CreationTimestamp { get; set; }
+        public Timestamp CreationTimestamp { get; set; }
         public string CreatedByUserName { get; set; }
     }
 }

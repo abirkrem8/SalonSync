@@ -13,17 +13,23 @@ namespace HairApplication.Logic.Shared
             _fireStoreDb = fireStoreDb;
         }
 
-        public async Task AddOrUpdate<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
+        /**
+         * Returns a copy of the document added to the DB or updated.
+         */
+        public async Task<DocumentReference> AddOrUpdate<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
         {
             var document = _fireStoreDb.Collection($"{typeof(T).Name}s").Document(entity.Id);
             await document.SetAsync(entity, cancellationToken: ct);
+            return document;
         }
 
         public async Task<T> Get<T>(string id, CancellationToken ct) where T : IFirebaseEntity
         {
             var document = _fireStoreDb.Collection($"{typeof(T).Name}s").Document(id);
             var snapshot = await document.GetSnapshotAsync(ct);
-            return snapshot.ConvertTo<T>();
+            T entity = snapshot.ConvertTo<T>();
+            entity.Id = document.Id;
+            return entity;
         }
 
         public async Task<IReadOnlyCollection<T>> GetAll<T>(CancellationToken ct) where T : IFirebaseEntity
@@ -47,13 +53,29 @@ namespace HairApplication.Logic.Shared
             return await GetList<T>(_fireStoreDb.Collection($"{typeof(T).Name}s").WhereEqualTo(fieldPath, value), ct);
         }
 
+
         // just add here any method you need here WhereGreaterThan, WhereIn etc ...
+        public DocumentReference ConvertIdToReference<T>(string id, T entity) where T : IFirebaseEntity
+        {
+            return _fireStoreDb.Collection($"{typeof(T).Name}s").Document(id);
+        }
 
         private static async Task<IReadOnlyCollection<T>> GetList<T>(Query query, CancellationToken ct) where T : IFirebaseEntity
         {
             var snapshot = await query.GetSnapshotAsync(ct);
-            return snapshot.Documents.Select(x => x.ConvertTo<T>()).ToList();
+
+            var results = new List<T>();
+
+            foreach (var document in snapshot.Documents)
+            {
+                T entity = document.ConvertTo<T>();
+                entity.Id = document.Id;
+                results.Add(entity);
+            }
+            return results;
         }
+
+        
     }
 
 }

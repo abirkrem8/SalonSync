@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
 <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 
+<script>
+
+
+</script>
+
+
 <div class="text-center">
     <sl-card class="card-header">
         <div slot="header">
@@ -12,12 +18,12 @@
         </div>
         <form class=".input-validation-required" asp-controller="Appointment" asp-action="Schedule">
             <!-- Input and Submit elements -->
-            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required>
+            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
                 <sl-option value="false">No</sl-option>
                 <sl-option value="true">Yes</sl-option>
             </sl-select>
             <br />
-            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required>
+            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
                 @foreach (var stylist in Model.AvailableStylists)
                 {
                     <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>

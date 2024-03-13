@@ -16,7 +16,7 @@ namespace HairApplication.Models.Entities
 
         // Format MM/dd/yyyy HH:MM:SS
         [FirestoreProperty]
-        public DateTime CreationTimestamp { get; set; }
+        public Timestamp CreationTimestamp { get; set; }
 
         // User Name
         [FirestoreProperty]
