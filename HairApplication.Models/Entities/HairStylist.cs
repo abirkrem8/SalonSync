@@ -11,8 +11,6 @@ namespace HairApplication.Models.Entities
     public class HairStylist : IFirebaseEntity
     {
         // In the form of a GUID, easily convertable to a string
-        //[FirestoreProperty]
-        //public DocumentReference Id { get; set; }
 
         [FirestoreProperty]
         public string Id { get; set; }
@@ -30,6 +28,9 @@ namespace HairApplication.Models.Entities
 
         [FirestoreProperty]
         public string LastName { get; set; }
+
+        [FirestoreProperty]
+        public string HexColor { get; set; }
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]

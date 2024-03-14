@@ -24,7 +24,7 @@ namespace HairApplication.MVC.Models
         [Display(Name = "Date of Appointment")]
         public DateTime DateOfAppointment { get; set; }
 
-        [Display(Name = "Date of Appointment")]
+        [Display(Name = "Time of Appointment")]
         public DateTime TimeOfAppointment { get; set; }
     }
 }

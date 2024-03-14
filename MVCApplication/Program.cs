@@ -8,6 +8,7 @@ using HairApplication.Logic.AppointmentSchedule;
 using HairApplication.Logic.Shared;
 using AutoMapper;
 using HairApplication.Logic.AppointmentConfirmation;
+using HairApplication.Logic.LoadIndexScreen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,7 @@ builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
 builder.Services.AddTransient<AppointmentConfirmationHandler>();
+builder.Services.AddTransient<LoadIndexScreenHandler>();
 
 var app = builder.Build();
 

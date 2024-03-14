@@ -37,6 +37,14 @@ namespace HairApplication.Models.Entities
         [FirestoreProperty]
         public Timestamp DateTimeOfAppointment { get; set; }
 
+
+
+
+        // These three are simply for making displaying the event on the calendar easier
+        [FirestoreProperty]
+        public string ClientFullName { get; set; }
+
+
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
         public DocumentReference HairStylist { get; set; }

@@ -6,11 +6,14 @@
 }
 
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+    <link rel="stylesheet" href="~/css/light.css" />
+    <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <div>
-        <form asp-action"Confirm" asp-controller="Appointment">
+        <form asp-action"Submit" asp-controller="Appointment">
             <input hidden name="ClientFirstName" value="@Model.ClientFirstName"/>
             <input hidden name="ClientLastName" value="@Model.ClientLastName"/>
             <input hidden name="ClientId" value="@Model.ClientId"/>

@@ -1,4 +1,4 @@
-﻿@model HairApplication.MVC.Models.AppointmentEntryViewModel
+﻿@model HairApplication.MVC.Models.IndexViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -32,14 +32,18 @@
     get properties() {
         return {
             //Properties
-            dataSource: data,
+            dataSource: @Model.CalendarEvents,
             views: ['day', 'week'],
             dateCurrent: new Date()
         };
     }
 });
 </script>
-<div class="text-center"
+<div class="text-center">
+    <h1 class="display-4">Welcome to the Hair Salon!</h1>
+    <h2 class="display-6">Please log in as a demo user.</h2>
+    <sl-button href="@Url.Action("Schedule", "Appointment")" type="submit">Log in</sl-button>
+
     <smart-scheduler id="scheduler"></smart-scheduler>
 </div>
 

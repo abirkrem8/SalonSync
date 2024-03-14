@@ -63,7 +63,7 @@ namespace HairApplication.MVC.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Confirm(AppointmentConfirmationViewModel appointmentConfirmation)
+        public IActionResult Submit(AppointmentConfirmationViewModel appointmentConfirmation)
         {
             // Now we must schedule the appointment
             AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(appointmentConfirmation);

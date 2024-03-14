@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HairApplication.Logic.AppointmentConfirmation;
 using HairApplication.Logic.AppointmentSchedule;
+using HairApplication.Logic.LoadIndexScreen;
 using HairApplication.MVC.Models;
 
 namespace HairApplication.MVC.Logic
@@ -24,6 +25,9 @@ namespace HairApplication.MVC.Logic
                 ;
 
             CreateMap<AppointmentConfirmationResult, AppointmentConfirmationViewModel>()
+               ;
+
+            CreateMap<LoadIndexScreenResult, IndexViewModel>()
                ;
             /*etc...*/
         }
