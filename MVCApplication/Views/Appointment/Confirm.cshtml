@@ -13,7 +13,7 @@
 </head>
 <body>
     <div>
-        <form asp-action"Submit" asp-controller="Appointment">
+        <form asp-action="Submit" asp-controller="Appointment">
             <input hidden name="ClientFirstName" value="@Model.ClientFirstName"/>
             <input hidden name="ClientLastName" value="@Model.ClientLastName"/>
             <input hidden name="ClientId" value="@Model.ClientId"/>
@@ -24,12 +24,11 @@
             <input hidden name="DateTimeOfAppointment" value="@Model.DateTimeOfAppointment"/>
             <input hidden name="IsNewClient" value="@Model.IsNewClient"/>
             <h2>Client</h2>
-            <p>Existing Client Found? @Model.ExistingClientFound</p>
             <p>@Model.ClientFirstName @Model.ClientLastName</p>
             <p>@Model.ClientPhoneNumber</p>
             <h2>Hair Stylist</h2>
             <p>@Model.HairStylistFirstName @Model.HairStylistLastName</p>
-            <h4>@Model.DateTimeOfAppointment.ToShortDateString() @Model.DateTimeOfAppointment.ToShortTimeString()</h4>
+            <h4>@Model.DateTimeOfAppointment</h4>
             <sl-button type="submit">Confirm Appointment</sl-button>
         </form>
     </div>

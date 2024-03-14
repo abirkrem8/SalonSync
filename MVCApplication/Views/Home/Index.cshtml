@@ -1,49 +1,58 @@
 ﻿@model HairApplication.MVC.Models.IndexViewModel
 @{
     ViewData["Title"] = "Home Page";
+
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
 <link rel="stylesheet" href="~/css/light.css" />
 <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 <script type="module" src="~/lib/smart-scheduler/smart.scheduler.js"></script>
 <link rel="stylesheet" type="text/css" href="~/lib/smart-scheduler/smart.default.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Index.css" />
 
 <script type="module">
-    const today = new Date(),
-        currentYear = today.getFullYear(),
-        currentMonth = today.getMonth(),
-        data = [
-            {
-                label: 'Event 1',
-                dateStart: new Date(currentYear, currentMonth, 13),
-                dateEnd: new Date(currentYear, currentMonth, 14)
-            }, {
-                label: 'Event 2',
-                dateStart: new Date(currentYear, currentMonth, 13, 11, 30),
-                dateEnd: new Date(currentYear, currentMonth, 13, 14, 15)
-            }, {
-                label: 'Event 3',
-                dateStart: new Date(currentYear, currentMonth, 13, 13, 15),
-                dateEnd: new Date(currentYear, currentMonth, 13, 16, 15)
-            }
-        ];
+        var nonWorkHrs = [[0, 8], [18,23]];
+        var nonWorkDays = [0];
 
-    window.Smart('#scheduler', class {
-    get properties() {
-        return {
-            //Properties
-            dataSource: @Model.CalendarEvents,
-            views: ['day', 'week'],
-            dateCurrent: new Date()
-        };
-    }
-});
+        window.Smart('#scheduler', class {
+        get properties() {
+            return {
+                //Properties
+                dataSource: @Html.Raw(Model.CalendarEvents),
+                views: ['day', 'week'],
+                hourStart: 8,
+                hourEnd:18,
+                timelineDayScale:'hour',
+                nonworkingHours: nonWorkHrs,
+                nonworkingDays: nonWorkDays,
+                dateCurrent: new Date(),
+                currentTimeIndicator: true,
+            };
+        }
+    });
 </script>
-<div class="text-center">
-    <h1 class="display-4">Welcome to the Hair Salon!</h1>
-    <h2 class="display-6">Please log in as a demo user.</h2>
-    <sl-button href="@Url.Action("Schedule", "Appointment")" type="submit">Log in</sl-button>
+<html>
+<div class="flex-row">
+    <div class="calendar">
+        <smart-scheduler id="scheduler"></smart-scheduler>
+    </div>
+    <div class="flex-col">
+        <sl-card class="card-header">
+            <h5>Available Stylists</h5>
+        </sl-card>
+        @foreach (var stylist in Model.HairStylists)
+        {
+            <sl-card class="card-header" style="background-color: @stylist.HexColor">
+                <sl-card-body class="flex-row">
+                    <h5>@stylist.FirstName @stylist.LastName</h5>
+                    <sl-tooltip content="Stylist Info">
+                        <sl-icon-button style="color: @stylist.HexColor" name="info-square-fill" label="Stylist Info"></sl-icon-button>
+                    </sl-tooltip>
+                </sl-card-body>
 
-    <smart-scheduler id="scheduler"></smart-scheduler>
+            </sl-card>
+        }
+    </div>
 </div>
+</html>
 

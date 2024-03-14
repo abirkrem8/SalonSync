@@ -10,7 +10,7 @@ namespace HairApplication.Logic.LoadIndexScreen
 {
     public class LoadIndexScreenResult
     {
-        public object[] CalendarEvents { get; set; }
+        public string CalendarEvents { get; set; }
         public List<HairStylist> HairStylists { get; set; }
 
         public LoadIndexScreenResultStatus LoadIndexScreenResultStatus { get; set; }

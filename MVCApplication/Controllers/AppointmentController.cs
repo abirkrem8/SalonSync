@@ -69,7 +69,7 @@ namespace HairApplication.MVC.Controllers
             AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(appointmentConfirmation);
             var appointmentScheduleResult = _appointmentScheduleHandler.Handle(appointmentScheduleItem);
 
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Privacy()

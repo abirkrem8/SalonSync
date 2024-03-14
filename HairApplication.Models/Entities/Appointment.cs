@@ -11,13 +11,15 @@ namespace HairApplication.Models.Entities
     public class Appointment : IFirebaseEntity
     {
         public Appointment() { }
-        public Appointment(DocumentReference stylist, DocumentReference client, DateTime scheduledTime)
+        public Appointment(DocumentReference stylist, DocumentReference client, string clientFirstName, string clientLastName, DateTime scheduledTime)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
             HairStylist = stylist;
             Client = client;
-            DateTimeOfAppointment = Timestamp.FromDateTime(scheduledTime.ToUniversalTime());
+            var utc = scheduledTime.ToUniversalTime();
+            DateTimeOfAppointment = Timestamp.FromDateTime(utc);
+            ClientFullName = String.Concat(clientFirstName, " ", clientLastName);
         }
 
 

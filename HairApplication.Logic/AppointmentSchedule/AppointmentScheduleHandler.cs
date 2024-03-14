@@ -72,7 +72,7 @@ namespace HairApplication.Logic.AppointmentSchedule
             }
 
             // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, appointmentScheduleItem.DateTimeOfApppointment);
+            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, appointmentScheduleItem.DateTimeOfApppointment);
             appointmentReference = _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
 
             // Update Client DB with appointment

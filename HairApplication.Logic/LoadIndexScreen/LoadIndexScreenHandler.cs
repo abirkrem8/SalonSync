@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace HairApplication.Logic.LoadIndexScreen
@@ -48,14 +49,15 @@ namespace HairApplication.Logic.LoadIndexScreen
                 var aptStylist = stylists.FirstOrDefault(x => x.Id == appointments[i].HairStylist.Id);
                 if (aptStylist != null)
                 {
+                    var appointmentStartTime = appointments[i].DateTimeOfAppointment.ToDateTime().ToLocalTime();
                     var description = String.Concat("This appointment is for ", appointments[i].ClientFullName,
                         " with stylist ", aptStylist.FirstName, " ", aptStylist.LastName, " at ",
-                        appointments[i].DateTimeOfAppointment.ToString(), ".");
+                        appointmentStartTime.ToString("MM/dd/yyyy hh:mm tt"), ".");
                     calendarEvents[i] = new
                     {
                         label = appointments[i].ClientFullName,
-                        dateStart = Date.FromDateTime(appointments[i].DateTimeOfAppointment.ToDateTime()),
-                        dateEnd = Date.FromDateTime(appointments[i].DateTimeOfAppointment.ToDateTime().AddHours(2)),
+                        dateStart = appointmentStartTime.ToString("MM/dd/yyyy HH:mm:ss"),
+                        dateEnd = appointmentStartTime.AddHours(2).ToString("MM/dd/yyyy HH:mm:ss"),
                         backgroundColor = aptStylist.HexColor,
                         description = description
                     };
@@ -65,7 +67,7 @@ namespace HairApplication.Logic.LoadIndexScreen
                 }
             }
 
-            loadIndexScreenResult.CalendarEvents = calendarEvents;
+            loadIndexScreenResult.CalendarEvents = JsonSerializer.Serialize(calendarEvents);
             loadIndexScreenResult.HairStylists = stylists;
             loadIndexScreenResult.LoadIndexScreenResultStatus = LoadIndexScreenResultStatus.Success;
 

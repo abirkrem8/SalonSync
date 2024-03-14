@@ -2,6 +2,19 @@
 :host,
 .sl-theme-light {
     color-scheme: light;
+    /* Custom THEME */
+
+    --sl-color-primary-50: hsl(250 100% 97.6%);
+    --sl-color-primary-100: hsl(251.4 91.3% 95.5%);
+    --sl-color-primary-200: hsl(250.5 95.2% 91.8%);
+    --sl-color-primary-300: hsl(252.5 94.7% 85.1%);
+    --sl-color-primary-400: hsl(255.1 91.7% 76.3%);
+    --sl-color-primary-500: hsl(258.3 89.5% 66.3%);
+    --sl-color-primary-600: hsl(262.1 83.3% 57.8%);
+    --sl-color-primary-700: hsl(263.4 70% 50.4%);
+    --sl-color-primary-800: hsl(263.4 69.3% 42.2%);
+    --sl-color-primary-900: hsl(263.5 67.4% 34.9%);
+    --sl-color-primary-950: hsl(265.1 61.5% 21.4%);
     /*
    * Color Primitives
    */
@@ -236,20 +249,6 @@
   --sl-color-primary-800: var(--sl-color-sky-800);
   --sl-color-primary-900: var(--sl-color-sky-900);
   --sl-color-primary-950: var(--sl-color-sky-950);*/
-
-    /* Custom THEME */
-
-    --sl-color-primary-50: rgb(251 248 255);
-    --sl-color-primary-100: rgb(243 232 253);
-    --sl-color-primary-200: rgb(234 215 252);
-    --sl-color-primary-300: rgb(224 195 251);
-    --sl-color-primary-400: rgb(211 169 249);
-    --sl-color-primary-500: rgb(192 134 247);
-    --sl-color-primary-600: rgb(171 93 244);
-    --sl-color-primary-700: rgb(144 69 213);
-    --sl-color-primary-800: rgb(119 57 176);
-    --sl-color-primary-900: rgb(85 41 126);
-    --sl-color-primary-950: rgb(53 25 78);
     /* Success */
     --sl-color-success-50: var(--sl-color-green-50);
     --sl-color-success-100: var(--sl-color-green-100);

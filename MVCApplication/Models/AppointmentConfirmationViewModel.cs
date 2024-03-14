@@ -13,8 +13,6 @@ namespace HairApplication.MVC.Models
         public string ClientPhoneNumber { get; set; }
         public string ClientId { get; set; }
         public bool IsNewClient { get; set; }
-
-        public bool ExistingClientFound { get; set; }
-        public DateTime DateTimeOfAppointment { get; set; }
+        public string DateTimeOfAppointment { get; set; }
     }
 }
