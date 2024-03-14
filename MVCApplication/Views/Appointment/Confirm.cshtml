@@ -5,69 +5,29 @@
 @{
 }
 
-<!DOCTYPE html>
-<html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
     <div>
-        
-        <h2>Client</h2>
-        <p>Existing Client Found? @Model.ExistingClientFound</p>
-        <p>@Model.ClientFirstName @Model.ClientLastName</p>
-        <p>@Model.ClientPhoneNumber</p>
-        <h2>Hair Stylist</h2>
-        <p>@Model.HairStylistFirstName @Model.HairStylistLastName</p>
-        <h4>@Model.DateTimeOfAppointment.ToShortDateString() @Model.DateTimeOfAppointment.ToShortTimeString()</h4>
+        <form asp-action"Confirm" asp-controller="Appointment">
+            <input hidden name="ClientFirstName" value="@Model.ClientFirstName"/>
+            <input hidden name="ClientLastName" value="@Model.ClientLastName"/>
+            <input hidden name="ClientId" value="@Model.ClientId"/>
+            <input hidden name="ClientPhoneNumber" value="@Model.ClientPhoneNumber"/>
+            <input hidden name="HairStylistFirstName" value="@Model.HairStylistFirstName"/>
+            <input hidden name="HairStylistLastName" value="@Model.HairStylistLastName"/>
+            <input hidden name="HairStylistId" value="@Model.HairStylistId"/>
+            <input hidden name="DateTimeOfAppointment" value="@Model.DateTimeOfAppointment"/>
+            <input hidden name="IsNewClient" value="@Model.IsNewClient"/>
+            <h2>Client</h2>
+            <p>Existing Client Found? @Model.ExistingClientFound</p>
+            <p>@Model.ClientFirstName @Model.ClientLastName</p>
+            <p>@Model.ClientPhoneNumber</p>
+            <h2>Hair Stylist</h2>
+            <p>@Model.HairStylistFirstName @Model.HairStylistLastName</p>
+            <h4>@Model.DateTimeOfAppointment.ToShortDateString() @Model.DateTimeOfAppointment.ToShortTimeString()</h4>
+            <sl-button type="submit">Confirm Appointment</sl-button>
+        </form>
     </div>
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-        <!-- Modal content -->
-        <div class="modal-content">
-            <form id="confirm-form" asp-controller="Appointment" asp-action="Confirm">
-                <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h2>Confirm Appointment</h2>
-                </div>
-                @*<div class="modal-body">
-                    <h2>Client</h2>
-                    <p>@Model.Client.FirstName @Model.Client.LastName</p>
-                    <p>@Model.Client.PhoneNumber</p>
-                    <h2>Hair Stylist</h2>
-                    <p>@Model.HairStylist.FirstName @Model.HairStylist.LastName</p>
-                    <h4>@Model.DateOfAppointment.ToShortDateString() @Model.TimeOfAppointment.ToShortTimeString()</h4>
-                </div>*@
-                <div class="modal-footer">
-                    <sl-button id="confirm-btn" type="submit">Confirm Appointment</sl-button>
-                </div>
-            </form>
-        </div>
-
-    </div>
-
-    <script>
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-
-        // When the user clicks on <span> (x), close the modal and redirect to blank appointment form
-        span.onclick = function() {
-            window.location.href = '@Url.Action("Schedule", "Appointment");
-        }
-
-
-        //// When the user clicks anywhere outside of the modal, close it
-        //window.onclick = function(event) {
-        //  if (event.target == modal) {
-        //    modal.style.display = "none";
-        //  }
-        //}
-    </script>
-
 </body>
-</html>

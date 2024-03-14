@@ -3,62 +3,48 @@
     ViewData["Title"] = "Schedule an Appointment";
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<link rel="stylesheet" href="~/css/Schedule.css" />
+<link rel="stylesheet" href="~/css/light.css" />
 <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 
-<div class="text-center">
-    <sl-card class="card-header">
-        <div slot="header">
-            Schedule an Appointment
-        </div>
-        <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
-            <!-- Input and Submit elements -->
-            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
-                @foreach (var stylist in Model.AvailableStylists)
-                {
-                    <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
-                }
-            </sl-select>
-            <br />
-            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
-                <sl-option value="false">No</sl-option>
-                <sl-option value="true">Yes</sl-option>
-            </sl-select>
-            <br />
-            <div id="ClientFullName" hidden>
-                <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
-                <br />
-                <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
-                <br />
+<html class="sl-theme-light">
+<body>
+        <sl-card class="card-header">
+            <div slot="header">
+                <h3>Schedule an Appointment</h3>
             </div>
-            <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
-            <br />
-            <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
-            <br />
-            <sl-input name="TimeOfAppointment" label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" type="time" placeholder="Date" pill required></sl-input>
-            <br />
-            <sl-button type="submit">Schedule Appointment</sl-button>
-        </form>
-    </sl-card>
+            <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
+                <!-- Input and Submit elements -->
+                <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
+                    @foreach (var stylist in Model.AvailableStylists)
+                    {
+                        <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
+                    }
+                </sl-select>
+                <br />
+                <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
+                    <sl-option value="false">No</sl-option>
+                    <sl-option value="true">Yes</sl-option>
+                </sl-select>
+                <br />
+                <div id="ClientFullName" hidden>
+                    <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+                    <br />
+                    <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+                    <br />
+                </div>
+                <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+                <br />
+                <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+                <br />
+                <sl-input name="TimeOfAppointment" label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" type="time" placeholder="Date" pill required></sl-input>
+                <br />
+                <sl-button type="submit">Schedule Appointment</sl-button>
+            </form>
+        </sl-card>
 
-    <style>
-        .card-header {
-            max-width: 600px;
-            width: 500px;
-            --padding: 20px;
-        }
-
-            .card-header [slot='header'] {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .card-header h3 {
-                margin: 0;
-            }
-    </style>
-
-</div>
+</body>
+</html>
 
 
 <script type="module">

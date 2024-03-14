@@ -1,0 +1,16 @@
+﻿.card-header {
+    max-width: 600px;
+    width: 500px;
+    --padding: 20px;
+}
+
+    .card-header [slot='header'] {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-header h3 {
+        margin: 0;
+    }
+

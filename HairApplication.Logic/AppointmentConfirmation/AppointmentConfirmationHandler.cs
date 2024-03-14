@@ -73,6 +73,7 @@ namespace HairApplication.Logic.AppointmentConfirmation
                 HairStylistId = stylist.Id,
                 ClientFirstName = client.FirstName,
                 ClientLastName = client.LastName,
+                ClientPhoneNumber = client.PhoneNumber,
                 ClientId = client.Id,
                 ExistingClientFound = clientFound,
                 DateTimeOfAppointment = new DateTime(appointmentConfirmationItem.DateOfAppointment.Year, appointmentConfirmationItem.DateOfAppointment.Month,
