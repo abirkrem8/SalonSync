@@ -30,3 +30,9 @@ body {
 .navbar-nav {
     justify-content:right;
 }
+
+.header-img {
+    width:100%;
+    height:auto;
+    overflow: hidden;
+}

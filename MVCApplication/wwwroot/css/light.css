@@ -3,7 +3,6 @@
 .sl-theme-light {
     color-scheme: light;
     /* Custom THEME */
-
     --sl-color-primary-50: hsl(250 100% 97.6%);
     --sl-color-primary-100: hsl(251.4 91.3% 95.5%);
     --sl-color-primary-200: hsl(250.5 95.2% 91.8%);

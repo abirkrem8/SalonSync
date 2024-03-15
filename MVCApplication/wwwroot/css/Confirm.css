@@ -1,0 +1,22 @@
+﻿.card-header {
+    max-width: 500px;
+}
+
+    .card-header [slot='header'] {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-header h3 {
+        margin: 0;
+    }
+
+    .card-header sl-icon-button {
+        font-size: var(--sl-font-size-medium);
+    }
+
+.icon-purple {
+    color: var(--sl-primary-color-500);
+    font-size: var(--sl-font-size-medium);
+}

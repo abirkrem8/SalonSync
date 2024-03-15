@@ -43,12 +43,12 @@
         @foreach (var stylist in Model.HairStylists)
         {
             <sl-card class="card-header" style="background-color: @stylist.HexColor">
-                <sl-card-body class="flex-row">
+                <div class="flex-row">
                     <h5>@stylist.FirstName @stylist.LastName</h5>
                     <sl-tooltip content="Stylist Info">
                         <sl-icon-button style="color: @stylist.HexColor" name="info-square-fill" label="Stylist Info"></sl-icon-button>
                     </sl-tooltip>
-                </sl-card-body>
+                </div>
 
             </sl-card>
         }
