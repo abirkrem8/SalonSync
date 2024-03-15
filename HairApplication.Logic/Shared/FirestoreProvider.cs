@@ -55,7 +55,7 @@ namespace HairApplication.Logic.Shared
 
 
         // just add here any method you need here WhereGreaterThan, WhereIn etc ...
-        public DocumentReference ConvertIdToReference<T>(string id, T entity) where T : IFirebaseEntity
+        public DocumentReference ConvertIdToReference<T>(string id) where T : IFirebaseEntity
         {
             return _fireStoreDb.Collection($"{typeof(T).Name}s").Document(id);
         }

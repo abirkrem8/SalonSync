@@ -1,4 +1,4 @@
-using BookList.Model;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.SqlServer;
@@ -38,10 +38,6 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddMvc();
 
-string connectionString = builder.Configuration.GetValue<string>("ConnectionString");
-builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(connectionString));
-
-builder.Services.AddTransient<ApplicationDbContext>();
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
 builder.Services.AddTransient<AppointmentConfirmationHandler>();
