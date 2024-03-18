@@ -45,10 +45,15 @@ namespace SalonSync.GenerateData
             bool scheduleAllClientsEachDay = false;
             if (listOfClients.Count < MAX_APPOINTMENTS)
             {
+                _logger.LogInformation("Number of clients is {0}, scheduling all for appointments.", listOfClients.Count);
                 scheduleAllClientsEachDay = true;
+            } else
+            {
+                _logger.LogInformation("Number of clients is {0}, scheduling {1} appointments per day.", MAX_APPOINTMENTS);
             }
 
-            // For each date, schedule 10 appointments
+
+            // For each date, schedule {MAX_APPOINTMENTS} appointments
             for (int daysAhead = 1; daysAhead <= numberOfDaysToSchedule; daysAhead++)
             {
                 DateTime scheduleDate = DateTime.Now.AddDays(daysAhead);
@@ -92,6 +97,7 @@ namespace SalonSync.GenerateData
                         PhoneNumber = client.PhoneNumber
 
                     };
+                    _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2}!"), scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateTimeOfApppointment.ToString("MM/dd/yyyy hh:mm tt"));
                     var result = _appointmentScheduleHandler.Handle(scheduleItem);
                     if (result.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)
                     {
@@ -100,9 +106,6 @@ namespace SalonSync.GenerateData
                     }
                 }
             }
-
-
-
 
             return 0;
         }
