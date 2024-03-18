@@ -1,0 +1,89 @@
+﻿@model SalonSync.MVC.Models.AppointmentEntryViewModel
+@{
+    ViewData["Title"] = "Schedule an Appointment";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<link rel="stylesheet" href="~/css/Schedule.css" />
+<link rel="stylesheet" href="~/css/light.css" />
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+
+<html class="sl-theme-light">
+<body>
+        <sl-card class="card-header">
+            <div slot="header">
+                <h3>Schedule an Appointment</h3>
+            </div>
+            <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
+                <!-- Input and Submit elements -->
+                <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
+                    @foreach (var stylist in Model.AvailableStylists)
+                    {
+                        <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
+                    }
+                </sl-select>
+                <br />
+                <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
+                    <sl-option value="false">No</sl-option>
+                    <sl-option value="true">Yes</sl-option>
+                </sl-select>
+                <br />
+                <div id="ClientFullName" hidden>
+                    <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+                    <br />
+                    <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+                    <br />
+                </div>
+                <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+                <br />
+                <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+                <br />
+                <sl-input name="TimeOfAppointment" label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" type="time" placeholder="Date" pill required></sl-input>
+                <br />
+                <sl-button type="submit">Schedule Appointment</sl-button>
+            </form>
+        </sl-card>
+
+</body>
+</html>
+
+
+<script type="module">
+    document.getElementsByName('IsNewClient')[0].addEventListener('sl-change', ToggleClient);
+
+    function ToggleClient(){
+        console.log("In ToggleClient!");
+        var clientSelect = document.getElementsByName('IsNewClient')[0];
+
+        var value = clientSelect.value;
+
+        if (value === "true"){
+            document.getElementById('ClientFullName').hidden = false;
+            document.getElementsByName('ClientFirstName')[0].required = true;
+            document.getElementsByName('ClientLastName')[0].required = true;
+            console.log("This is a new client!");
+        } else if (value === "false") {
+            document.getElementById('ClientFullName').hidden = true;
+            document.getElementsByName('ClientFirstName')[0].required = false;
+            document.getElementsByName('ClientLastName')[0].required = false;
+            console.log("This is a returning client!");
+        }
+    }
+
+    const form = document.querySelector('.input-validation-required');
+
+    // Wait for controls to be defined before attaching form listeners
+    await Promise.all([
+      customElements.whenDefined('sl-button'),
+      customElements.whenDefined('sl-checkbox'),
+      customElements.whenDefined('sl-input'),
+      customElements.whenDefined('sl-option'),
+      customElements.whenDefined('sl-select'),
+      customElements.whenDefined('sl-dropdown'),
+      customElements.whenDefined('sl-textarea')
+    ]).then(() => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        alert('All fields are valid!');
+      });
+    });
+</script>

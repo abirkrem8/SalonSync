@@ -1,0 +1,58 @@
+﻿@model SalonSync.MVC.Models.IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<link rel="stylesheet" href="~/css/light.css" />
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+<script type="module" src="~/lib/smart-scheduler/smart.scheduler.js"></script>
+<link rel="stylesheet" type="text/css" href="~/lib/smart-scheduler/smart.default.css" />
+<link rel="stylesheet" type="text/css" href="~/css/Index.css" />
+
+<script type="module">
+        var nonWorkHrs = [[0, 8], [18,23]];
+        var nonWorkDays = [0];
+
+        window.Smart('#scheduler', class {
+        get properties() {
+            return {
+                //Properties
+                dataSource: @Html.Raw(Model.CalendarEvents),
+                views: ['day', 'week'],
+                hourStart: 8,
+                hourEnd:18,
+                timelineDayScale:'hour',
+                nonworkingHours: nonWorkHrs,
+                nonworkingDays: nonWorkDays,
+                dateCurrent: new Date(),
+                currentTimeIndicator: true,
+            };
+        }
+    });
+</script>
+<html>
+<div class="flex-row">
+    <div class="calendar">
+        <smart-scheduler id="scheduler"></smart-scheduler>
+    </div>
+    <div class="flex-col">
+        <sl-card class="card-header">
+            <h5>Available Stylists</h5>
+        </sl-card>
+        @foreach (var stylist in Model.HairStylists)
+        {
+            <sl-card class="card-header" style="background-color: @stylist.HexColor">
+                <div class="flex-row">
+                    <h5>@stylist.FirstName @stylist.LastName</h5>
+                    <sl-tooltip content="Stylist Info">
+                        <sl-icon-button style="color: @stylist.HexColor" name="info-square-fill" label="Stylist Info"></sl-icon-button>
+                    </sl-tooltip>
+                </div>
+
+            </sl-card>
+        }
+    </div>
+</div>
+</html>
+
