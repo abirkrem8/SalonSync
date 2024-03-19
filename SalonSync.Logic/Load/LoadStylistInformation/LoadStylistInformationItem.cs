@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.LoadStylistInformation
+namespace SalonSync.Logic.Load.LoadStylistInformation
 {
     public class LoadStylistInformationItem
     {
-
+        public string HairStylistId { get; set; }
     }
 }

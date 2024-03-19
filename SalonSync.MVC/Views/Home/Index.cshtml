@@ -3,12 +3,14 @@
     ViewData["Title"] = "Home Page";
 
 }
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
-<link rel="stylesheet" href="~/css/light.css" />
-<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script type="module" src="~/lib/smart-scheduler/smart.scheduler.js"></script>
 <link rel="stylesheet" type="text/css" href="~/lib/smart-scheduler/smart.default.css" />
-<link rel="stylesheet" type="text/css" href="~/css/Index.css" />
+<link rel="stylesheet" href="~/css/light.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Index.css" />
 
 <script type="module">
         var nonWorkHrs = [[0, 8], [18,23]];
@@ -32,26 +34,35 @@
     });
 </script>
 <html>
-<div class="flex-row">
-    <div class="calendar">
+<div class="row">
+    <div class="col-lg-8">
         <smart-scheduler id="scheduler"></smart-scheduler>
     </div>
-    <div class="flex-col">
-        <sl-card class="card-header">
-            <h5>Available Stylists</h5>
-        </sl-card>
-        @foreach (var stylist in Model.HairStylists)
-        {
-            <sl-card class="card-header" style="background-color: @stylist.HexColor">
-                <div class="flex-row">
-                    <h5>@stylist.FirstName @stylist.LastName</h5>
-                    <sl-tooltip content="Stylist Info">
-                        <sl-icon-button style="color: @stylist.HexColor" name="info-square-fill" label="Stylist Info"></sl-icon-button>
-                    </sl-tooltip>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-3">
+        <div class="row">
+            <div class="small-box text-center" style="background-color:white">
+                <div class="inner">
+                    <h4 class="stylist-header">Available Stylists</h4>
                 </div>
-
-            </sl-card>
-        }
+            </div>
+            @foreach (var stylist in Model.HairStylists)
+            {
+                <!-- small card -->
+                <div class="small-box bg-info" style="background-color: @stylist.HexColor!important">
+                    <div class="inner">
+                        <p class="stylist-name">@stylist.FirstName</p>
+                        <p class="stylist-name">@stylist.LastName</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-solid fa-scissors" style="font-size:50px!important"></i>
+                    </div>
+                    <a href="@Url.Action("Stylist", "Information", new {stylistId = stylist.Id})" class="small-box-footer">
+                        Stylist Info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            }
+        </div>
     </div>
 </div>
 </html>

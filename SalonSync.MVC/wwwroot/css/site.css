@@ -36,3 +36,8 @@ body {
     height:auto;
     overflow: hidden;
 }
+
+.bg-theme {
+    background-color:var(--sl-color-primary-500);
+    border-color:var(--sl-color-primary-500);
+}

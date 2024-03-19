@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.LoadIndexScreen
+namespace SalonSync.Logic.Load.LoadIndexScreen
 {
     public class LoadIndexScreenItem
     {

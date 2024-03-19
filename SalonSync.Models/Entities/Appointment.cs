@@ -11,12 +11,14 @@ namespace SalonSync.Models.Entities
     public class Appointment : IFirebaseEntity
     {
         public Appointment() { }
-        public Appointment(DocumentReference stylist, DocumentReference client, string clientFirstName, string clientLastName, DateTime scheduledTime)
+        public Appointment(DocumentReference stylist, DocumentReference client, string clientFirstName, 
+            string clientLastName, string clientPhoneNumber, DateTime scheduledTime)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
             HairStylist = stylist;
             Client = client;
+            ClientPhoneNumber = clientPhoneNumber;
             var utc = scheduledTime.ToUniversalTime();
             DateTimeOfAppointment = Timestamp.FromDateTime(utc);
             ClientFullName = string.Concat(clientFirstName, " ", clientLastName);
@@ -31,10 +33,6 @@ namespace SalonSync.Models.Entities
         [FirestoreProperty]
         public Timestamp CreationTimestamp { get; set; }
 
-        // User Name
-        [FirestoreProperty]
-        public string CreatedByUserName { get; set; }
-
 
         [FirestoreProperty]
         public Timestamp DateTimeOfAppointment { get; set; }
@@ -45,6 +43,10 @@ namespace SalonSync.Models.Entities
         // These three are simply for making displaying the event on the calendar easier
         [FirestoreProperty]
         public string ClientFullName { get; set; }
+
+        // These three are simply for making displaying the event on the calendar easier
+        [FirestoreProperty]
+        public string ClientPhoneNumber { get; set; }
 
 
         // String ID connecting to the other Firestore Data Objects

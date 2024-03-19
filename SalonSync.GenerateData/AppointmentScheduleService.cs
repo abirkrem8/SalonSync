@@ -13,7 +13,7 @@ namespace SalonSync.GenerateData
 {
     public interface IAppointmentScheduleService
     {
-        int Run(int numberOfDaysToSchedule);
+        int Run(int numberOfDaysToSchedule, bool historical);
     }
 
     public class AppointmentScheduleService : IAppointmentScheduleService
@@ -36,7 +36,7 @@ namespace SalonSync.GenerateData
         }
 
 
-        public int Run(int numberOfDaysToSchedule)
+        public int Run(int numberOfDaysToSchedule, bool historical)
         {
             _logger.LogInformation("In the Appointment Scheduling Service!");
 
@@ -54,9 +54,10 @@ namespace SalonSync.GenerateData
 
 
             // For each date, schedule {MAX_APPOINTMENTS} appointments
-            for (int daysAhead = 1; daysAhead <= numberOfDaysToSchedule; daysAhead++)
+            for (int daysFromToday = 1; daysFromToday <= numberOfDaysToSchedule; daysFromToday++)
             {
-                DateTime scheduleDate = DateTime.Now.AddDays(daysAhead);
+                int days = historical ? daysFromToday * -1 : daysFromToday;
+                DateTime scheduleDate = DateTime.Now.AddDays(days);
 
                 // Randomly select clients to had scheduled appointments for this day
                 List<int> clientIndexes = new List<int>();
@@ -97,7 +98,7 @@ namespace SalonSync.GenerateData
                         PhoneNumber = client.PhoneNumber
 
                     };
-                    _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2}!"), scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateTimeOfApppointment.ToString("MM/dd/yyyy hh:mm tt"));
+                    _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2}!", scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateTimeOfApppointment.ToString("MM/dd/yyyy hh:mm tt")));
                     var result = _appointmentScheduleHandler.Handle(scheduleItem);
                     if (result.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)
                     {

@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.LoadIndexScreen
+namespace SalonSync.Logic.Load.LoadIndexScreen
 {
     public class LoadIndexScreenHandler
     {

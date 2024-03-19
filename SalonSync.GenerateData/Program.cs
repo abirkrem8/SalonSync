@@ -40,7 +40,7 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
 
 
 var service = _host.Services.GetRequiredService<IAppointmentScheduleService>();
-int exitCode = service.Run(3);
+int exitCode = service.Run(3, true);
 
 
 Environment.Exit(exitCode);

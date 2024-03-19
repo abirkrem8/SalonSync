@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Logic.AppointmentSchedule;
-using SalonSync.Logic.LoadIndexScreen;
+using SalonSync.Logic.Load.LoadIndexScreen;
+using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.MVC.Models;
 using System.Globalization;
 using System.Text.Json;
@@ -37,7 +38,8 @@ namespace SalonSync.MVC.Logic
                 .ForMember(dest => dest.DateTimeOfApppointment, opt => opt.MapFrom(src => DateTime.ParseExact(src.DateTimeOfAppointment, "MM/dd/yyyy hh:mm tt", CultureInfo.InvariantCulture)))
                 ;
 
-
+            CreateMap<LoadStylistInformationResult, StylistDetailViewModel>();
+            CreateMap<LoadStylistInformationResultAppointment, StylistDetailViewModelAppointment>();
             /*etc...*/
         }
     }

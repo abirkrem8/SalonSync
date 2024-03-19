@@ -1,7 +1,7 @@
 ﻿.flex-row {
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .flex-col {
@@ -12,7 +12,7 @@
 
 .calendar {
     width: 50vw;
-    margin-right:5%;
+    margin-right: 5%;
 }
 
 .card-header {
@@ -36,3 +36,20 @@
     .card-header sl-icon-button {
         font-size: var(--sl-font-size-medium);
     }
+
+.stylist-name {
+    font-size: 1.5rem!important;
+    font-weight: 600;
+    margin: 0px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.stylist-header {
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--sl-color-primary-700);
+}
+.small-box {
+    padding:0px;
+}

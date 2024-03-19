@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.LoadIndexScreen
+namespace SalonSync.Logic.Load.LoadStylistInformation
 {
-    public class LoadIndexScreenValidator : AbstractValidator<LoadIndexScreenItem>
+    public class LoadStylistInformationValidator : AbstractValidator<LoadStylistInformationItem>
     {
-        public LoadIndexScreenValidator()
+        public LoadStylistInformationValidator()
         {
 
         }

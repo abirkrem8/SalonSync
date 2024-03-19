@@ -19,10 +19,6 @@ namespace SalonSync.Models.Entities
         [FirestoreProperty]
         public Timestamp CreationTimestamp { get; set; }
 
-        // User Name
-        [FirestoreProperty]
-        public string CreatedByUserName { get; set; }
-
         [FirestoreProperty]
         public string FirstName { get; set; }
 
@@ -31,6 +27,9 @@ namespace SalonSync.Models.Entities
 
         [FirestoreProperty]
         public string HexColor { get; set; }
+
+        [FirestoreProperty]
+        public string ProfileImageURL { get; set; }
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]

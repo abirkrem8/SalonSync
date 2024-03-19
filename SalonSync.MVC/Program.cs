@@ -8,8 +8,9 @@ using SalonSync.Logic.Shared;
 using AutoMapper;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.MVC.Logic;
-using SalonSync.Logic.LoadIndexScreen;
 using SalonSync.Logic.AppointmentConfirmation;
+using SalonSync.Logic.Load.LoadIndexScreen;
+using SalonSync.Logic.Load.LoadStylistInformation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
 builder.Services.AddTransient<AppointmentConfirmationHandler>();
 builder.Services.AddTransient<LoadIndexScreenHandler>();
+builder.Services.AddTransient<LoadStylistInformationHandler>();
 
 var app = builder.Build();
 
@@ -65,5 +67,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Information}/{action=Stylist}/{id?}");
 
 app.Run();

@@ -18,10 +18,6 @@ namespace SalonSync.Models.Entities
         [FirestoreProperty]
         public Timestamp CreationTimestamp { get; set; }
 
-        // User Name
-        [FirestoreProperty]
-        public string CreatedByUserName { get; set; }
-
         // Maybe grab this from available brands of the salon
         [FirestoreProperty]
         public string HairDyeBrand { get; set; }

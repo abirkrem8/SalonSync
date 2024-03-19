@@ -30,10 +30,6 @@ namespace SalonSync.Models.Entities
         [FirestoreProperty]
         public Timestamp CreationTimestamp { get; set; }
 
-        // User Name
-        [FirestoreProperty]
-        public string CreatedByUserName { get; set; }
-
         [FirestoreProperty]
         public string FirstName { get; set; }
 

@@ -11,6 +11,5 @@ namespace SalonSync.Models.Entities
     {
         public string Id { get; set; }
         public Timestamp CreationTimestamp { get; set; }
-        public string CreatedByUserName { get; set; }
     }
 }

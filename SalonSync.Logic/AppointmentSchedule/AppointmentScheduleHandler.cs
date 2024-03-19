@@ -72,7 +72,7 @@ namespace SalonSync.Logic.AppointmentSchedule
             }
 
             // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, appointmentScheduleItem.DateTimeOfApppointment);
+            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateTimeOfApppointment);
             if (!AddAppointmentToDatabase(client, hairStylist, appointment))
             {
                 result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.DatabaseError;

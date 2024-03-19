@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SalonSync.Logic.LoadIndexScreen;
+using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.MVC.Models;
 using System.Diagnostics;
 

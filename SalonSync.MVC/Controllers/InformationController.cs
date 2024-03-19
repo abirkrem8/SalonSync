@@ -5,9 +5,9 @@ using System.Diagnostics;
 using AutoMapper;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.AppointmentConfirmation;
-using SalonSync.MVC.Models;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
+using SalonSync.Logic.Load.LoadStylistInformation;
 
 namespace SalonSync.MVC.Controllers
 {
@@ -16,37 +16,37 @@ namespace SalonSync.MVC.Controllers
         private readonly ILogger<InformationController> _logger;
         private IMapper _mapper;
         private FirestoreProvider _firestoreProvider;
+        private LoadStylistInformationHandler _loadStylistInformationHandler;
         private CancellationToken _cancellationToken;
 
         public InformationController(ILogger<InformationController> logger, IMapper mappingProfile,
-            FirestoreProvider firestoreProvider)
+            FirestoreProvider firestoreProvider, LoadStylistInformationHandler loadStylistInformationHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
             _firestoreProvider = firestoreProvider;
+            _loadStylistInformationHandler = loadStylistInformationHandler;
             _cancellationToken = new CancellationTokenSource().Token;
         }
 
         [HttpGet]
         public IActionResult Stylist(string stylistId)
         {
-            AppointmentEntryViewModel viewModel = new AppointmentEntryViewModel();
+            LoadStylistInformationItem loadStylistInformationItem = new LoadStylistInformationItem() { HairStylistId = stylistId };
+            LoadStylistInformationResult result = _loadStylistInformationHandler.Handle(loadStylistInformationItem);
 
-            CancellationTokenSource source = new CancellationTokenSource();
-            var stylists = _firestoreProvider.GetAll<HairStylist>(source.Token);
-
-            if (stylists != null && stylists.Result.Count > 0)
+            if (result != null && result.LoadStylistInformationResultStatus == LoadStylistInformationResultStatus.Success)
             {
-                viewModel.AvailableStylists = stylists.Result.ToList();
-
+                StylistDetailViewModel viewModel = _mapper.Map<StylistDetailViewModel>(result);
                 return View(viewModel);
             }
             else
             {
-                _logger.LogError("No Available Stylists!");
-                return RedirectToAction("Error");
+                // log error
+                return RedirectToAction("Error", "Home");
             }
         }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
