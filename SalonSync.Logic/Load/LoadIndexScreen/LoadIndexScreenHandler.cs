@@ -49,7 +49,7 @@ namespace SalonSync.Logic.Load.LoadIndexScreen
                 var aptStylist = stylists.FirstOrDefault(x => x.Id == appointments[i].HairStylist.Id);
                 if (aptStylist != null)
                 {
-                    var appointmentStartTime = appointments[i].DateTimeOfAppointment.ToDateTime().ToLocalTime();
+                    var appointmentStartTime = appointments[i].StartTimeOfAppointment.ToDateTime().ToLocalTime();
                     var description = string.Concat("This appointment is for ", appointments[i].ClientFullName,
                         " with stylist ", aptStylist.FirstName, " ", aptStylist.LastName, " at ",
                         appointmentStartTime.ToString("MM/dd/yyyy hh:mm tt"), ".");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalonSync.Models.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,19 @@ namespace SalonSync.Logic.AppointmentConfirmation
         public bool IsNewClient { get; set; }
         public bool ExistingClientFound { get; set; }
         public DateTime DateTimeOfAppointment { get; set; }
+
+        public AppointmentConfirmationResultStatus AppointmentConfirmationResultStatus { get; set; }
+        public List<Error> AppointmentConfirmationResultErrors { get; set; } = new List<Error>();
+    }
+
+
+
+    public enum AppointmentConfirmationResultStatus
+    {
+        Success,
+        StylistAlreadyBooked,
+        DatabaseError,
+        ValidationError
     }
 }
+

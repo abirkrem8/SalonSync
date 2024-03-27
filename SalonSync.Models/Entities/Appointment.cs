@@ -19,8 +19,8 @@ namespace SalonSync.Models.Entities
             HairStylist = stylist;
             Client = client;
             ClientPhoneNumber = clientPhoneNumber;
-            var utc = scheduledTime.ToUniversalTime();
-            DateTimeOfAppointment = Timestamp.FromDateTime(utc);
+            StartTimeOfAppointment = Timestamp.FromDateTime(scheduledTime.ToUniversalTime());
+            EndTimeOfAppointment = Timestamp.FromDateTime(scheduledTime.AddHours(2).ToUniversalTime());
             ClientFullName = string.Concat(clientFirstName, " ", clientLastName);
         }
 
@@ -35,9 +35,10 @@ namespace SalonSync.Models.Entities
 
 
         [FirestoreProperty]
-        public Timestamp DateTimeOfAppointment { get; set; }
+        public Timestamp StartTimeOfAppointment { get; set; }
 
-
+        [FirestoreProperty]
+        public Timestamp EndTimeOfAppointment { get; set; }
 
 
         // These three are simply for making displaying the event on the calendar easier

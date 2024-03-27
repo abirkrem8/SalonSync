@@ -50,7 +50,7 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
             var upcomingAppointments = new List<LoadStylistInformationResultAppointment>();
             allAppointments.ForEach(appointment =>
             {
-                var appointmentTime = appointment.DateTimeOfAppointment.ToDateTime().ToLocalTime();
+                var appointmentTime = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
                 if (appointmentTime < DateTime.Now && appointmentTime.Date > DateTime.Now.AddDays(-7))
                 {
                     // appointment has passed in the last 7 days

@@ -48,8 +48,8 @@ namespace SalonSync.DeleteAppointments
             else
             {
                 appointmentsToDelete = allAppointments.Where(a =>
-                    a.DateTimeOfAppointment.ToDateTime().ToLocalTime() < DateTime.Now
-                    && a.DateTimeOfAppointment.ToDateTime().ToLocalTime() > DateTime.Now.AddDays(numberOfDaysToLookBack * -1).Date).ToList();
+                    a.StartTimeOfAppointment.ToDateTime().ToLocalTime() < DateTime.Now
+                    && a.StartTimeOfAppointment.ToDateTime().ToLocalTime() > DateTime.Now.AddDays(numberOfDaysToLookBack * -1).Date).ToList();
             }
 
             appointmentsToDelete.ForEach(a =>
