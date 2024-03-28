@@ -51,7 +51,7 @@ namespace SalonSync.Logic.AppointmentSchedule
             if (appointmentScheduleItem.IsNewClient)
             {
                 client = new Client(appointmentScheduleItem.FirstName, appointmentScheduleItem.LastName,
-                    appointmentScheduleItem.PhoneNumber, stylistReference);
+                    appointmentScheduleItem.PhoneNumber);
 
                 clientReference = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
             }

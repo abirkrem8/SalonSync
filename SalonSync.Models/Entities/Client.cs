@@ -12,14 +12,13 @@ namespace SalonSync.Models.Entities
     {
         public Client() { }
 
-        public Client(string firstName, string lastName, string phoneNumber, DocumentReference stylist)
+        public Client(string firstName, string lastName, string phoneNumber)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
-            HairStylist = stylist;
         }
 
         // In the form of a GUID, easily convertable to a string
@@ -38,10 +37,6 @@ namespace SalonSync.Models.Entities
 
         [FirestoreProperty]
         public string PhoneNumber { get; set; }
-
-        // String ID connecting to the other Firestore Data Objects
-        [FirestoreProperty]
-        public DocumentReference HairStylist { get; set; }
 
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]

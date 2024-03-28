@@ -94,7 +94,6 @@ namespace SalonSync.GenerateData
                         FirstName = client.FirstName,
                         LastName = client.LastName,
                         DateTimeOfApppointment = dateTimeOfAppointment,
-                        HairStylist = client.HairStylist.Id,
                         PhoneNumber = client.PhoneNumber
 
                     };

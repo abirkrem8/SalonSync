@@ -6,6 +6,7 @@ using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
 using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Models.Entities;
+using HairApplication.Logic.LoadAppointmentScheduleForm;
 
 namespace SalonSync.MVC.Controllers
 {
@@ -16,39 +17,28 @@ namespace SalonSync.MVC.Controllers
         private FirestoreProvider _firestoreProvider;
         private AppointmentScheduleHandler _appointmentScheduleHandler;
         private AppointmentConfirmationHandler _appointmentConfirmationHandler;
+        private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
         private CancellationToken _cancellationToken;
 
         public AppointmentController(ILogger<HomeController> logger, IMapper mappingProfile,
             FirestoreProvider firestoreProvider, AppointmentScheduleHandler appointmentScheduleHandler,
-            AppointmentConfirmationHandler appointmentConfirmationHandler)
+            AppointmentConfirmationHandler appointmentConfirmationHandler, LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
             _firestoreProvider = firestoreProvider;
             _appointmentScheduleHandler = appointmentScheduleHandler;
             _appointmentConfirmationHandler = appointmentConfirmationHandler;
+            _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
             _cancellationToken = new CancellationTokenSource().Token;
         }
 
         [HttpGet]
         public IActionResult Schedule()
         {
-            AppointmentEntryViewModel viewModel = new AppointmentEntryViewModel();
+            var result = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
 
-            CancellationTokenSource source = new CancellationTokenSource();
-            var stylists = _firestoreProvider.GetAll<HairStylist>(source.Token);
-
-            if (stylists != null && stylists.Result.Count > 0)
-            {
-                viewModel.AvailableStylists = stylists.Result.ToList();
-
-                return View(viewModel);
-            }
-            else
-            {
-                _logger.LogError("No Available Stylists!");
-                return RedirectToAction("Error");
-            }
+            return View();
         }
 
         public IActionResult Confirm(AppointmentEntryViewModel appointmentSubmission)
@@ -57,7 +47,10 @@ namespace SalonSync.MVC.Controllers
             // and show the user the submitted information before creating it in our database.
             var item = _mapper.Map<AppointmentConfirmationItem>(appointmentSubmission);
             var result = _appointmentConfirmationHandler.Handle(item);
-
+            if (result.AppointmentConfirmationResultStatus == AppointmentConfirmationResultStatus.StylistAlreadyBooked)
+            {
+                // Do something
+            }
             var viewModel = _mapper.Map<AppointmentConfirmationViewModel>(result);
             return View(viewModel);
         }

@@ -43,13 +43,13 @@ namespace SalonSync.Logic.AppointmentConfirmation
 
 
             // Make sure stylist doesn't already have an appointment Scheduled
-            DateTime appointmentToSchedule = new DateTime(appointmentConfirmationItem.DateOfAppointment.Year, appointmentConfirmationItem.DateOfAppointment.Month,
+            DateTime appointmentTimeToSchedule = new DateTime(appointmentConfirmationItem.DateOfAppointment.Year, appointmentConfirmationItem.DateOfAppointment.Month,
                     appointmentConfirmationItem.DateOfAppointment.Day, appointmentConfirmationItem.TimeOfAppointment.Hour, appointmentConfirmationItem.TimeOfAppointment.Minute,
                     appointmentConfirmationItem.TimeOfAppointment.Second);
             List<Appointment> stylistsAppointments = _firestoreProvider.WhereEqualTo<Appointment>("HairStylist", stylistRef, _cancellationToken).Result.ToList();
             bool alreadyBooked = stylistsAppointments.Any(x => {
                 var existingApt = x.StartTimeOfAppointment.ToDateTime().ToLocalTime();
-                return existingApt <= appointmentToSchedule && existingApt.AddHours(2) > appointmentToSchedule;
+                return existingApt <= appointmentTimeToSchedule && existingApt.AddHours(2) > appointmentTimeToSchedule;
             });
 
             if (alreadyBooked)
@@ -59,7 +59,6 @@ namespace SalonSync.Logic.AppointmentConfirmation
                 result.AppointmentConfirmationResultStatus = AppointmentConfirmationResultStatus.StylistAlreadyBooked;
                 return result;
             }
-
 
 
             // Successful validation, do the handling
@@ -105,9 +104,7 @@ namespace SalonSync.Logic.AppointmentConfirmation
                 ClientPhoneNumber = client.PhoneNumber,
                 ClientId = client.Id,
                 ExistingClientFound = clientFound,
-                DateTimeOfAppointment = new DateTime(appointmentConfirmationItem.DateOfAppointment.Year, appointmentConfirmationItem.DateOfAppointment.Month,
-                    appointmentConfirmationItem.DateOfAppointment.Day, appointmentConfirmationItem.TimeOfAppointment.Hour, appointmentConfirmationItem.TimeOfAppointment.Minute,
-                    appointmentConfirmationItem.TimeOfAppointment.Second)
+                DateTimeOfAppointment = appointmentTimeToSchedule
             };
 
 
