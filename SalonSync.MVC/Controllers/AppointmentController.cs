@@ -37,8 +37,9 @@ namespace SalonSync.MVC.Controllers
         public IActionResult Schedule()
         {
             var result = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
+            var viewModel = _mapper.Map<AppointmentEntryViewModel>(result);
+            return View(viewModel);
 
-            return View();
         }
 
         public IActionResult Confirm(AppointmentEntryViewModel appointmentSubmission)

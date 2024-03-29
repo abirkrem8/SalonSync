@@ -10,8 +10,8 @@ namespace HairApplication.Logic.LoadAppointmentScheduleForm
 {
     public class LoadAppointmentScheduleFormResult
     {
-        Dictionary<string, List<DateTime>> AvailableAppointmentsForEachStylist { get; set; }
-
+        public Dictionary<string, List<DateTime>> AvailableAppointmentsForEachStylist { get; set; }
+        public List<HairStylist> HairStylists { get; set; } = new List<HairStylist>();
         public LoadAppointmentScheduleFormResultStatus LoadAppointmentScheduleFormResultStatus { get; set; }
         public List<Error> LoadAppointmentScheduleFormResultErrors { get; set; }
 

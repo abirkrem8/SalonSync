@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HairApplication.Logic.LoadAppointmentScheduleForm;
 using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Load.LoadIndexScreen;
@@ -41,6 +42,8 @@ namespace SalonSync.MVC.Logic
             CreateMap<LoadStylistInformationResult, StylistDetailViewModel>();
             CreateMap<LoadStylistInformationResultAppointment, StylistDetailViewModelAppointment>();
             /*etc...*/
+
+            CreateMap<LoadAppointmentScheduleFormResult, AppointmentEntryViewModel>();
         }
     }
 }

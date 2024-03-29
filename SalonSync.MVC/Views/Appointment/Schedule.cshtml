@@ -1,4 +1,5 @@
-﻿@model SalonSync.MVC.Models.AppointmentEntryViewModel
+﻿@using Newtonsoft.Json
+@model SalonSync.MVC.Models.AppointmentEntryViewModel
 @{
     ViewData["Title"] = "Schedule an Appointment";
 }
@@ -9,39 +10,40 @@
 
 <html class="sl-theme-light">
 <body>
-        <sl-card class="card-header">
-            <div slot="header">
-                <h3>Schedule an Appointment</h3>
+    <sl-card class="card-header">
+        <div slot="header">
+            <h3>Schedule an Appointment</h3>
+        </div>
+        <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
+            <!-- Input and Submit elements -->
+            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
+                <sl-option value="false">No</sl-option>
+                <sl-option value="true">Yes</sl-option>
+            </sl-select>
+            <br />
+            <div id="ClientFullName" hidden>
+                <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+                <br />
+                <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+                <br />
             </div>
-            <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
-                <!-- Input and Submit elements -->
-                <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
-                    @foreach (var stylist in Model.AvailableStylists)
-                    {
-                        <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
-                    }
-                </sl-select>
-                <br />
-                <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
-                    <sl-option value="false">No</sl-option>
-                    <sl-option value="true">Yes</sl-option>
-                </sl-select>
-                <br />
-                <div id="ClientFullName" hidden>
-                    <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
-                    <br />
-                    <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
-                    <br />
-                </div>
-                <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
-                <br />
-                <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
-                <br />
-                <sl-input name="TimeOfAppointment" label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" type="time" placeholder="Date" pill required></sl-input>
-                <br />
-                <sl-button type="submit">Schedule Appointment</sl-button>
-            </form>
-        </sl-card>
+            <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+            <br />
+            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
+                @foreach (var stylist in Model.HairStylists)
+                {
+                    <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
+                }
+            </sl-select>
+            <br />
+
+            <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+            <br />
+            <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" required></sl-radio-group>
+            <br />
+            <sl-button type="submit">Schedule Appointment</sl-button>
+        </form>
+    </sl-card>
 
 </body>
 </html>
@@ -49,6 +51,7 @@
 
 <script type="module">
     document.getElementsByName('IsNewClient')[0].addEventListener('sl-change', ToggleClient);
+    document.getElementsByName('DateOfAppointment')[0].addEventListener('sl-change', ToggleAvailableTimes);
 
     function ToggleClient(){
         console.log("In ToggleClient!");
@@ -67,6 +70,37 @@
             document.getElementsByName('ClientLastName')[0].required = false;
             console.log("This is a returning client!");
         }
+    }
+
+    function ToggleAvailableTimes(){
+        console.log("In ToggleAvailableTimes!");
+        var dateInput = document.getElementsByName('DateOfAppointment')[0];
+        var stylistId = document.getElementsByName('SelectedStylist')[0].value;
+        var timeRadioSet =  document.getElementsByName('TimeOfAppointment')[0];
+
+
+        var dateSelected = new Date(dateInput.value);
+        console.log("Selected date: " + dateSelected);
+
+        var allTimes = @Html.Raw(JsonConvert.SerializeObject(Model.AvailableAppointmentsForEachStylist));
+
+        var stylistTimes = allTimes[stylistId];
+
+        console.log("Evaluating Times");
+        for (var index in stylistTimes){
+            var dateOfAvail = new Date(stylistTimes[index]);
+            console.log(dateOfAvail);
+            if (dateOfAvail.getDate() == dateSelected.getDate() &&
+            dateOfAvail.getMonth() == dateSelected.getMonth() &&
+            dateOfAvail.getFullYear() == dateSelected.getFullYear()){
+                console.log("Matches today! Creating radio element!");
+                const elem = document.createElement('sl-radio');
+                  elem.value = dateOfAvail;
+                  elem.innerText = dateOfAvail.toLocaleTimeString();
+                  timeRadioSet.appendChild(elem);
+            }
+        }
+
     }
 
     const form = document.querySelector('.input-validation-required');

@@ -5,8 +5,9 @@ namespace SalonSync.MVC.Models
 {
     public class AppointmentEntryViewModel
     {
-        public List<HairStylist> AvailableStylists { get; set; }
+        public Dictionary<string, List<DateTime>> AvailableAppointmentsForEachStylist { get; set; }
 
+        public List<HairStylist> HairStylists { get; set; } = new List<HairStylist>();
         [Display(Name = "Hair Stylist")]
         public string SelectedStylist { get; set; }
         [Display(Name = "Client First Name")]
