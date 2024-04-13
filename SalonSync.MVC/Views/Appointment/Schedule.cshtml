@@ -4,120 +4,329 @@
     ViewData["Title"] = "Schedule an Appointment";
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
 <link rel="stylesheet" href="~/css/Schedule.css" />
 <link rel="stylesheet" href="~/css/light.css" />
 <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 
 <html class="sl-theme-light">
 <body>
-    <sl-card class="card-header">
+    @*<form>
+        <sl-card class="card-header">
         <div slot="header">
-            <h3>Schedule an Appointment</h3>
+        <h3>Schedule an Appointment</h3>
         </div>
-        <form class=".input-validation-required" asp-controller="Appointment" asp-action="Confirm">
-            <!-- Input and Submit elements -->
-            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
-                <sl-option value="false">No</sl-option>
-                <sl-option value="true">Yes</sl-option>
-            </sl-select>
-            <br />
-            <div id="ClientFullName" hidden>
-                <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
-                <br />
-                <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
-                <br />
-            </div>
-            <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
-            <br />
-            <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
-                @foreach (var stylist in Model.HairStylists)
-                {
-                    <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
-                }
-            </sl-select>
-            <br />
+        <!-- Input and Submit elements -->
+        <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill>
+        <sl-option value="false">No</sl-option>
+        <sl-option value="true">Yes</sl-option>
+        </sl-select>
+        <br />
+        <div id="ClientFullName" hidden>
+        <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+        <br />
+        <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+        <br />
+        </div>
+        <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+        <br />
+        <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill>
+        @foreach (var stylist in Model.HairStylists)
+        {
+        <sl-option value="@stylist.Id">@stylist.FirstName @stylist.LastName</sl-option>
+        }
+        </sl-select>
+        <br />
 
-            <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
-            <br />
-            <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" required></sl-radio-group>
-            <br />
-            <sl-button type="submit">Schedule Appointment</sl-button>
+        <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+        <br />
+        <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" required></sl-radio-group>
+        <br />
+        <sl-button type="submit">Schedule Appointment</sl-button>
         </form>
-    </sl-card>
+        </sl-card>*@
+
+
+
+    <div class="card card-default">
+        <div class="card-header" style="width:100%;max-width:100%">
+            <h3 class="card-title">Schedule An Appointment</h3>
+        </div>
+        <div class="card-body p-0">
+            <div id="stepperForm" class="bs-stepper">
+                <div class="bs-stepper-header" role="tablist">
+                    <!-- your steps here -->
+                    <div class="step" data-target="#client-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="client-part" id="client-part-trigger">
+                            <span class="bs-stepper-circle">1</span>
+                            <span class="bs-stepper-label">Client Information</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#stylist-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="stylist-part" id="stylist-part-trigger">
+                            <span class="bs-stepper-circle">2</span>
+                            <span class="bs-stepper-label">Hair Stylist & Date</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+                    <div class="step" data-target="#time-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="time-part" id="time-part-trigger">
+                            <span class="bs-stepper-circle">3</span>
+                            <span class="bs-stepper-label">Time Selection</span>
+                        </button>
+                    </div>
+                    <div class="line"></div>
+
+                    <div class="step" data-target="#confirm-part">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="confirm-part" id="confirm-part-trigger">
+                            <span class="bs-stepper-circle">4</span>
+                            <span class="bs-stepper-label">Confirm Appointment</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bs-stepper-content">
+                    <form class="needs-validation" asp-controller="Appointment" asp-action="Confirm" onSubmit="return false" novalidate>
+
+                        <!-- your steps content here -->
+                        <div id="client-part" class="content" role="tabpanel" aria-labelledby="client-part-trigger">
+                            <sl-select name="IsNewClient" label="@Html.DisplayNameFor(x=>x.IsNewClient)" required pill defaultValue="none">
+                                <sl-option value="false">No</sl-option>
+                                <sl-option value="true">Yes</sl-option>
+                            </sl-select>
+                            <br />
+                            <div id="ClientFullName" hidden>
+                                <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+                                <br />
+                                <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+                                <br />
+                            </div>
+                            <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
+                            <br />
+                            <div class="invalid-feedback">Please fill in the client fields</div>
+                            <button class="btn btn-primary btn-next-form">Next</button>
+                        </div>
+
+
+                        <div id="stylist-part" class="content" role="tabpanel" aria-labelledby="stylist-part-trigger">
+                            <div class="form-group">
+                                <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill defaultValue="none">
+                                    @foreach (var stylist in Model.HairStylists)
+                                    {
+                                        <sl-option value="@stylist.Id|@stylist.FirstName|@stylist.LastName">@stylist.FirstName @stylist.LastName</sl-option>
+                                    }
+                                </sl-select>
+                                <br />
+
+                                <sl-input name="DateOfAppointment" label="@Html.DisplayNameFor(x=>x.DateOfAppointment)" type="date" placeholder="Date" pill required></sl-input>
+                                <br />
+                                <div class="invalid-feedback">Please select a stylist and valid date (Appointments can only be scheduled up to a month in advance)</div>
+                            </div>
+                            <button class="btn btn-primary btn-next-form">Next</button>
+                        </div>
+
+
+
+                        <div id="time-part" class="content" role="tabpanel" aria-labelledby="time-part-trigger">
+                            <h3 id="date-time-content"></h3>
+                            <div class="form-group">
+                                <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" required defaultValue="none"></sl-radio-group>
+                                <br />
+                                <div class="invalid-feedback">Please select an available appointment time</div>
+                            </div>
+                            <button class="btn btn-primary btn-next-form">Next</button>
+                        </div>
+
+
+                        <div id="confirm-part" class="content" role="tabpanel" aria-labelledby="confirm-part-trigger">
+                            <h3 id="date-confirm-content"></h3>
+                            <h3 id="time-confirm-content"></h3>
+                            <h3 id="stylist-confirm-content"></h3>
+                            <h3 id="client-name-confirm-content"></h3>
+                            <h3 id="client-phone-confirm-content"></h3>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
 
 </body>
 </html>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js"></script>
 <script type="module">
-    document.getElementsByName('IsNewClient')[0].addEventListener('sl-change', ToggleClient);
-    document.getElementsByName('DateOfAppointment')[0].addEventListener('sl-change', ToggleAvailableTimes);
+        var stepperForm
 
-    function ToggleClient(){
-        console.log("In ToggleClient!");
-        var clientSelect = document.getElementsByName('IsNewClient')[0];
+        document.addEventListener('DOMContentLoaded', function () {
 
-        var value = clientSelect.value;
+          var stepperFormEl = document.querySelector('#stepperForm')
+          stepperForm = new Stepper(stepperFormEl, {
+            animation: true
+          })
 
-        if (value === "true"){
-            document.getElementById('ClientFullName').hidden = false;
-            document.getElementsByName('ClientFirstName')[0].required = true;
-            document.getElementsByName('ClientLastName')[0].required = true;
-            console.log("This is a new client!");
-        } else if (value === "false") {
-            document.getElementById('ClientFullName').hidden = true;
-            document.getElementsByName('ClientFirstName')[0].required = false;
-            document.getElementsByName('ClientLastName')[0].required = false;
-            console.log("This is a returning client!");
-        }
-    }
+          var btnNextList = [].slice.call(document.querySelectorAll('.btn-next-form'))
+          var stepperPanList = [].slice.call(stepperFormEl.querySelectorAll('.content'))
 
-    function ToggleAvailableTimes(){
-        console.log("In ToggleAvailableTimes!");
-        var dateInput = document.getElementsByName('DateOfAppointment')[0];
-        var stylistId = document.getElementsByName('SelectedStylist')[0].value;
-        var timeRadioSet =  document.getElementsByName('TimeOfAppointment')[0];
+          // Client Validation Elements
+          var clientFirstName = document.getElementsByName('ClientFirstName')[0];
+          var clientLastName = document.getElementsByName('ClientLastName')[0];
+          var clientPhoneNumber = document.getElementsByName('ClientPhoneNumber')[0];
+          var isNewClient = document.getElementsByName('IsNewClient')[0];
+
+          // Stylist & Date Validation Elements
+          var selectedStylist = document.getElementsByName('SelectedStylist')[0];
+          var dateSelected = document.getElementsByName('DateOfAppointment')[0];
+          var todayAsDate = new Date(new Date().toLocaleDateString().replace(/-/g, '\/').replace(/T.+/, ''));
+          var oneMonthFromNowAsDate = new Date(todayAsDate.getFullYear(), todayAsDate.getMonth() + 1, todayAsDate.getDate());
+
+          // Time Validation Elements
+          var timeSelected = document.getElementsByName('TimeOfAppointment')[0];
 
 
-        var dateSelected = new Date(dateInput.value);
-        console.log("Selected date: " + dateSelected);
+          var form = stepperFormEl.querySelector('.bs-stepper-content form')
 
-        var allTimes = @Html.Raw(JsonConvert.SerializeObject(Model.AvailableAppointmentsForEachStylist));
+          btnNextList.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              stepperForm.next()
+            })
+          })
 
-        var stylistTimes = allTimes[stylistId];
+          stepperFormEl.addEventListener('show.bs-stepper', function (event) {
+            form.classList.remove('was-validated');
+            var list =  document.getElementsByClassName('invalid-feedback');
+                for (let item of list) {
+                    item.classList.remove('show-validation-error');
+                }
+            var nextStep = event.detail.indexStep;
+            var currentStep = nextStep;
 
-        console.log("Evaluating Times");
-        for (var index in stylistTimes){
-            var dateOfAvail = new Date(stylistTimes[index]);
-            console.log(dateOfAvail);
-            if (dateOfAvail.getDate() == dateSelected.getDate() &&
-            dateOfAvail.getMonth() == dateSelected.getMonth() &&
-            dateOfAvail.getFullYear() == dateSelected.getFullYear()){
-                console.log("Matches today! Creating radio element!");
-                const elem = document.createElement('sl-radio');
-                  elem.value = dateOfAvail;
-                  elem.innerText = dateOfAvail.toLocaleTimeString();
-                  timeRadioSet.appendChild(elem);
+            if (currentStep > 0) {
+              currentStep--
             }
-        }
 
-    }
+            var stepperPan = stepperPanList[currentStep]
 
-    const form = document.querySelector('.input-validation-required');
+            // validation
+            if ((stepperPan.getAttribute('id') === 'client-part'
+                    && clientPhoneNumber.value.length
+                    && isNewClient.value != isNewClient.defaultValue
+                    && ((isNewClient.value === 'true' && clientFirstName.value.length && clientLastName.value.length)
+                    || isNewClient.value === 'false'))
+            || (stepperPan.getAttribute('id') === 'stylist-part'
+                    && selectedStylist.value != selectedStylist.defaultValue
+                    && dateSelected.value != dateSelected.defaultValue
+                    && (todayAsDate.getTime() <= new Date(dateSelected.value.replace(/-/g, '\/').replace(/T.+/, '')).getTime()
+                        && new Date(dateSelected.value.replace(/-/g, '\/').replace(/T.+/, '')) <= oneMonthFromNowAsDate.getTime()))
+            || (stepperPan.getAttribute('id') === 'time-part'
+                    && timeSelected.value != timeSelected.defaultValue) ) {
+              console.log("This is a valid page");
+              form.classList.add('was-validated');
+              UpdateConfirmationPage();
+            } else {
+                event.preventDefault();
+                var list =  document.getElementsByClassName('invalid-feedback');
+                for (let item of list) {
+                    item.classList.add('show-validation-error');
+                }
+                console.log("This is NOT a valid page");
+            }
+          })
+        })
 
-    // Wait for controls to be defined before attaching form listeners
-    await Promise.all([
-      customElements.whenDefined('sl-button'),
-      customElements.whenDefined('sl-checkbox'),
-      customElements.whenDefined('sl-input'),
-      customElements.whenDefined('sl-option'),
-      customElements.whenDefined('sl-select'),
-      customElements.whenDefined('sl-dropdown'),
-      customElements.whenDefined('sl-textarea')
-    ]).then(() => {
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        alert('All fields are valid!');
-      });
-    });
+
+              document.getElementsByName('IsNewClient')[0].addEventListener('sl-change', ToggleClient);
+              document.getElementsByName('DateOfAppointment')[0].addEventListener('sl-change', ToggleAvailableTimes);
+
+              function ToggleClient(){
+                  console.log("In ToggleClient!");
+                  var clientSelect = document.getElementsByName('IsNewClient')[0];
+
+                  var value = clientSelect.value;
+
+                  if (value === "true"){
+                      document.getElementById('ClientFullName').hidden = false;
+                      document.getElementsByName('ClientFirstName')[0].required = true;
+                      document.getElementsByName('ClientLastName')[0].required = true;
+                      console.log("This is a new client!");
+                  } else if (value === "false") {
+                      document.getElementById('ClientFullName').hidden = true;
+                      document.getElementsByName('ClientFirstName')[0].required = false;
+                      document.getElementsByName('ClientLastName')[0].required = false;
+                      console.log("This is a returning client!");
+                  }
+              }
+
+              function ToggleAvailableTimes(){
+                  console.log("In ToggleAvailableTimes!");
+                  var dateInput = document.getElementsByName('DateOfAppointment')[0];
+                  var selectedStylist = document.getElementsByName('SelectedStylist')[0];
+                  var stylistValueAr = selectedStylist.value.split('|');
+                  var stylistId = stylistValueAr[0];
+
+                  var timeRadioSet =  document.getElementsByName('TimeOfAppointment')[0];
+                  while (timeRadioSet.firstChild) {
+                    timeRadioSet.removeChild(timeRadioSet.lastChild);
+                  }
+
+                  var rightNowAsDate = new Date();
+
+                  var dateSelected = new Date(dateInput.value.replace(/-/g, '\/').replace(/T.+/, ''));
+
+
+                  console.log("Selected date: " + dateSelected);
+
+                  var allTimes = @Html.Raw(JsonConvert.SerializeObject(Model.AvailableAppointmentsForEachStylist));
+
+                  var stylistTimes = allTimes[stylistId];
+
+                  console.log("Evaluating Times");
+                  for (var index in stylistTimes){
+
+                      var dateOfAvail = new Date(stylistTimes[index]);
+                      //console.log(dateOfAvail);
+
+                      if (dateOfAvail > rightNowAsDate &&
+                          dateOfAvail.getDate() == dateSelected.getDate() &&
+                          dateOfAvail.getMonth() == dateSelected.getMonth() &&
+                          dateOfAvail.getFullYear() == dateSelected.getFullYear()){
+                              const elem = document.createElement('sl-radio');
+                              elem.value = dateOfAvail;
+                              elem.innerText = dateOfAvail.toLocaleTimeString();
+                              timeRadioSet.appendChild(elem);
+                      }
+                  }
+
+                  document.getElementById("date-time-content").innerText = dateSelected.toLocaleDateString();
+
+              }
+
+              function UpdateConfirmationPage(){
+                  // Client Elements
+                  var clientFirstName = document.getElementsByName('ClientFirstName')[0];
+                  var clientLastName = document.getElementsByName('ClientLastName')[0];
+                  var clientPhoneNumber = document.getElementsByName('ClientPhoneNumber')[0];
+                  var isNewClient = document.getElementsByName('IsNewClient')[0];
+
+                  // Stylist & Date Elements
+                  var selectedStylist = document.getElementsByName('SelectedStylist')[0];
+                  var stylistValueAr = selectedStylist.value.split('|');
+                  var dateSelected = document.getElementsByName('DateOfAppointment')[0];
+                  var dateSelectedAsDate = new Date(dateSelected.value);
+
+                  var timeSelected = document.getElementsByName('TimeOfAppointment')[0];
+                                var timeSelectedAsDate = new Date(timeSelected.value);
+
+                  if (isNewClient == 'true'){
+                       document.getElementById("client-name-confirm-content").innerText = clientFirstName.value + " " + clientLastName.value;
+                  }
+                  document.getElementById("client-phone-confirm-content").innerText = clientPhoneNumber.value;
+                  document.getElementById("stylist-confirm-content").innerText = stylistValueAr[1] + " " +  stylistValueAr[2];
+                  document.getElementById("date-confirm-content").innerText = dateSelectedAsDate.toLocaleDateString();
+                  document.getElementById("time-confirm-content").innerText = timeSelectedAsDate.toLocaleTimeString();
+    ;
+              }
 </script>

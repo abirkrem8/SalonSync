@@ -14,7 +14,7 @@ namespace HairApplication.Logic.LoadAppointmentScheduleForm
     public class LoadAppointmentScheduleFormHandler
     {
         private ILogger<LoadAppointmentScheduleFormHandler> _logger;
-        private const int NUMBER_OF_DAYS_AVAILABLE_TO_SCHEDULE = 2;
+        private const int NUMBER_OF_DAYS_AVAILABLE_TO_SCHEDULE = 30;
         private const int OPENING_HOUR = 8;
         private const int CLOSING_HOUR = 18;
         private const int HOUR_LENGTH_OF_APPOINTMENT = 2;
