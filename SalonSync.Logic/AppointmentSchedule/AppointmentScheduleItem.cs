@@ -13,8 +13,9 @@ namespace SalonSync.Logic.AppointmentSchedule
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
-        public DateTime DateTimeOfApppointment { get; set; }
-        public string HairStylist { get; set; }
+        public DateTime DateOfAppointment { get; set; }
+        public DateTime TimeOfAppointment { get; set; }
+        public string HairStylistId { get; set; }
 
     }
 }

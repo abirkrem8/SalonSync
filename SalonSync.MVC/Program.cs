@@ -6,9 +6,7 @@ using Google.Cloud.Firestore;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
 using AutoMapper;
-using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.MVC.Logic;
-using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using HairApplication.Logic.LoadAppointmentScheduleForm;
@@ -43,7 +41,6 @@ builder.Services.AddMvc();
 
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
-builder.Services.AddTransient<AppointmentConfirmationHandler>();
 builder.Services.AddTransient<LoadIndexScreenHandler>();
 builder.Services.AddTransient<LoadStylistInformationHandler>();
 builder.Services.AddTransient<LoadAppointmentScheduleFormHandler>();

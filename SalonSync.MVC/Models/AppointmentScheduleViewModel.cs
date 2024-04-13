@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SalonSync.MVC.Models
 {
-    public class AppointmentEntryViewModel
+    public class AppointmentScheduleViewModel
     {
         public Dictionary<string, List<DateTime>> AvailableAppointmentsForEachStylist { get; set; }
 
@@ -26,6 +26,6 @@ namespace SalonSync.MVC.Models
         public DateTime DateOfAppointment { get; set; }
 
         [Display(Name = "Time of Appointment")]
-        public DateTime TimeOfAppointment { get; set; }
+        public string TimeOfAppointment { get; set; }
     }
 }

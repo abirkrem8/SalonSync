@@ -4,7 +4,6 @@ using AutoMapper;
 using SalonSync.MVC.Models;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
-using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Models.Entities;
 using HairApplication.Logic.LoadAppointmentScheduleForm;
 
@@ -16,54 +15,52 @@ namespace SalonSync.MVC.Controllers
         private IMapper _mapper;
         private FirestoreProvider _firestoreProvider;
         private AppointmentScheduleHandler _appointmentScheduleHandler;
-        private AppointmentConfirmationHandler _appointmentConfirmationHandler;
         private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
         private CancellationToken _cancellationToken;
 
         public AppointmentController(ILogger<HomeController> logger, IMapper mappingProfile,
             FirestoreProvider firestoreProvider, AppointmentScheduleHandler appointmentScheduleHandler,
-            AppointmentConfirmationHandler appointmentConfirmationHandler, LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler)
+            LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
             _firestoreProvider = firestoreProvider;
             _appointmentScheduleHandler = appointmentScheduleHandler;
-            _appointmentConfirmationHandler = appointmentConfirmationHandler;
             _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
             _cancellationToken = new CancellationTokenSource().Token;
         }
 
         [HttpGet]
-        public IActionResult Schedule()
+        public IActionResult Schedule(string alert = "")
         {
             var result = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
-            var viewModel = _mapper.Map<AppointmentEntryViewModel>(result);
-            return View(viewModel);
-
-        }
-
-        public IActionResult Confirm(AppointmentEntryViewModel appointmentSubmission)
-        {
-            // The appointment form has been filled out and now we need to validate the submission
-            // and show the user the submitted information before creating it in our database.
-            var item = _mapper.Map<AppointmentConfirmationItem>(appointmentSubmission);
-            var result = _appointmentConfirmationHandler.Handle(item);
-            if (result.AppointmentConfirmationResultStatus == AppointmentConfirmationResultStatus.StylistAlreadyBooked)
+            var viewModel = _mapper.Map<AppointmentScheduleViewModel>(result);
+            if (!string.IsNullOrEmpty(alert))
             {
-                // Do something
+                TempData["error-message"] = alert;
             }
-            var viewModel = _mapper.Map<AppointmentConfirmationViewModel>(result);
             return View(viewModel);
+
         }
 
-        public IActionResult Submit(AppointmentConfirmationViewModel appointmentConfirmation)
+        [HttpPost]
+        public IActionResult Schedule(AppointmentScheduleViewModel appointmentSubmission)
         {
             // Now we must schedule the appointment
-            AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(appointmentConfirmation);
+            AppointmentScheduleItem appointmentScheduleItem = _mapper.Map<AppointmentScheduleItem>(appointmentSubmission);
             var appointmentScheduleResult = _appointmentScheduleHandler.Handle(appointmentScheduleItem);
-
-            return RedirectToAction("Index", "Home");
+            if (appointmentScheduleResult.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)
+            {
+                string alert = string.Format("Unable to schedule appointment! {0}", appointmentScheduleResult.AppointmentScheduleResultErrors.FirstOrDefault().Message);
+                return RedirectToAction("Schedule", "Appointment", new { alert = alert });
+            }
+            else
+            {
+                string alert = string.Format("Successfully scheduled an appointment for {0} on {1} at {2} with {3}!", appointmentScheduleResult.ClientFullName, appointmentScheduleResult.TimeOfAppointment.ToShortDateString(), appointmentScheduleResult.TimeOfAppointment.ToShortTimeString(), appointmentScheduleResult.StylistFullName);
+                return RedirectToAction("Index", "Home", new { alert = alert });
+            }
         }
+
 
         public IActionResult Privacy()
         {

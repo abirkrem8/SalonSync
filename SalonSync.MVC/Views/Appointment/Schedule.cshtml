@@ -1,13 +1,14 @@
 ﻿@using Newtonsoft.Json
-@model SalonSync.MVC.Models.AppointmentEntryViewModel
+@model SalonSync.MVC.Models.AppointmentScheduleViewModel
 @{
     ViewData["Title"] = "Schedule an Appointment";
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" />
+
 <link rel="stylesheet" href="~/css/Schedule.css" />
 <link rel="stylesheet" href="~/css/light.css" />
-<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 
 <html class="sl-theme-light">
 <body>
@@ -49,7 +50,7 @@
                     </div>
                 </div>
                 <div class="bs-stepper-content">
-                    <form class="needs-validation" asp-controller="Appointment" asp-action="Confirm" onSubmit="return false" novalidate>
+                    <form asp-controller="Appointment" asp-action="Schedule" novalidate onsubmit="return false">
 
                         <!-- your steps content here -->
                         <div id="client-part" class="content" role="tabpanel" aria-labelledby="client-part-trigger">
@@ -93,11 +94,11 @@
                         <div id="time-part" class="content" role="tabpanel" aria-labelledby="time-part-trigger">
                             <h3 id="date-time-content"></h3>
                             <div class="form-group">
-                                <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" required defaultValue="none"></sl-radio-group>
+                                <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" defaultValue="none" required></sl-radio-group>
                                 <br />
                                 <div class="invalid-feedback">Please select an available appointment time</div>
                             </div>
-                            <button class="btn btn-primary btn-next-form">Next</button>
+                            <button type="button" class="btn btn-primary btn-next-form">Next</button>
                         </div>
 
 
@@ -107,7 +108,7 @@
                             <h3 id="stylist-confirm-content"></h3>
                             <h3 id="client-name-confirm-content"></h3>
                             <h3 id="client-phone-confirm-content"></h3>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button id="offical-submit-button" type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -120,11 +121,19 @@
 </body>
 </html>
 
+<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js"></script>
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+
 <script type="module">
         var stepperForm
 
         document.addEventListener('DOMContentLoaded', function () {
+            var errorMsg = '@TempData["error-message"]';
+            if (errorMsg.length) {
+               toastr.error(errorMsg);
+            }
+
 
           var stepperFormEl = document.querySelector('#stepperForm')
           stepperForm = new Stepper(stepperFormEl, {
@@ -157,6 +166,13 @@
               stepperForm.next()
             })
           })
+
+          document.getElementById('offical-submit-button').addEventListener('click', function() {
+              var time = new Date(document.getElementsByName('TimeOfAppointment')[0].value)
+              console.log(time);
+              document.getElementsByName('TimeOfAppointment')[0].value = time.toLocaleTimeString();
+              form.submit();
+          });
 
           stepperFormEl.addEventListener('show.bs-stepper', function (event) {
             form.classList.remove('was-validated');

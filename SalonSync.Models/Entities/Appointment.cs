@@ -12,15 +12,16 @@ namespace SalonSync.Models.Entities
     {
         public Appointment() { }
         public Appointment(DocumentReference stylist, DocumentReference client, string clientFirstName, 
-            string clientLastName, string clientPhoneNumber, DateTime scheduledTime)
+            string clientLastName, string clientPhoneNumber, DateTime scheduledDate, DateTime scheduledTime)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
             HairStylist = stylist;
             Client = client;
             ClientPhoneNumber = clientPhoneNumber;
-            StartTimeOfAppointment = Timestamp.FromDateTime(scheduledTime.ToUniversalTime());
-            EndTimeOfAppointment = Timestamp.FromDateTime(scheduledTime.AddHours(2).ToUniversalTime());
+            var aptDateTime = new DateTime(scheduledDate.Year, scheduledDate.Month, scheduledDate.Day, scheduledTime.Hour, scheduledTime.Minute, 0);
+            StartTimeOfAppointment = Timestamp.FromDateTime(aptDateTime.ToUniversalTime());
+            EndTimeOfAppointment = Timestamp.FromDateTime(aptDateTime.AddHours(2).ToUniversalTime());
             ClientFullName = string.Concat(clientFirstName, " ", clientLastName);
         }
 

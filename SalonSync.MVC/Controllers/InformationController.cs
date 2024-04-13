@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using AutoMapper;
 using SalonSync.Logic.AppointmentSchedule;
-using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using SalonSync.Logic.Load.LoadStylistInformation;

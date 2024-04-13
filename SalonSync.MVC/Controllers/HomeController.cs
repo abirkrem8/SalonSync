@@ -21,7 +21,7 @@ namespace SalonSync.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string alert = "")
         {
             var result = _loadIndexScreenHandler.Handle(new LoadIndexScreenItem());
             if (result.LoadIndexScreenResultStatus != LoadIndexScreenResultStatus.Success)
@@ -30,7 +30,12 @@ namespace SalonSync.MVC.Controllers
                 // log error
                 // redirect to error page
             }
+
             IndexViewModel viewModel = _mapper.Map<IndexViewModel>(result);
+            if (!string.IsNullOrEmpty(alert))
+            {
+                TempData["success-message"] = alert;
+            }
             return View(viewModel);
         }
 

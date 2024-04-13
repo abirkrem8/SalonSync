@@ -1,6 +1,8 @@
 ﻿using Google.Cloud.Firestore;
+using Microsoft.Extensions.Logging;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
+using SalonSync.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,13 @@ namespace SalonSync.Logic.AppointmentSchedule
 {
     public class AppointmentScheduleHandler
     {
+        private ILogger<AppointmentScheduleHandler> _logger;
         private FirestoreProvider _firestoreProvider;
         private CancellationToken _cancellationToken;
 
-        public AppointmentScheduleHandler(FirestoreProvider firestoreProvider)
+        public AppointmentScheduleHandler(FirestoreProvider firestoreProvider, ILogger<AppointmentScheduleHandler> logger)
         {
+            _logger = logger;
             _firestoreProvider = firestoreProvider;
             _cancellationToken = new CancellationTokenSource().Token;
         }
@@ -44,7 +48,7 @@ namespace SalonSync.Logic.AppointmentSchedule
 
 
             // Grab the stylist reference
-            hairStylist = _firestoreProvider.Get<HairStylist>(appointmentScheduleItem.HairStylist, _cancellationToken).Result;
+            hairStylist = _firestoreProvider.Get<HairStylist>(appointmentScheduleItem.HairStylistId, _cancellationToken).Result;
             stylistReference = _firestoreProvider.ConvertIdToReference<HairStylist>(hairStylist.Id);
 
             // New client? Add to DB and grab Reference
@@ -61,10 +65,14 @@ namespace SalonSync.Logic.AppointmentSchedule
                 var clients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
 
                 var matchingClients = clients.Where(x => x.PhoneNumber.Equals(appointmentScheduleItem.PhoneNumber)).ToList();
-                if (matchingClients.Count() != 1)
+                if (matchingClients.Count() < 1)
                 {
                     // throw error!
                     // log error and send it back to view model
+                    string error = string.Format("An existing client was not found under the phone number: {0}", appointmentScheduleItem.PhoneNumber);
+                    _logger.LogError(error);
+                    result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.NoExistingClient;
+                    result.AppointmentScheduleResultErrors.Add(new Error { Message = error });
                     return result;
                 }
                 client = matchingClients[0];
@@ -72,13 +80,16 @@ namespace SalonSync.Logic.AppointmentSchedule
             }
 
             // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateTimeOfApppointment);
+            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment);
             if (!AddAppointmentToDatabase(client, hairStylist, appointment))
             {
                 result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.DatabaseError;
                 // log error
                 return result;
             }
+            result.ClientFullName = String.Concat(client.FirstName, " ", client.LastName);
+            result.StylistFullName = String.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
+            result.TimeOfAppointment = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
             result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.Success;
 
             return result;

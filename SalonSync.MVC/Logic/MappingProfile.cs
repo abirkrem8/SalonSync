@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using HairApplication.Logic.LoadAppointmentScheduleForm;
-using SalonSync.Logic.AppointmentConfirmation;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
@@ -17,33 +16,34 @@ namespace SalonSync.MVC.Logic
             CreateMap<LoadIndexScreenResult, IndexViewModel>()
                ;
 
-            // After new appointment form is filled out, we need to verify the client in the DB
-            // and display it to the user on a confirmation screen
-            CreateMap<AppointmentEntryViewModel, AppointmentConfirmationItem>()
                 ;
 
-            // Taking the data and displaying it to the user
-            CreateMap<AppointmentConfirmationResult, AppointmentConfirmationViewModel>()
-                .ForMember(dest => dest.DateTimeOfAppointment, opt => opt.MapFrom(src => src.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")))
+            CreateMap<AppointmentScheduleViewModel, AppointmentScheduleItem>()
+                   .ForMember(dest => dest.HairStylistId, opt => opt.MapFrom(src => src.SelectedStylist.Split('|', StringSplitOptions.None)[0]))
+                   .ForMember(dest => dest.TimeOfAppointment, opt => opt.MapFrom(src =>  DateTime.Parse(src.TimeOfAppointment)))
 
-               ;
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.ClientFirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.ClientLastName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ClientPhoneNumber))
+                ;
+
 
             // After receiving confirmation that they want to schedule an appointment,
             // Put the appointment in the DB
             CreateMap<AppointmentConfirmationViewModel, AppointmentScheduleItem>()
-                .ForMember(dest => dest.HairStylist, opt => opt.MapFrom(src => src.HairStylistId))
+                .ForMember(dest => dest.HairStylistId, opt => opt.MapFrom(src => src.HairStylistId))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.ClientFirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.ClientLastName))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.ClientPhoneNumber))
                 .ForMember(dest => dest.IsNewClient, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.ClientId)))
-                .ForMember(dest => dest.DateTimeOfApppointment, opt => opt.MapFrom(src => DateTime.ParseExact(src.DateTimeOfAppointment, "MM/dd/yyyy hh:mm tt", CultureInfo.InvariantCulture)))
+                .ForMember(dest => dest.DateOfAppointment, opt => opt.MapFrom(src => DateTime.ParseExact(src.DateTimeOfAppointment, "MM/dd/yyyy hh:mm tt", CultureInfo.InvariantCulture)))
                 ;
 
             CreateMap<LoadStylistInformationResult, StylistDetailViewModel>();
             CreateMap<LoadStylistInformationResultAppointment, StylistDetailViewModelAppointment>();
             /*etc...*/
 
-            CreateMap<LoadAppointmentScheduleFormResult, AppointmentEntryViewModel>();
+            CreateMap<LoadAppointmentScheduleFormResult, AppointmentScheduleViewModel>();
         }
     }
 }
