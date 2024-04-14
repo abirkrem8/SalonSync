@@ -1,0 +1,24 @@
+﻿.card-body {
+    
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--sl-color-primary-100);
+}
+
+.table-hover tbody tr:hover {
+    color: var(--sl-color-primary-100);
+    background-color: var(--sl-color-primary-400);
+}
+
+.dt-layout-cell{
+    padding:0px!important;
+}
+
+.dt-info {
+    margin-left: 10px !important;
+}
+
+.nav-link {
+    color: rebeccapurple!important;
+}

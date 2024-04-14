@@ -1,0 +1,235 @@
+﻿@model SalonSync.MVC.Models.StylistDetailViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+
+<link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="~/css/adminlte.min.css">
+<link rel="stylesheet" href="~/css/light.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Stylist.css" />
+
+<head>
+    <script type="text/javascript">
+                        window.onload = function () {
+                            const config = {
+          type: 'line',
+          data: data,
+        };
+                          const labels = Utils.months({count: 7});
+                const data = {
+                  labels: labels,
+                  datasets: [{
+                    label: 'My First Dataset',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                  }]
+                };
+
+                        }
+    </script>
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+</head>
+<html>
+<body>
+    <div class="col" style="width:80vw">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Widget: user widget style 1 -->
+                <div class="card card-widget widget-user">
+                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                    <div class="widget-user-header bg-theme" style="color:white">
+                        <h3 class="widget-user-username">@Model.HairStylist.FirstName @Model.HairStylist.LastName</h3>
+                        <h5 class="widget-user-desc">Hair Stylist</h5>
+                    </div>
+                    <div class="widget-user-image">
+                        <img class="img-circle elevation-2" src="~/img/stylists/profile-photo-modified.png" alt="User Avatar">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-5 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">@Model.Clients.Count</h5>
+                                    <span class="description-text">Clients</span>
+                                </div>
+                                <!-- /.description-block -->
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-7">
+                                <div class="description-block">
+                                    <h5 class="description-header">@Model.UpcomingAppointments.Count</h5>
+                                    <span class="description-text">Appointments</span>
+                                </div>
+                                <!-- /.description-block -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+                <!--/.card-->
+            </div>
+            <!--/.col-->
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <p class="d-flex flex-column">
+                                <span class="text-bold text-lg">@Model.PastAppointments.Count</span>
+                                <span>Appointments Over Time</span>
+                            </p>
+                            <p class="ml-auto d-flex flex-column text-right">
+                                <span class="text-success">
+                                    <i class="fas fa-arrow-up"></i> 12.5%
+                                </span>
+                                <span class="text-muted">Since last week</span>
+                            </p>
+                        </div>
+                        <!-- /.d-flex -->
+
+                        <div class="position-relative mb-4">
+                            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-end">
+                            <span class="mr-2">
+                                <i class="fas fa-square text-primary"></i> This Week
+                            </span>
+
+                            <span>
+                                <i class="fas fa-square text-gray"></i> Last Week
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col-->
+        </div>
+        <!--/.row-->
+        <div class="card card-secondary card-outline">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-5 col-sm-3">
+                        <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" id="upcoming-appts-tab" data-toggle="pill" href="#upcoming-appts-pane" role="tab" aria-controls="upcoming-appts-pane" aria-selected="true">Upcoming Appointments</a>
+                            <a class="nav-link" id="past-appts-tab" data-toggle="pill" href="#past-appts-pane" role="tab" aria-controls="past-appts-pane" aria-selected="false">Past Appointments</a>
+                            <a class="nav-link" id="clients-tab" data-toggle="pill" href="#clients-pane" role="tab" aria-controls="clients-pane" aria-selected="false">Clients</a>
+                        </div>
+                    </div>
+                    <div class="col-7 col-sm-9">
+                        <div class="tab-content" id="vert-tabs-tabContent">
+                            <div class="tab-pane fade show active" id="upcoming-appts-pane" role="tabpanel" aria-labelledby="upcoming-appts-tab">
+                                <table class="table table-striped table-hover" id="upcoming-appts-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Client</th>
+                                            <th>Phone Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var apt in Model.UpcomingAppointments)
+                                        {
+                                            <tr>
+                                                <td>@apt.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")</td>
+                                                <td>@apt.ClientFullName</td>
+                                                <td>@apt.ClientPhoneNumber</td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--/.tab-pane-->
+                            <div class="tab-pane fade" id="past-appts-pane" role="tabpanel" aria-labelledby="past-appts-tab">
+                                <table class="table table-striped table-hover" id="past-appts-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Client</th>
+                                            <th>Phone Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var apt in Model.PastAppointments)
+                                        {
+                                            <tr>
+                                                <td>@apt.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")</td>
+                                                <td>@apt.ClientFullName</td>
+                                                <td>@apt.ClientPhoneNumber</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--/.tab-pane-->
+                            <div class="tab-pane fade" id="clients-pane" role="tabpanel" aria-labelledby="clients-tab">
+                                <table class="table table-striped table-hover" id="clients-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Number of Appointments</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var client in Model.Clients)
+                                        {
+                                            <tr>
+                                                <td>@client.FirstName @client.LastName</td>
+                                                <td>@client.PhoneNumber</td>
+                                                <td>@client.Appointments.Count</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--/.tab-pane-->
+                        </div>
+                        <!--/.tab-content-->
+                    </div>
+                    <!--col-->
+                </div>
+                <!--row-->
+            </div>
+        </div>
+    </div>
+    <!--col-->
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <script>
+
+        Object.assign(DataTable.defaults, {
+            searching: false,
+            ordering: false,
+            lengthChange: false
+        });
+        new DataTable('#upcoming-appts-table', {
+            pagingType: 'simple_numbers',
+            pageLength: 10
+        });
+        new DataTable('#past-appts-table', {
+            pagingType: 'simple_numbers',
+            pageLength: 10
+        });
+        new DataTable('#clients-table', {
+            pagingType: 'simple_numbers',
+            pageLength: 10
+        });
+    </script>
+</body>
+</html>
