@@ -18,3 +18,40 @@
 .show-validation-error {
     display: block !important;
 }
+
+.active .bs-stepper-circle {
+    background-color: var(--sl-color-primary-600)!important;
+}
+
+.btn-theme {
+    background-color: var(--sl-color-primary-600) !important;
+    border-color: var(--sl-color-primary-600) !important;
+    color:white;
+}
+
+.confirm-label {
+    width: auto !important;
+    color: var(--sl-color-primary-700);
+    font-weight:600;
+}
+
+.confirm-item {
+    width: auto !important;
+    color:dimgray;
+}
+
+.confirm-row {
+    justify-content:space-between;
+    width:60%!important;
+    margin-bottom:10px;
+}
+
+.confirm-col {
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    width:100%;
+    flex-wrap:wrap;
+    margin-top:30px;
+    margin-bottom:30px;
+}

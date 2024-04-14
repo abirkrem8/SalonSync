@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" />
 
-<link rel="stylesheet" href="~/css/Schedule.css" />
 <link rel="stylesheet" href="~/css/light.css" />
+<link rel="stylesheet" href="~/css/Schedule.css" />
+
 
 <html class="sl-theme-light">
 <body>
@@ -68,7 +69,7 @@
                             <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
                             <br />
                             <div class="invalid-feedback">Please fill in the client fields</div>
-                            <button class="btn btn-primary btn-next-form">Next</button>
+                            <button class="btn btn-theme btn-next-form">Next</button>
                         </div>
 
 
@@ -86,29 +87,46 @@
                                 <br />
                                 <div class="invalid-feedback">Please select a stylist and valid date (Appointments can only be scheduled up to a month in advance)</div>
                             </div>
-                            <button class="btn btn-primary btn-next-form">Next</button>
+                            <button class="btn btn-theme btn-next-form">Next</button>
                         </div>
 
 
 
                         <div id="time-part" class="content" role="tabpanel" aria-labelledby="time-part-trigger">
-                            <h3 id="date-time-content"></h3>
-                            <div class="form-group">
+                            <h5 class="confirm-label" id="date-time-content"></h5>
+                            <div class="form-group" style="margin-top:15px">
                                 <sl-radio-group label="@Html.DisplayNameFor(x=>x.TimeOfAppointment)" name="TimeOfAppointment" defaultValue="none" required></sl-radio-group>
                                 <br />
                                 <div class="invalid-feedback">Please select an available appointment time</div>
                             </div>
-                            <button type="button" class="btn btn-primary btn-next-form">Next</button>
+                            <button type="button" class="btn btn-theme btn-next-form">Next</button>
                         </div>
 
 
                         <div id="confirm-part" class="content" role="tabpanel" aria-labelledby="confirm-part-trigger">
-                            <h3 id="date-confirm-content"></h3>
-                            <h3 id="time-confirm-content"></h3>
-                            <h3 id="stylist-confirm-content"></h3>
-                            <h3 id="client-name-confirm-content"></h3>
-                            <h3 id="client-phone-confirm-content"></h3>
-                            <button id="offical-submit-button" type="submit" class="btn btn-primary">Submit</button>
+                            <div class="col confirm-col">
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Hair Stylist</h5>
+                                    <h5 class="confirm-item" id="stylist-confirm-content"></h5>
+                                </div>
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Date of Appointment</h5>
+                                    <h5 class="confirm-item" id="date-confirm-content"></h5>
+                                </div>
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Time of Appointment</h5>
+                                    <h5  class="confirm-item"id="time-confirm-content"></h5>
+                                </div>
+                                <div class="row confirm-row" id="confirm-client-name-row" hidden>
+                                    <h5 class="confirm-label">Client Name</h5>
+                                    <h5 class="confirm-item" id="client-name-confirm-content"></h5>
+                                </div>
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Client Phone Number</h5>
+                                    <h5 class="confirm-item" id="client-phone-confirm-content"></h5>
+                                </div>
+                            </div>
+                            <button id="offical-submit-button" type="submit" class="btn btn-theme">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -274,7 +292,7 @@
                           dateOfAvail.getFullYear() == dateSelected.getFullYear()){
                               const elem = document.createElement('sl-radio');
                               elem.value = dateOfAvail;
-                              elem.innerText = dateOfAvail.toLocaleTimeString();
+                              elem.innerText = dateOfAvail.toLocaleTimeString().replace(':00','');
                               timeRadioSet.appendChild(elem);
                       }
                   }
@@ -294,18 +312,19 @@
                   var selectedStylist = document.getElementsByName('SelectedStylist')[0];
                   var stylistValueAr = selectedStylist.value.split('|');
                   var dateSelected = document.getElementsByName('DateOfAppointment')[0];
-                  var dateSelectedAsDate = new Date(dateSelected.value);
+                  var dateSelectedAsDate = new Date(dateSelected.value.replace(/-/g, '\/').replace(/T.+/, ''));
 
                   var timeSelected = document.getElementsByName('TimeOfAppointment')[0];
                                 var timeSelectedAsDate = new Date(timeSelected.value);
 
-                  if (isNewClient == 'true'){
-                       document.getElementById("client-name-confirm-content").innerText = clientFirstName.value + " " + clientLastName.value;
+                  if (isNewClient.value == 'true'){
+                      document.getElementById("confirm-client-name-row").hidden = false;
+                      document.getElementById("client-name-confirm-content").innerText = clientFirstName.value + " " + clientLastName.value;
                   }
                   document.getElementById("client-phone-confirm-content").innerText = clientPhoneNumber.value;
                   document.getElementById("stylist-confirm-content").innerText = stylistValueAr[1] + " " +  stylistValueAr[2];
                   document.getElementById("date-confirm-content").innerText = dateSelectedAsDate.toLocaleDateString();
-                  document.getElementById("time-confirm-content").innerText = timeSelectedAsDate.toLocaleTimeString();
+                  document.getElementById("time-confirm-content").innerText = timeSelectedAsDate.toLocaleTimeString().replace(':00','');
     ;
               }
 </script>

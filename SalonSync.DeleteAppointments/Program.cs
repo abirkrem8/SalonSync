@@ -39,7 +39,7 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
 
 
 var service = _host.Services.GetRequiredService<IAppointmentDeletionService>();
-int exitCode = service.Run(3,true);
+int exitCode = service.Run(0,true);
 
 
 Environment.Exit(exitCode);

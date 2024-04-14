@@ -5,7 +5,7 @@ using SalonSync.MVC.Models;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
-using HairApplication.Logic.LoadAppointmentScheduleForm;
+using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 
 namespace SalonSync.MVC.Controllers
 {
