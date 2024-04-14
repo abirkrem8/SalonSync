@@ -9,7 +9,7 @@ using AutoMapper;
 using SalonSync.MVC.Logic;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
-using HairApplication.Logic.LoadAppointmentScheduleForm;
+using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 
 var builder = WebApplication.CreateBuilder(args);
 

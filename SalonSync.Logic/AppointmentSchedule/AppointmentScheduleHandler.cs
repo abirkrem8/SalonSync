@@ -35,6 +35,7 @@ namespace SalonSync.Logic.AppointmentSchedule
             {
                 // There was an error in validation, quit now
                 // log the error
+                result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.ValidationError;
                 return result;
             }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HairApplication.Logic.LoadAppointmentScheduleForm
+namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
 {
     public class LoadAppointmentScheduleFormItem
     {

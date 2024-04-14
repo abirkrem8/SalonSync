@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HairApplication.Logic.LoadAppointmentScheduleForm
+namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
 {
     public class LoadAppointmentScheduleFormHandler
     {
@@ -92,11 +92,6 @@ namespace HairApplication.Logic.LoadAppointmentScheduleForm
                             if (!aptTimeCollection.HasOverlapPeriods(testTime))
                             {
                                 listOfTimes.Add(testTime.Start);
-                                _logger.LogInformation(string.Format("Adding time period {0} to the list of available times.", testTime.ToString()));
-                            }
-                            else
-                            {
-                                _logger.LogInformation(string.Format("There are overlap periods for {0}! The periods that exist are {1}.", testTime.ToString(), aptTimeCollection.OverlapPeriods(testTime).ToString()));
                             }
                             if (endOfDay <= testTime.End)
                             {
@@ -109,7 +104,7 @@ namespace HairApplication.Logic.LoadAppointmentScheduleForm
                     {
                         // it is already invalid!
                         // log error
-                        _logger.LogError(String.Format("There are overlaps in the schedule for stylist: {0} on {1}!", sty.FirstName, currentDay.ToShortDateString()));
+                        _logger.LogError(string.Format("There are overlaps in the schedule for stylist: {0} on {1}!", sty.FirstName, currentDay.ToShortDateString()));
                         continue;
                     }
                 }

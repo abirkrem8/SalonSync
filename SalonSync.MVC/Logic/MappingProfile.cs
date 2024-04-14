@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using HairApplication.Logic.LoadAppointmentScheduleForm;
 using SalonSync.Logic.AppointmentSchedule;
+using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.MVC.Models;
