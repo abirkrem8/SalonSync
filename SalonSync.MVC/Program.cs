@@ -15,7 +15,8 @@ using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+//string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+string env = "Production";
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
     .AddJsonFile($"appsettings.json")
