@@ -11,14 +11,29 @@ using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory() + "/conf/")
+    .AddJsonFile($"appsettings.json")
+    .AddJsonFile($"appsettings.{env}.json");
+
 
 // Set up FireDB
 var projectId = builder.Configuration.GetValue<string>("FirebaseProjectId");
-var firebaseJson = File.ReadAllText(builder.Configuration.GetValue<string>("FirebaseCredentials"));
+string firebaseJson = "";
+if (builder.Configuration.GetValue<bool>("FirebaseCredentials:UseEnvironmentVariables"))
+{
+    string firebaseEnvironmentVariableName = builder.Configuration.GetValue<string>("FirebaseCredentials:FBCredentialsEnvironmentVariable");
+    firebaseJson = Environment.GetEnvironmentVariable(firebaseEnvironmentVariableName);
+}
+else
+{
+    firebaseJson = File.ReadAllText(builder.Configuration.GetValue<string>("FirebaseCredentials:FBCredFilePath"));
+}
 builder.Services.AddSingleton(_ => new FirestoreProvider(
     new FirestoreDbBuilder
     {
@@ -26,6 +41,9 @@ builder.Services.AddSingleton(_ => new FirestoreProvider(
         JsonCredentials = firebaseJson // <-- service account json file
     }.Build()
 ));
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 // Auto Mapper Configurations
 var mapperConfig = new MapperConfiguration(mc =>
