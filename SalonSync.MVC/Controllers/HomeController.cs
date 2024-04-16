@@ -19,8 +19,10 @@ namespace SalonSync.MVC.Controllers
             _loadIndexScreenHandler = loadIndexScreenHandler;
             _mapper = mapper;
         }
-
-        [HttpGet]
+        public IActionResult Landing()
+        {
+            return View();
+        }
         public IActionResult Index(string alert = "")
         {
             var result = _loadIndexScreenHandler.Handle(new LoadIndexScreenItem());
@@ -38,6 +40,7 @@ namespace SalonSync.MVC.Controllers
             }
             return View(viewModel);
         }
+
 
         public IActionResult Privacy()
         {
