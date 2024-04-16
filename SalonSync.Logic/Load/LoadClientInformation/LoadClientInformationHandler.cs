@@ -54,18 +54,13 @@ namespace SalonSync.Logic.Load.LoadClientInformation
 
             appointmentsFromDB.ForEach(appointmentFromDB =>
             {
-                var apt = new LoadClientInformationResultAppointment()
-                {
-                    HairStylistFullName = appointmentFromDB.HairStylistFullName,
-                    AppointmentStartTime = appointmentFromDB.StartTimeOfAppointment.ToDateTime().ToLocalTime(),
-                    AppointmentNotes = appointmentFromDB.AppointmentNotes
-                };
+                var apt = _mapper.Map<LoadClientInformationResultAppointment>(appointmentFromDB);
                 appointments.Add(apt);
             });
 
             result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
             result.ClientPhoneNumber = client.PhoneNumber;
-            result.AppointmentList = appointments;
+            result.AppointmentList = appointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
             result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.Success;
 
             return result;

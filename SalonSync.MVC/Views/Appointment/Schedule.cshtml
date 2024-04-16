@@ -1,4 +1,6 @@
 ﻿@using Newtonsoft.Json
+@using SalonSync.Models.Enums
+@using EnumExtensions
 @model SalonSync.MVC.Models.AppointmentScheduleViewModel
 @{
     ViewData["Title"] = "Schedule an Appointment";
@@ -60,11 +62,29 @@
                                 <sl-option value="true">Yes</sl-option>
                             </sl-select>
                             <br />
-                            <div id="ClientFullName" hidden>
-                                <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
-                                <br />
-                                <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
-                                <br />
+                            <div id="ClientFullName" class="row" hidden>
+                                <div class="col-md-6">
+                                    <sl-input name="ClientFirstName" label="@Html.DisplayNameFor(x=>x.ClientFirstName)" pill required></sl-input>
+                                    <br />
+                                    <sl-input name="ClientLastName" label="@Html.DisplayNameFor(x=>x.ClientLastName)" pill required></sl-input>
+                                    <br />
+                                </div>
+                                <div class="col-md-6">
+                                    <sl-select name="ClientHairTexture" label="@Html.DisplayNameFor(x=>x.ClientHairTexture)" required pill defaultValue="NONE">
+                                        @foreach (HairTexture texture in Enum.GetValues(typeof(HairTexture)))
+                                        {
+                                            <sl-option value=@texture>@texture.GetDisplayName()</sl-option>
+                                        }
+                                    </sl-select>
+                                    <br />
+                                    <sl-select name="ClientHairLength" label="@Html.DisplayNameFor(x=>x.ClientHairLength)" required pill defaultValue="NONE">
+                                        @foreach (HairLength hairLength in Enum.GetValues(typeof(HairLength)))
+                                        {
+                                            <sl-option value=@hairLength>@hairLength.GetDisplayName()</sl-option>
+                                        }
+                                    </sl-select>
+                                    <br />
+                                </div>
                             </div>
                             <sl-input name="ClientPhoneNumber" help-text="Numbers only 0-9" label="@Html.DisplayNameFor(x=>x.ClientPhoneNumber)" type="number" pill required></sl-input>
                             <br />
@@ -75,6 +95,13 @@
 
                         <div id="stylist-part" class="content" role="tabpanel" aria-labelledby="stylist-part-trigger">
                             <div class="form-group">
+                                <sl-select name="AppointmentType" label="@Html.DisplayNameFor(x=>x.AppointmentType)" required pill defaultValue="NONE">
+                                    @foreach (AppointmentType appointmentType in Enum.GetValues(typeof(AppointmentType)))
+                                    {
+                                        <sl-option value=@appointmentType>@appointmentType.GetDisplayName()</sl-option>
+                                    }
+                                </sl-select>
+                                <br />
                                 <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill defaultValue="none">
                                     @foreach (var stylist in Model.HairStylists)
                                     {
@@ -109,14 +136,6 @@
                                     <h5 class="confirm-label">Hair Stylist</h5>
                                     <h5 class="confirm-item" id="stylist-confirm-content"></h5>
                                 </div>
-                                <div class="row confirm-row">
-                                    <h5 class="confirm-label">Date of Appointment</h5>
-                                    <h5 class="confirm-item" id="date-confirm-content"></h5>
-                                </div>
-                                <div class="row confirm-row">
-                                    <h5 class="confirm-label">Time of Appointment</h5>
-                                    <h5  class="confirm-item"id="time-confirm-content"></h5>
-                                </div>
                                 <div class="row confirm-row" id="confirm-client-name-row" hidden>
                                     <h5 class="confirm-label">Client Name</h5>
                                     <h5 class="confirm-item" id="client-name-confirm-content"></h5>
@@ -125,6 +144,15 @@
                                     <h5 class="confirm-label">Client Phone Number</h5>
                                     <h5 class="confirm-item" id="client-phone-confirm-content"></h5>
                                 </div>
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Date of Appointment</h5>
+                                    <h5 class="confirm-item" id="date-confirm-content"></h5>
+                                </div>
+                                <div class="row confirm-row">
+                                    <h5 class="confirm-label">Time of Appointment</h5>
+                                    <h5 class="confirm-item" id="time-confirm-content"></h5>
+                                </div>
+                                
                             </div>
                             <button id="offical-submit-button" type="submit" class="btn btn-theme">Submit</button>
                         </div>
@@ -166,6 +194,8 @@
           var clientLastName = document.getElementsByName('ClientLastName')[0];
           var clientPhoneNumber = document.getElementsByName('ClientPhoneNumber')[0];
           var isNewClient = document.getElementsByName('IsNewClient')[0];
+          var hairTextureSelect = document.getElementsByName('ClientHairTexture')[0];
+          var hairLengthSelect = document.getElementsByName('ClientHairLength')[0];
 
           // Stylist & Date Validation Elements
           var selectedStylist = document.getElementsByName('SelectedStylist')[0];
@@ -211,7 +241,7 @@
             if ((stepperPan.getAttribute('id') === 'client-part'
                     && clientPhoneNumber.value.length
                     && isNewClient.value != isNewClient.defaultValue
-                    && ((isNewClient.value === 'true' && clientFirstName.value.length && clientLastName.value.length)
+                    && ((isNewClient.value === 'true' && clientFirstName.value.length && clientLastName.value.length && (hairTextureSelect.value != hairTextureSelect.defaultValue) && (hairLengthSelect.value != hairLengthSelect.defaultValue))
                     || isNewClient.value === 'false'))
             || (stepperPan.getAttribute('id') === 'stylist-part'
                     && selectedStylist.value != selectedStylist.defaultValue
@@ -251,8 +281,12 @@
                       console.log("This is a new client!");
                   } else if (value === "false") {
                       document.getElementById('ClientFullName').hidden = true;
-                      document.getElementsByName('ClientFirstName')[0].required = false;
-                      document.getElementsByName('ClientLastName')[0].required = false;
+                      document.getElementsByName('ClientFirstName')[0].value = '';
+                      document.getElementsByName('ClientLastName')[0].value = '';
+                      var hairTextureSelect = document.getElementsByName('ClientHairTexture')[0];
+                      hairTextureSelect.value = hairTextureSelect.defaultValue;
+                      var hairLengthSelect = document.getElementsByName('ClientHairLength')[0];
+                      hairLengthSelect.value = hairLengthSelect.defaultValue;
                       console.log("This is a returning client!");
                   }
               }

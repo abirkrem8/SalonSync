@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SalonSync.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,9 @@ namespace SalonSync.Logic.AppointmentSchedule
         public DateTime DateOfAppointment { get; set; }
         public DateTime TimeOfAppointment { get; set; }
         public string HairStylistId { get; set; }
+        public AppointmentType AppointmentType { get; set; }
+        public HairTexture ClientHairTexture { get; set; }
+        public HairLength ClientHairLength { get; set; }
 
     }
 }

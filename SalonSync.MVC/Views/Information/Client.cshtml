@@ -81,19 +81,22 @@
                                 <h3 class="timeline-header"><a class="text-theme" href="#">Appointment</a> with @apt.HairStylistFullName</h3>
 
                                 <div class="timeline-body">
+                                    @apt.AppointmentType
+                                    $@apt.AppointmentCost
                                     @if (!apt.AppointmentNotes.Any())
                                     {
                                         <p>No Appointment Notes</p>
                                     }
                                     @foreach (var note in apt.AppointmentNotes)
                                     {
+                                        
                                         <div class="feature">
                                             @note
                                         </div>
                                     }
                                 </div>
-                                <div class="timeline-footer">
-                                </div>
+                                @*<div class="timeline-footer">
+                                </div>*@
                             </div>
                         </div>
                         <!-- END timeline item -->

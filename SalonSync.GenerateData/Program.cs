@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.GenerateData;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
+using HairApplication.Logic.AddAppointmentNotes;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
@@ -36,6 +37,7 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
     services.AddSingleton<IAppointmentScheduleService, AppointmentScheduleService>();
     services.AddTransient<AppointmentScheduleHandler>();
     services.AddTransient<LoadAppointmentScheduleFormHandler>();
+    services.AddTransient<AddAppointmentNotesHandler>();
 
 }).Build();
 

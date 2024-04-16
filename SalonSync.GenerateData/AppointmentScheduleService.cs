@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Itenso.TimePeriod;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
+using SalonSync.Models.Enums;
+using HairApplication.Logic.AddAppointmentNotes;
 
 namespace SalonSync.GenerateData
 {
@@ -22,6 +24,7 @@ namespace SalonSync.GenerateData
     {
         private AppointmentScheduleHandler _appointmentScheduleHandler;
         private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
+        private AddAppointmentNotesHandler _addAppointmentNotesHandler;
         private FirestoreProvider _firestoreProvider;
         private ILogger<AppointmentScheduleService> _logger;
         private Random _random;
@@ -31,10 +34,11 @@ namespace SalonSync.GenerateData
 
         public AppointmentScheduleService(ILogger<AppointmentScheduleService> logger,
             AppointmentScheduleHandler appointmentScheduleHandler, LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler,
-            FirestoreProvider firestoreProvider)
+            AddAppointmentNotesHandler addAppointmentNotesHandler,   FirestoreProvider firestoreProvider)
         {
             _appointmentScheduleHandler = appointmentScheduleHandler;
             _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
+            _addAppointmentNotesHandler = addAppointmentNotesHandler;
             _firestoreProvider = firestoreProvider;
             _logger = logger;
             _random = new Random();
@@ -87,7 +91,8 @@ namespace SalonSync.GenerateData
                             {
                                 aptTimeCollection.Add(aptAsTimeRange);
                                 daysAvailableAppointments.Remove(randomSelectedApt);
-                            } else
+                            }
+                            else
                             {
                                 // overlaps so we don't want to pick it again
                                 daysAvailableAppointments.Remove(randomSelectedApt);
@@ -109,10 +114,11 @@ namespace SalonSync.GenerateData
                             LastName = client.LastName,
                             DateOfAppointment = apt.Start.Date,
                             TimeOfAppointment = apt.Start,
-                            PhoneNumber = client.PhoneNumber
+                            PhoneNumber = client.PhoneNumber,
+                            AppointmentType = (AppointmentType)_random.Next(0, 4)
                         };
 
-                        _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!", 
+                        _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!",
                             scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateOfAppointment.ToShortDateString(),
                             scheduleItem.TimeOfAppointment.ToShortTimeString()));
 
@@ -121,6 +127,20 @@ namespace SalonSync.GenerateData
                         {
                             // log error!
                             _logger.LogError(string.Format("There was an error! {0}", result.AppointmentScheduleResultErrors.First().Message));
+                            continue;
+                        }
+
+
+                        var appointmentNoteItem = new AddAppointmentNotesItem()
+                        {
+                            AppointmentId = result.AppointmentId,
+                            Note = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
+                        };
+                        var result2 = _addAppointmentNotesHandler.Handle(appointmentNoteItem);
+                        if (result2.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
+                        {
+                            // log error!
+                            _logger.LogError(string.Format("There was an error! {0}", result2.AddAppointmentNotesResultErrors.First().Message));
                             continue;
                         }
                     }
@@ -132,11 +152,43 @@ namespace SalonSync.GenerateData
 
 
 
-        private List<string> APPOINTMENT_NOTES = new List<string>()
+        private static Dictionary<AppointmentType, List<string>> AppointmentNotes = new Dictionary<AppointmentType, List<string>>()
         {
-            "Client wants to dye their hair {0} during this appointment",
-            "Used {0}mL of hair dye",
-            ""
+            {AppointmentType.HairCut, new List<string>
+            {
+                "Client wants to cut 2 inches off",
+                "Client wants to cut short bangs",
+                "Just a trim"
+            }
+            },
+            {AppointmentType.NewClientConsultation, new List<string>
+            {
+                "Client wants to be seen by a curly hair specialist",
+                "Client likes non-toxic shampoo",
+                "Silent appointment"
+            }
+            },
+            {AppointmentType.HighLight, new List<string>
+            {
+                "Client wants bright blonde highlights",
+                "Money-pieces only",
+                "Subtle highlights, nothing too bold"
+            }
+            },
+            {AppointmentType.FullColor, new List<string>
+            {
+                "Natural warm-brown tones, small highlights",
+                "Purple hair! Client wants a crazy color",
+                "Update to previous color, just a root touch-up"
+            }
+            },
+            {AppointmentType.Extensions, new List<string>
+            {
+                "12 inch extensions, matching root",
+                "Blonde extensions, 16 inches",
+                "Dark black extensions, 24 inches"
+            }
+            },
         };
 
     }

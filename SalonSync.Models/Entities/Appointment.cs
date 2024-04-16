@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using SalonSync.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace SalonSync.Models.Entities
     {
         public Appointment() { }
         public Appointment(DocumentReference stylist, DocumentReference client, string stylistFirstName, string stylistLastName, string clientFirstName, 
-            string clientLastName, string clientPhoneNumber, DateTime scheduledDate, DateTime scheduledTime)
+            string clientLastName, string clientPhoneNumber, DateTime scheduledDate, DateTime scheduledTime,
+            AppointmentType appointmentType)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
@@ -24,6 +26,8 @@ namespace SalonSync.Models.Entities
             EndTimeOfAppointment = Timestamp.FromDateTime(aptDateTime.AddHours(2).ToUniversalTime());
             ClientFullName = string.Concat(clientFirstName, " ", clientLastName);
             HairStylistFullName = string.Concat(stylistFirstName, " ", stylistLastName);
+            AppointmentType = appointmentType.GetDisplayName();
+            this.AppointmentCost = AppointmentCosts.GetCost(appointmentType);
         }
 
 
@@ -63,6 +67,12 @@ namespace SalonSync.Models.Entities
         // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
         public DocumentReference Client { get; set; }
+
+        [FirestoreProperty]
+        public string AppointmentType { get; set; }
+
+        [FirestoreProperty]
+        public int AppointmentCost { get; set; }
 
         // String IDs connecting to the other Firestore Data Objects
         [FirestoreProperty]

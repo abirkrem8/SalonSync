@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SalonSync.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace SalonSync.Logic.Load.LoadClientInformation
         {
             //CreateMap<Question, QuestionModel>();
             /*etc...*/
+            CreateMap<Appointment, LoadClientInformationResultAppointment>()
+                .ForMember(dst => dst.AppointmentStartTime, x => x.MapFrom(src => src.StartTimeOfAppointment.ToDateTime().ToLocalTime()))
+                ;
         }
 
     }

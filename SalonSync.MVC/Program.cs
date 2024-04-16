@@ -59,6 +59,7 @@ var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new MappingProfile());
     mc.AddProfile(new AppointmentScheduleMappingProfile());
+    mc.AddProfile(new LoadClientInformationMappingProfile());
 });
 
 logger.LogInformation("Setting up Automapper");

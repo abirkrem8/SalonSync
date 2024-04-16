@@ -20,6 +20,8 @@ namespace SalonSync.Logic.Load.LoadClientInformation
 
     public class LoadClientInformationResultAppointment
     {
+        public string AppointmentType { get; set; }
+        public int AppointmentCost { get; set; }
         public string HairStylistFullName { get; set; }
         public DateTime AppointmentStartTime { get; set; }
         public List<string> AppointmentNotes { get; set; }

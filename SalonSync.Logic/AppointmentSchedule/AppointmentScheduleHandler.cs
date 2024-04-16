@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
+using SalonSync.Models.Enums;
 using SalonSync.Models.Shared;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace SalonSync.Logic.AppointmentSchedule
             if (appointmentScheduleItem.IsNewClient)
             {
                 client = new Client(appointmentScheduleItem.FirstName, appointmentScheduleItem.LastName,
-                    appointmentScheduleItem.PhoneNumber, Models.Enums.HairTexture.UNKNOWN, Models.Enums.HairLength.UNKNOWN);
+                    appointmentScheduleItem.PhoneNumber, appointmentScheduleItem.ClientHairTexture, appointmentScheduleItem.ClientHairLength);
 
                 clientReference = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
             }
@@ -81,11 +82,12 @@ namespace SalonSync.Logic.AppointmentSchedule
             }
 
             // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, hairStylist.FirstName,hairStylist.LastName, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment);
+            appointment = new Appointment(stylistReference, clientReference, hairStylist.FirstName,hairStylist.LastName, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment, appointmentScheduleItem.AppointmentType);
             appointmentReference= _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
 
-            result.ClientFullName = String.Concat(client.FirstName, " ", client.LastName);
-            result.StylistFullName = String.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
+            result.AppointmentId = appointmentReference.Id;
+            result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
+            result.StylistFullName = string.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
             result.TimeOfAppointment = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
             result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.Success;
 
