@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SalonSync.Models.Enums;
 
 namespace SalonSync.Models.Entities
 {
@@ -12,13 +13,15 @@ namespace SalonSync.Models.Entities
     {
         public Client() { }
 
-        public Client(string firstName, string lastName, string phoneNumber)
+        public Client(string firstName, string lastName, string phoneNumber, Enums.HairTexture hairTexture, Enums.HairLength hairLength)
         {
             Id = Guid.NewGuid().ToString();
             CreationTimestamp = Timestamp.GetCurrentTimestamp();
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;
+            HairTexture = hairTexture.ToString();
+            HairLength = hairLength.ToString();
         }
 
         // In the form of a GUID, easily convertable to a string
@@ -38,9 +41,11 @@ namespace SalonSync.Models.Entities
         [FirestoreProperty]
         public string PhoneNumber { get; set; }
 
-        // String ID connecting to the other Firestore Data Objects
         [FirestoreProperty]
-        public List<DocumentReference> Appointments { get; set; } = new List<DocumentReference>();
+        public string HairTexture { get; set; }
+
+        [FirestoreProperty]
+        public string HairLength { get; set; }
 
     }
 }

@@ -19,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="wwwroot\img\profile.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\img\stylists\hermione-granger.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

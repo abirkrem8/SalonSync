@@ -56,7 +56,7 @@ namespace SalonSync.Logic.AppointmentSchedule
             if (appointmentScheduleItem.IsNewClient)
             {
                 client = new Client(appointmentScheduleItem.FirstName, appointmentScheduleItem.LastName,
-                    appointmentScheduleItem.PhoneNumber);
+                    appointmentScheduleItem.PhoneNumber, Models.Enums.HairTexture.UNKNOWN, Models.Enums.HairLength.UNKNOWN);
 
                 clientReference = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
             }
@@ -81,44 +81,15 @@ namespace SalonSync.Logic.AppointmentSchedule
             }
 
             // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment);
-            if (!AddAppointmentToDatabase(client, hairStylist, appointment))
-            {
-                result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.DatabaseError;
-                // log error
-                return result;
-            }
+            appointment = new Appointment(stylistReference, clientReference, hairStylist.FirstName,hairStylist.LastName, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment);
+            appointmentReference= _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
+
             result.ClientFullName = String.Concat(client.FirstName, " ", client.LastName);
             result.StylistFullName = String.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
             result.TimeOfAppointment = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
             result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.Success;
 
             return result;
-        }
-
-        private bool AddAppointmentToDatabase(Client client, HairStylist hairStylist, Appointment appointment)
-        {
-            // Add Appointment object to DB, grab ID
-            var appointmentReference = _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
-
-            // Update Client DB with appointment
-            if (client.Appointments == null)
-            {
-                client.Appointments = new List<DocumentReference>();
-            }
-            client.Appointments.Add(appointmentReference);
-            var clientUpdateResult = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
-
-            // Update Stylist DB with appointment
-            if (hairStylist.Appointments == null)
-            {
-                hairStylist.Appointments = new List<DocumentReference>();
-            }
-            hairStylist.Appointments.Add(appointmentReference);
-            var stylistUpdateResult = _firestoreProvider.AddOrUpdate(hairStylist, _cancellationToken).Result;
-
-            // do something with update results to make sure they returned successfully
-            return true;
         }
     }
 }

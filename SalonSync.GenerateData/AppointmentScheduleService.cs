@@ -130,5 +130,14 @@ namespace SalonSync.GenerateData
             return 0;
         }
 
+
+
+        private List<string> APPOINTMENT_NOTES = new List<string>()
+        {
+            "Client wants to dye their hair {0} during this appointment",
+            "Used {0}mL of hair dye",
+            ""
+        };
+
     }
 }

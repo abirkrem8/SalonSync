@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
+using SalonSync.Logic.Load.LoadClientInformation;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.MVC.Models;
@@ -16,11 +17,11 @@ namespace SalonSync.MVC.Logic
             CreateMap<LoadIndexScreenResult, IndexViewModel>()
                ;
 
-                ;
+            ;
 
             CreateMap<AppointmentScheduleViewModel, AppointmentScheduleItem>()
                    .ForMember(dest => dest.HairStylistId, opt => opt.MapFrom(src => src.SelectedStylist.Split('|', StringSplitOptions.None)[0]))
-                   .ForMember(dest => dest.TimeOfAppointment, opt => opt.MapFrom(src =>  DateTime.Parse(src.TimeOfAppointment)))
+                   .ForMember(dest => dest.TimeOfAppointment, opt => opt.MapFrom(src => DateTime.Parse(src.TimeOfAppointment)))
 
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.ClientFirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.ClientLastName))
@@ -44,6 +45,14 @@ namespace SalonSync.MVC.Logic
             /*etc...*/
 
             CreateMap<LoadAppointmentScheduleFormResult, AppointmentScheduleViewModel>();
+
+            CreateMap<LoadClientInformationResultAppointment, ClientInformationViewModelAppointment>()
+                .ForMember(dest => dest.AppointmentNotes, opt => opt.MapFrom(src => src.AppointmentNotes))
+                ;
+            CreateMap<LoadClientInformationResult, ClientInformationViewModel>()
+                .ForMember(dest => dest.AppointmentList, opt => opt.MapFrom(src => src.AppointmentList))
+                ;
+            
         }
     }
 }

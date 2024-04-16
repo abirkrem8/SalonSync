@@ -30,9 +30,5 @@ namespace SalonSync.Models.Entities
 
         [FirestoreProperty]
         public string ProfileImageURL { get; set; }
-
-        // String ID connecting to the other Firestore Data Objects
-        [FirestoreProperty]
-        public List<DocumentReference> Appointments { get; set; } = new List<DocumentReference>();
     }
 }

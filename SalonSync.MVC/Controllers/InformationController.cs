@@ -7,6 +7,7 @@ using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using SalonSync.Logic.Load.LoadStylistInformation;
+using SalonSync.Logic.Load.LoadClientInformation;
 
 namespace SalonSync.MVC.Controllers
 {
@@ -14,18 +15,17 @@ namespace SalonSync.MVC.Controllers
     {
         private readonly ILogger<InformationController> _logger;
         private IMapper _mapper;
-        private FirestoreProvider _firestoreProvider;
         private LoadStylistInformationHandler _loadStylistInformationHandler;
-        private CancellationToken _cancellationToken;
+        private LoadClientInformationHandler _loadClientInformationHandler;
 
         public InformationController(ILogger<InformationController> logger, IMapper mappingProfile,
-            FirestoreProvider firestoreProvider, LoadStylistInformationHandler loadStylistInformationHandler)
+            FirestoreProvider firestoreProvider, LoadStylistInformationHandler loadStylistInformationHandler,
+            LoadClientInformationHandler loadClientInformationHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
-            _firestoreProvider = firestoreProvider;
             _loadStylistInformationHandler = loadStylistInformationHandler;
-            _cancellationToken = new CancellationTokenSource().Token;
+            _loadClientInformationHandler = loadClientInformationHandler;
         }
 
         [HttpGet]
@@ -37,6 +37,24 @@ namespace SalonSync.MVC.Controllers
             if (result != null && result.LoadStylistInformationResultStatus == LoadStylistInformationResultStatus.Success)
             {
                 StylistDetailViewModel viewModel = _mapper.Map<StylistDetailViewModel>(result);
+                return View(viewModel);
+            }
+            else
+            {
+                // log error
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Client(string clientId)
+        {
+            LoadClientInformationItem loadClientInformationItem  = new LoadClientInformationItem() { ClientId = clientId };
+            var result = _loadClientInformationHandler.Handle(loadClientInformationItem);
+
+            if (result != null && result.LoadClientInformationResultStatus == LoadClientInformationResultStatus.Success)
+            {
+                ClientInformationViewModel viewModel = _mapper.Map<ClientInformationViewModel>(result);
                 return View(viewModel);
             }
             else

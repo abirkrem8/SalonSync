@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Google.Cloud.Firestore;
+using Microsoft.Extensions.Logging;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using System;
@@ -41,8 +42,8 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
             var stylist = _firestoreProvider.Get<HairStylist>(loadStylistInformationItem.HairStylistId, _cancellationToken).Result;
             var stylistReference = _firestoreProvider.ConvertIdToReference<HairStylist>(loadStylistInformationItem.HairStylistId);
             
-            // Grab the clients for stylist
-            var clients = _firestoreProvider.WhereEqualTo<Client>("HairStylist", stylistReference, _cancellationToken).Result.ToList();
+            // Grab the clients for stylist while loading appointments
+            var clientIds = new List<string>();
 
             // Grab last week's appointments and upcoming appointments
             var allAppointments = _firestoreProvider.WhereEqualTo<Appointment>("HairStylist", stylistReference, _cancellationToken).Result.ToList();
@@ -74,16 +75,28 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
                     };
                     upcomingAppointments.Add(apt);
                 }
+                clientIds.Add(appointment.Client.Id);
             });
 
             result.HairStylist = stylist;
-            result.Clients = clients;
+            result.Clients = FindClients(clientIds.Distinct().ToList());
 
             result.PastAppointments = pastAppointments.OrderByDescending(x => x.DateTimeOfAppointment).ToList();
             result.UpcomingAppointments= upcomingAppointments.OrderBy(x => x.DateTimeOfAppointment).ToList();
             result.LoadStylistInformationResultStatus = LoadStylistInformationResultStatus.Success;
 
             return result;
+        }
+
+        private List<Client> FindClients(List<string> clientIds)
+        {
+            var clients = new List<Client>();
+
+            foreach(var clientId in clientIds)
+            {
+                clients.Add(_firestoreProvider.Get<Client>(clientId,_cancellationToken).Result);
+            }
+            return clients;
         }
     }
 }

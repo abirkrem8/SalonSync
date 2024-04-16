@@ -188,7 +188,8 @@
                                             <tr>
                                                 <td>@client.FirstName @client.LastName</td>
                                                 <td>@client.PhoneNumber</td>
-                                                <td>@client.Appointments.Count</td>
+                                                <td>     @Html.ActionLink("View Client", "Client", "Information", new { clientId = client.Id }, null)
+</td>
                                             </tr>
                                         }
                                     </tbody>

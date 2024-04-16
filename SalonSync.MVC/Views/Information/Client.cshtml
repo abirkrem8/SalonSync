@@ -1,0 +1,139 @@
+﻿@model SalonSync.MVC.Models.ClientInformationViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/themes/light.css" />
+
+<link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="~/css/adminlte.min.css">
+<link rel="stylesheet" href="~/css/light.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Client.css" />
+
+<head>
+    <script type="text/javascript">
+
+    </script>
+    <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+</head>
+<html>
+<body>
+    <div class="col" style="width:80vw">
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Profile Image -->
+                <div class="card card-secondary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle"
+                                 src="~/img/profile.jpg"
+                                 alt="User profile picture">
+                        </div>
+
+                        <h3 class="profile-username text-center">@Model.ClientFullName</h3>
+
+                        <p class="text-muted text-center">Salon Client</p>
+
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Phone Number</b> <a class="float-right text-theme">@Model.ClientPhoneNumber</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Total Appointments</b> <a class="float-right text-theme">@Model.AppointmentList.Count</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Hair Type</b> <a class="float-right text-theme">Curly</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Hair Length</b> <a class="float-right text-theme">Short</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col-->
+            <div class="col-md-7">
+                <!-- The timeline -->
+                <div class="timeline timeline-inverse">
+                    <!-- timeline time label -->
+                    <div class="time-label">
+                        <span class="bg-purple">
+                            Appointment History
+                        </span>
+                    </div>
+                    <!-- /.timeline-label -->
+                    @foreach (var apt in Model.AppointmentList)
+                    {
+                        <!-- timeline item -->
+                        <div>
+                            <i class="fas fa-scissors bg-purple"></i>
+
+                            <div class="timeline-item">
+                                <span class="time"><i class="far fa-clock"></i> @apt.AppointmentStartTime.ToString("MM/dd/yyyy  h:mm tt")</span>
+
+                                <h3 class="timeline-header"><a class="text-theme" href="#">Appointment</a> with @apt.HairStylistFullName</h3>
+
+                                <div class="timeline-body">
+                                    @if (!apt.AppointmentNotes.Any())
+                                    {
+                                        <p>No Appointment Notes</p>
+                                    }
+                                    @foreach (var note in apt.AppointmentNotes)
+                                    {
+                                        <div class="feature">
+                                            @note
+                                        </div>
+                                    }
+                                </div>
+                                <div class="timeline-footer">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END timeline item -->
+                    }
+                    <div>
+                        <i class="far fa-clock bg-gray"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!--/.col-->
+        </div>
+        <!--row-->
+    </div>
+    <!--col-->
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <script>
+
+        //Object.assign(DataTable.defaults, {
+        //    searching: false,
+        //    ordering: false,
+        //    lengthChange: false
+        //});
+        //new DataTable('#upcoming-appts-table', {
+        //    pagingType: 'simple_numbers',
+        //    pageLength: 10
+        //});
+        //new DataTable('#past-appts-table', {
+        //    pagingType: 'simple_numbers',
+        //    pageLength: 10
+        //});
+        //new DataTable('#clients-table', {
+        //    pagingType: 'simple_numbers',
+        //    pageLength: 10
+        //});
+    </script>
+</body>
+</html>

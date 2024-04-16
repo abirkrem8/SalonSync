@@ -10,9 +10,7 @@ using SalonSync.MVC.Logic;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
-
-
-
+using SalonSync.Logic.Load.LoadClientInformation;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
@@ -75,6 +73,7 @@ builder.Services.AddTransient<AppointmentScheduleHandler>();
 builder.Services.AddTransient<LoadIndexScreenHandler>();
 builder.Services.AddTransient<LoadStylistInformationHandler>();
 builder.Services.AddTransient<LoadAppointmentScheduleFormHandler>();
+builder.Services.AddTransient<LoadClientInformationHandler>();
 
 logger.LogInformation("Building application...");
 var app = builder.Build();
@@ -104,5 +103,8 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Information}/{action=Stylist}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Information}/{action=Client}/{id?}");
 
 app.Run();

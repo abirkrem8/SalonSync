@@ -38,8 +38,16 @@ body {
 }
 
 .bg-theme {
-    background-color:var(--sl-color-primary-500);
+    background-color:var(--sl-color-primary-500)!important;
     border-color:var(--sl-color-primary-500);
+}
+.bg-theme-2 {
+    background-color: var(--sl-color-primary-700) !important;
+    border-color: var(--sl-color-primary-700);
+}
+
+.text-theme {
+    color: var(--sl-color-primary-700) !important;
 }
 
 
