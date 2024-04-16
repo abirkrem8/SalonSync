@@ -23,11 +23,6 @@
     background-color: var(--sl-color-primary-600)!important;
 }
 
-.btn-theme {
-    background-color: var(--sl-color-primary-600) !important;
-    border-color: var(--sl-color-primary-600) !important;
-    color:white;
-}
 
 .confirm-label {
     width: auto !important;
