@@ -143,7 +143,7 @@ namespace SalonSync.GenerateData
                         var appointmentNoteItem = new AddAppointmentNotesItem()
                         {
                             AppointmentId = result.AppointmentId,
-                            Note = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
+                            NoteText = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
                         };
                         var result2 = _addAppointmentNotesHandler.Handle(appointmentNoteItem);
                         if (result2.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)

@@ -9,6 +9,6 @@ namespace SalonSync.Logic.AddAppointmentNotes
     public class AddAppointmentNotesItem
     {
         public string AppointmentId { get; set; }
-        public string Note { get; set; }
+        public string NoteText { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace SalonSync.Logic.AddAppointmentNotes
             {
                 appointment.AppointmentNotes = new List<string>();
             }
-            appointment.AppointmentNotes.Add(addAppointmentNotesItem.Note);
+            appointment.AppointmentNotes.Add(addAppointmentNotesItem.NoteText);
             _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Wait();
 
             result.AddAppointmentNotesResultStatus = AddAppointmentNotesResultStatus.Success;

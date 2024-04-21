@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SalonSync.Logic.AddAppointmentNotes;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Logic.Load.LoadClientInformation;
@@ -54,7 +55,9 @@ namespace SalonSync.MVC.Logic
                 ;
 
             CreateMap<LoadClientListResult, ClientListViewModel>();
-            CreateMap<LoadClientListResultItem, ClientListViewModelItem>();            
+            CreateMap<LoadClientListResultItem, ClientListViewModelItem>();
+
+            CreateMap<AddAppointmentNoteModel, AddAppointmentNotesItem>();
         }
     }
 }

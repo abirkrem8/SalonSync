@@ -47,7 +47,7 @@ namespace SalonSync.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Client(string clientId)
+        public IActionResult Client(string clientId, string successAlert = "",string failureAlert="")
         {
             LoadClientInformationItem loadClientInformationItem  = new LoadClientInformationItem() { ClientId = clientId };
             var result = _loadClientInformationHandler.Handle(loadClientInformationItem);
@@ -55,6 +55,14 @@ namespace SalonSync.MVC.Controllers
             if (result != null && result.LoadClientInformationResultStatus == LoadClientInformationResultStatus.Success)
             {
                 ClientInformationViewModel viewModel = _mapper.Map<ClientInformationViewModel>(result);
+                if (!string.IsNullOrEmpty(successAlert))
+                {
+                    TempData["success-message"] = successAlert;
+                }
+                if (!string.IsNullOrEmpty(failureAlert))
+                {
+                    TempData["error-message"] = failureAlert;
+                }
                 return View(viewModel);
             }
             else

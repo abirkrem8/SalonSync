@@ -66,6 +66,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
                 }
             });
 
+            result.ClientId = loadClientInformationItem.ClientId;
             result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
             result.ClientPhoneNumber = client.PhoneNumber;
             result.PastAppointmentList = pastAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
