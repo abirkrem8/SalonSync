@@ -17,8 +17,6 @@ namespace SalonSync.Logic.AppointmentSchedule
             RuleFor(r => r.LastName).NotNull().NotEmpty().Unless(r => !r.IsNewClient);
             RuleFor(r => r.HairStylistId).NotNull().NotEmpty();
             RuleFor(r => r.PhoneNumber).NotNull().NotEmpty();
-            RuleFor(r => r.DateOfAppointment).NotNull().NotEmpty().InclusiveBetween(DateTime.Now.Date,DateTime.Now.Date.AddMonths(1));
-            RuleFor(r => r.TimeOfAppointment).NotNull().NotEmpty().InclusiveBetween(DateTime.Now.Date,DateTime.Now.Date.AddMonths(1));
         }
     }
 }

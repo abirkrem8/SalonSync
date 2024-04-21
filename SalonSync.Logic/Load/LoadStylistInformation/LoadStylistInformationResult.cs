@@ -29,6 +29,8 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
         public DateTime DateTimeOfAppointment { get; set; }
         public string ClientPhoneNumber { get; set; }
 
+        public string ClientId { get; set; }
+
         public string AppointmentId { get;set; }
     }
 

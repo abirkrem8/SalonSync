@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Models.Enums
+namespace SalonSync.Logic.Load.LoadClientList
 {
-    public enum HairDyeBrands
+    public class LoadClientListItem
     {
-        Revlon,
-        Garnier,
-        Amika
+
     }
 }

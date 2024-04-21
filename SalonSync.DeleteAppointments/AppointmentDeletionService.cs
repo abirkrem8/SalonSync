@@ -62,26 +62,6 @@ namespace SalonSync.DeleteAppointments
 
         private int DeleteAppointmentFromDB(Appointment apt)
         {
-            // Need to delete from Stylist
-            var stylist = _firestoreProvider.Get<HairStylist>(apt.HairStylist.Id, _cancellationToken).Result;
-            int numRemoved = stylist.Appointments.RemoveAll(a => a.Id == apt.Id);
-            _firestoreProvider.AddOrUpdate(stylist, _cancellationToken).Wait();
-
-            if (numRemoved == 0)
-            {
-                _logger.LogInformation(String.Format("Appointment id: {0} not found for stylist {1}.", apt.Id, stylist.Id));
-            }
-
-            // Need to delete from Client
-            var client = _firestoreProvider.Get<Client>(apt.Client.Id, _cancellationToken).Result;
-            numRemoved = client.Appointments.RemoveAll(a => a.Id == apt.Id);
-            _firestoreProvider.AddOrUpdate(client, _cancellationToken).Wait();
-
-            if (numRemoved == 0)
-            {
-                _logger.LogInformation(String.Format("Appointment id: {0} not found for client {1}.", apt.Id, client.Id));
-            }
-
             // Delete from Appointment Table
             var aptRef = _firestoreProvider.ConvertIdToReference<Appointment>(apt.Id);
             aptRef.DeleteAsync().Wait();

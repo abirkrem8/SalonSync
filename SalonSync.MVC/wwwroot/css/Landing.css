@@ -6,6 +6,7 @@
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align:center;
 }
 
 h1, h2 {
@@ -21,6 +22,10 @@ p {
 
 .features {
     margin-top: 30px;
+    margin-bottom: 30px;
+    padding-left:70px;
+    padding-right:70px;
+    text-align:left;
 }
 
 .feature {
@@ -33,5 +38,5 @@ p {
         content: "\2022";
         position: absolute;
         left: 0;
-        color: #4CAF50;
+        color: var(--sl-color-primary-500);
     }

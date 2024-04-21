@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Itenso.TimePeriod;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
+using SalonSync.Models.Enums;
+using SalonSync.Logic.AddAppointmentNotes;
+using SalonSync.Logic.GetAvailableAppointments;
 
 namespace SalonSync.GenerateData
 {
@@ -21,7 +24,8 @@ namespace SalonSync.GenerateData
     public class AppointmentScheduleService : IAppointmentScheduleService
     {
         private AppointmentScheduleHandler _appointmentScheduleHandler;
-        private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
+        private GetAvailableAppointmentsHandler _getAvailableAppointmentsHandler;
+        private AddAppointmentNotesHandler _addAppointmentNotesHandler;
         private FirestoreProvider _firestoreProvider;
         private ILogger<AppointmentScheduleService> _logger;
         private Random _random;
@@ -30,11 +34,13 @@ namespace SalonSync.GenerateData
         private const int APPOINTMENT_LENGTH = 2;
 
         public AppointmentScheduleService(ILogger<AppointmentScheduleService> logger,
-            AppointmentScheduleHandler appointmentScheduleHandler, LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler,
-            FirestoreProvider firestoreProvider)
+            AppointmentScheduleHandler appointmentScheduleHandler,
+            AddAppointmentNotesHandler addAppointmentNotesHandler, FirestoreProvider firestoreProvider,
+            GetAvailableAppointmentsHandler getAvailableAppointmentsHandler)
         {
             _appointmentScheduleHandler = appointmentScheduleHandler;
-            _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
+            _getAvailableAppointmentsHandler = getAvailableAppointmentsHandler;
+            _addAppointmentNotesHandler = addAppointmentNotesHandler;
             _firestoreProvider = firestoreProvider;
             _logger = logger;
             _random = new Random();
@@ -46,31 +52,38 @@ namespace SalonSync.GenerateData
         {
             _logger.LogInformation("In the Appointment Scheduling Service!");
 
+            // historical will not include scheduling for today
+            // future scheduling will include today
+            DateTime startDate = historical ? DateTime.Now.AddDays(numberOfDaysToSchedule * -1).Date : DateTime.Now.Date;
+            DateTime endDate = historical ? DateTime.Now.AddDays(-1).Date : DateTime.Now.AddDays(numberOfDaysToSchedule).Date;
+
             // First grab all of the clients
             var listOfClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
 
             var listOfStylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
 
-            var availableAppointmentsResult = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
-            if (availableAppointmentsResult.LoadAppointmentScheduleFormResultStatus != LoadAppointmentScheduleFormResultStatus.Success)
-            {
-                _logger.LogError(string.Format("Unable to load available appointments for salon. {0}", availableAppointmentsResult.LoadAppointmentScheduleFormResultErrors[0].Message));
-                return -1;
-            }
-
-            var availableAppointmentsThisMonth = availableAppointmentsResult.AvailableAppointmentsForEachStylist;
-
-
             foreach (var stylist in listOfStylists)
             {
                 // schedule up to two appointments per day
                 // grab all appointments that are available for the stylist
-                var thisStylistsAvailableAppointments = availableAppointmentsThisMonth[stylist.Id];
+                var item = new GetAvailableAppointmentsItem()
+                {
+                    StylistId = stylist.Id,
+                    StartDate = startDate,
+                    EndDate = endDate
+                };
+                var availableAppointmentsResult = _getAvailableAppointmentsHandler.Handle(item);
+                if (availableAppointmentsResult.GetAvailableAppointmentsResultStatus != GetAvailableAppointmentsResultStatus.Success)
+                {
+                    // log error and quit
+                }
+                var thisStylistsAvailableAppointments = availableAppointmentsResult.AvailableAppointments;
 
                 // For each date, schedule up to two appointments
-                for (int daysFromToday = 0; daysFromToday < numberOfDaysToSchedule; daysFromToday++)
+                for (DateTime dayToSchedule = startDate;
+                dayToSchedule <= endDate;
+                dayToSchedule = dayToSchedule.AddDays(1))
                 {
-                    DateTime dayToSchedule = DateTime.Now.AddDays(daysFromToday).Date;
                     var daysAvailableAppointments = thisStylistsAvailableAppointments.Where(x => x.Date == dayToSchedule).ToList();
 
                     // select two random available appointments to schedule and make sure they don't overlap.
@@ -87,7 +100,8 @@ namespace SalonSync.GenerateData
                             {
                                 aptTimeCollection.Add(aptAsTimeRange);
                                 daysAvailableAppointments.Remove(randomSelectedApt);
-                            } else
+                            }
+                            else
                             {
                                 // overlaps so we don't want to pick it again
                                 daysAvailableAppointments.Remove(randomSelectedApt);
@@ -109,10 +123,11 @@ namespace SalonSync.GenerateData
                             LastName = client.LastName,
                             DateOfAppointment = apt.Start.Date,
                             TimeOfAppointment = apt.Start,
-                            PhoneNumber = client.PhoneNumber
+                            PhoneNumber = client.PhoneNumber,
+                            AppointmentType = (AppointmentType)_random.Next(0, 4)
                         };
 
-                        _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!", 
+                        _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!",
                             scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateOfAppointment.ToShortDateString(),
                             scheduleItem.TimeOfAppointment.ToShortTimeString()));
 
@@ -123,12 +138,67 @@ namespace SalonSync.GenerateData
                             _logger.LogError(string.Format("There was an error! {0}", result.AppointmentScheduleResultErrors.First().Message));
                             continue;
                         }
+
+
+                        var appointmentNoteItem = new AddAppointmentNotesItem()
+                        {
+                            AppointmentId = result.AppointmentId,
+                            Note = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
+                        };
+                        var result2 = _addAppointmentNotesHandler.Handle(appointmentNoteItem);
+                        if (result2.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
+                        {
+                            // log error!
+                            _logger.LogError(string.Format("There was an error! {0}", result2.AddAppointmentNotesResultErrors.First().Message));
+                            continue;
+                        }
                     }
                 }
             }
 
             return 0;
         }
+
+
+
+        private static Dictionary<AppointmentType, List<string>> AppointmentNotes = new Dictionary<AppointmentType, List<string>>()
+        {
+            {AppointmentType.HairCut, new List<string>
+            {
+                "Client wants to cut 2 inches off",
+                "Client wants to cut short bangs",
+                "Just a trim"
+            }
+            },
+            {AppointmentType.NewClientConsultation, new List<string>
+            {
+                "Client wants to be seen by a curly hair specialist",
+                "Client likes non-toxic shampoo",
+                "Silent appointment"
+            }
+            },
+            {AppointmentType.HighLight, new List<string>
+            {
+                "Client wants bright blonde highlights",
+                "Money-pieces only",
+                "Subtle highlights, nothing too bold"
+            }
+            },
+            {AppointmentType.FullColor, new List<string>
+            {
+                "Natural warm-brown tones, small highlights",
+                "Purple hair! Client wants a crazy color",
+                "Update to previous color, just a root touch-up"
+            }
+            },
+            {AppointmentType.Extensions, new List<string>
+            {
+                "12 inch extensions, matching root",
+                "Blonde extensions, 16 inches",
+                "Dark black extensions, 24 inches"
+            }
+            },
+        };
 
     }
 }

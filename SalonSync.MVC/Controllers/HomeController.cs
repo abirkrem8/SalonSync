@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SalonSync.Logic.Load.LoadClientList;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.MVC.Models;
 using System.Diagnostics;
@@ -10,13 +11,15 @@ namespace SalonSync.MVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private LoadIndexScreenHandler _loadIndexScreenHandler;
+        private LoadClientListHandler _loadClientListHandler;
         private IMapper _mapper;
 
         public HomeController(ILogger<HomeController> logger, LoadIndexScreenHandler loadIndexScreenHandler,
-            IMapper mapper)
+            IMapper mapper, LoadClientListHandler loadClientListHandler)
         {
             _logger = logger;
             _loadIndexScreenHandler = loadIndexScreenHandler;
+            _loadClientListHandler = loadClientListHandler;
             _mapper = mapper;
         }
         public IActionResult Landing()
@@ -38,6 +41,21 @@ namespace SalonSync.MVC.Controllers
             {
                 TempData["success-message"] = alert;
             }
+            return View(viewModel);
+        }
+
+        public IActionResult ClientList()
+        {
+            var result = _loadClientListHandler.Handle(new LoadClientListItem());
+            if (result.LoadClientListResultStatus != LoadClientListResultStatus.Success)
+            {
+                // handle error
+                // log error
+                // redirect to error page
+            }
+
+            ClientListViewModel viewModel = _mapper.Map<ClientListViewModel>(result);
+
             return View(viewModel);
         }
 

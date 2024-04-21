@@ -1,0 +1,71 @@
+﻿@model SalonSync.MVC.Models.ClientListViewModel
+@{
+    ViewData["Title"] = "Client List";
+
+}
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/light.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Index.css" />
+<link rel="stylesheet" href="~/css/ClientList.css" />
+
+<html>
+<div class="card" style="width:700px !important">
+    <div class="card-header" style="margin-bottom:0px">
+        <h3 class="card-title">Salon's Client List</h3>
+
+
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body table-responsive p-0">
+        <table class="table table-hover text-nowrap" id="client-table">
+            <thead>
+                <tr>
+                    <th>Client Name</th>
+                    <th>Phone Number</th>
+                    <th style="width:20px !important">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var client in Model.ClientList)
+                {
+                    <tr>
+                        <td>@client.FirstName @client.LastName</td>
+                        <td>@client.PhoneNumber</td>
+                        <td style="width:20px">
+                            <button class="btn btn-theme" type="button" onclick="location.href='@Url.Action("Client","Information",new {clientId=client.Id})'">View Client</button>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+</html>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+<script>
+
+    Object.assign(DataTable.defaults, {
+        searching: false,
+        ordering: false,
+        lengthChange: false
+    });
+    new DataTable('#client-table', {
+        pagingType: 'simple_numbers',
+        pageLength: 8
+    });
+</script>
