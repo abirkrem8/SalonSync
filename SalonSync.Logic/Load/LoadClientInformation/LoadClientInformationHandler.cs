@@ -50,17 +50,26 @@ namespace SalonSync.Logic.Load.LoadClientInformation
             DocumentReference clientRef = _firestoreProvider.ConvertIdToReference<Client>(loadClientInformationItem.ClientId);
 
             var appointmentsFromDB = _firestoreProvider.WhereEqualTo<Appointment>("Client", clientRef, _cancellationToken).Result.ToList();
-            List<LoadClientInformationResultAppointment> appointments = new List<LoadClientInformationResultAppointment>();
+            List<LoadClientInformationResultAppointment> pastAppointments = new List<LoadClientInformationResultAppointment>();
+            List<LoadClientInformationResultAppointment> upcomingAppointments = new List<LoadClientInformationResultAppointment>();
 
             appointmentsFromDB.ForEach(appointmentFromDB =>
             {
                 var apt = _mapper.Map<LoadClientInformationResultAppointment>(appointmentFromDB);
-                appointments.Add(apt);
+
+                if (apt.AppointmentStartTime < DateTime.Now)
+                {
+                    pastAppointments.Add(apt);
+                } else
+                {
+                    upcomingAppointments.Add(apt);
+                }
             });
 
             result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
             result.ClientPhoneNumber = client.PhoneNumber;
-            result.AppointmentList = appointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
+            result.PastAppointmentList = pastAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
+            result.UpcomingAppointmentList = upcomingAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
             result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.Success;
 
             return result;

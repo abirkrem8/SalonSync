@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.AddAppointmentNotes
+namespace SalonSync.Logic.GetAvailableAppointments
 {
-    public class AddAppointmentNotesMappingProfile : Profile
+    public class GetAvailableAppointmentsMappingProfile : Profile
     {
-        public AddAppointmentNotesMappingProfile()
+        public GetAvailableAppointmentsMappingProfile()
         {
             //CreateMap<Question, QuestionModel>();
             /*etc...*/

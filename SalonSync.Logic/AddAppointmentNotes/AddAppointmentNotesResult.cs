@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SalonSync.Models.Shared;
 
-namespace HairApplication.Logic.AddAppointmentNotes
+namespace SalonSync.Logic.AddAppointmentNotes
 {
     public class AddAppointmentNotesResult
     {

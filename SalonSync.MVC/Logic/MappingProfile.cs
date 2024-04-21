@@ -2,6 +2,7 @@
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Logic.Load.LoadClientInformation;
+using SalonSync.Logic.Load.LoadClientList;
 using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.MVC.Models;
@@ -50,9 +51,10 @@ namespace SalonSync.MVC.Logic
                 .ForMember(dest => dest.AppointmentNotes, opt => opt.MapFrom(src => src.AppointmentNotes))
                 ;
             CreateMap<LoadClientInformationResult, ClientInformationViewModel>()
-                .ForMember(dest => dest.AppointmentList, opt => opt.MapFrom(src => src.AppointmentList))
                 ;
-            
+
+            CreateMap<LoadClientListResult, ClientListViewModel>();
+            CreateMap<LoadClientListResultItem, ClientListViewModelItem>();            
         }
     }
 }

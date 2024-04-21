@@ -52,27 +52,23 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
             allAppointments.ForEach(appointment =>
             {
                 var appointmentTime = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
+
+                var apt = new LoadStylistInformationResultAppointment()
+                {
+                    ClientFullName = appointment.ClientFullName,
+                    AppointmentId = appointment.Id,
+                    ClientPhoneNumber = appointment.ClientPhoneNumber,
+                    DateTimeOfAppointment = appointmentTime,
+                    ClientId = appointment.Client.Id
+                };
+
                 if (appointmentTime < DateTime.Now && appointmentTime.Date > DateTime.Now.AddDays(-7))
                 {
                     // appointment has passed in the last 7 days
-                    var apt = new LoadStylistInformationResultAppointment()
-                    {
-                        ClientFullName = appointment.ClientFullName,
-                        AppointmentId = appointment.Id,
-                        ClientPhoneNumber = appointment.ClientPhoneNumber,
-                        DateTimeOfAppointment = appointmentTime
-                    };
                     pastAppointments.Add(apt);
                 } else if (appointmentTime > DateTime.Now && appointmentTime.Date < DateTime.Now.AddDays(7))
                 {
                     // appointment is in the next 7 days
-                    var apt = new LoadStylistInformationResultAppointment()
-                    {
-                        ClientFullName = appointment.ClientFullName,
-                        AppointmentId = appointment.Id,
-                        ClientPhoneNumber = appointment.ClientPhoneNumber,
-                        DateTimeOfAppointment = appointmentTime                        
-                    };
                     upcomingAppointments.Add(apt);
                 }
                 clientIds.Add(appointment.Client.Id);

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.AddAppointmentNotes
+namespace SalonSync.Logic.GetAvailableAppointments
 {
-    public class AddAppointmentNotesValidator : AbstractValidator<AddAppointmentNotesItem>
+    public class GetAvailableAppointmentsValidator : AbstractValidator<GetAvailableAppointmentsItem>
     {
-        public AddAppointmentNotesValidator()
+        public GetAvailableAppointmentsValidator()
         {
 
         }

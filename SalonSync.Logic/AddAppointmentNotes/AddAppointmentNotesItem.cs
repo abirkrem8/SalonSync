@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HairApplication.Logic.AddAppointmentNotes
+namespace SalonSync.Logic.AddAppointmentNotes
 {
     public class AddAppointmentNotesItem
     {

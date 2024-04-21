@@ -4,7 +4,8 @@
     {
         public string ClientFullName { get; set; }
         public string ClientPhoneNumber { get; set; }
-        public List<ClientInformationViewModelAppointment> AppointmentList { get; set; } = new List<ClientInformationViewModelAppointment>();
+        public List<ClientInformationViewModelAppointment> PastAppointmentList { get; set; } = new List<ClientInformationViewModelAppointment>();
+        public List<ClientInformationViewModelAppointment> UpcomingAppointmentList { get; set; } = new List<ClientInformationViewModelAppointment>();
     }
 
     public class ClientInformationViewModelAppointment

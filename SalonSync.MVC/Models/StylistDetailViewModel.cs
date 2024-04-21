@@ -16,6 +16,7 @@ namespace SalonSync.MVC.Models
     public class StylistDetailViewModelAppointment
     {
         public string ClientFullName { get; set; }
+        public string ClientId { get; set; }
         public DateTime DateTimeOfAppointment { get; set; }
         public string ClientPhoneNumber { get; set; }
         public string AppointmentId { get; set; }

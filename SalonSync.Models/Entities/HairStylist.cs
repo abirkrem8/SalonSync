@@ -30,5 +30,21 @@ namespace SalonSync.Models.Entities
 
         [FirestoreProperty]
         public string ProfileImageURL { get; set; }
+
+        [FirestoreProperty]
+        public string Specialties { get; set; }
+
+        [FirestoreProperty]
+        public string Education { get; set; }
+
+        [FirestoreProperty]
+        public string Location { get; set; } // City, ST
+
+        [FirestoreProperty]
+        public string Notes { get; set; }
+        [FirestoreProperty]
+        public string Experience { get; set; }
+
+
     }
 }

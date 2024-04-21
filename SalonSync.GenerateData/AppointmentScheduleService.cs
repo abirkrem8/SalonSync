@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 using Itenso.TimePeriod;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Models.Enums;
-using HairApplication.Logic.AddAppointmentNotes;
+using SalonSync.Logic.AddAppointmentNotes;
+using SalonSync.Logic.GetAvailableAppointments;
 
 namespace SalonSync.GenerateData
 {
@@ -23,7 +24,7 @@ namespace SalonSync.GenerateData
     public class AppointmentScheduleService : IAppointmentScheduleService
     {
         private AppointmentScheduleHandler _appointmentScheduleHandler;
-        private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
+        private GetAvailableAppointmentsHandler _getAvailableAppointmentsHandler;
         private AddAppointmentNotesHandler _addAppointmentNotesHandler;
         private FirestoreProvider _firestoreProvider;
         private ILogger<AppointmentScheduleService> _logger;
@@ -33,11 +34,12 @@ namespace SalonSync.GenerateData
         private const int APPOINTMENT_LENGTH = 2;
 
         public AppointmentScheduleService(ILogger<AppointmentScheduleService> logger,
-            AppointmentScheduleHandler appointmentScheduleHandler, LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler,
-            AddAppointmentNotesHandler addAppointmentNotesHandler,   FirestoreProvider firestoreProvider)
+            AppointmentScheduleHandler appointmentScheduleHandler,
+            AddAppointmentNotesHandler addAppointmentNotesHandler, FirestoreProvider firestoreProvider,
+            GetAvailableAppointmentsHandler getAvailableAppointmentsHandler)
         {
             _appointmentScheduleHandler = appointmentScheduleHandler;
-            _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
+            _getAvailableAppointmentsHandler = getAvailableAppointmentsHandler;
             _addAppointmentNotesHandler = addAppointmentNotesHandler;
             _firestoreProvider = firestoreProvider;
             _logger = logger;
@@ -50,31 +52,38 @@ namespace SalonSync.GenerateData
         {
             _logger.LogInformation("In the Appointment Scheduling Service!");
 
+            // historical will not include scheduling for today
+            // future scheduling will include today
+            DateTime startDate = historical ? DateTime.Now.AddDays(numberOfDaysToSchedule * -1).Date : DateTime.Now.Date;
+            DateTime endDate = historical ? DateTime.Now.AddDays(-1).Date : DateTime.Now.AddDays(numberOfDaysToSchedule).Date;
+
             // First grab all of the clients
             var listOfClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
 
             var listOfStylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
 
-            var availableAppointmentsResult = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
-            if (availableAppointmentsResult.LoadAppointmentScheduleFormResultStatus != LoadAppointmentScheduleFormResultStatus.Success)
-            {
-                _logger.LogError(string.Format("Unable to load available appointments for salon. {0}", availableAppointmentsResult.LoadAppointmentScheduleFormResultErrors[0].Message));
-                return -1;
-            }
-
-            var availableAppointmentsThisMonth = availableAppointmentsResult.AvailableAppointmentsForEachStylist;
-
-
             foreach (var stylist in listOfStylists)
             {
                 // schedule up to two appointments per day
                 // grab all appointments that are available for the stylist
-                var thisStylistsAvailableAppointments = availableAppointmentsThisMonth[stylist.Id];
+                var item = new GetAvailableAppointmentsItem()
+                {
+                    StylistId = stylist.Id,
+                    StartDate = startDate,
+                    EndDate = endDate
+                };
+                var availableAppointmentsResult = _getAvailableAppointmentsHandler.Handle(item);
+                if (availableAppointmentsResult.GetAvailableAppointmentsResultStatus != GetAvailableAppointmentsResultStatus.Success)
+                {
+                    // log error and quit
+                }
+                var thisStylistsAvailableAppointments = availableAppointmentsResult.AvailableAppointments;
 
                 // For each date, schedule up to two appointments
-                for (int daysFromToday = 0; daysFromToday < numberOfDaysToSchedule; daysFromToday++)
+                for (DateTime dayToSchedule = startDate;
+                dayToSchedule <= endDate;
+                dayToSchedule = dayToSchedule.AddDays(1))
                 {
-                    DateTime dayToSchedule = DateTime.Now.AddDays(daysFromToday).Date;
                     var daysAvailableAppointments = thisStylistsAvailableAppointments.Where(x => x.Date == dayToSchedule).ToList();
 
                     // select two random available appointments to schedule and make sure they don't overlap.

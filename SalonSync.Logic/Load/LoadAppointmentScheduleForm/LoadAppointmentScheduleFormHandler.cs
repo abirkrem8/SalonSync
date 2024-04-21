@@ -1,6 +1,7 @@
 ﻿using Google.Cloud.Firestore;
 using Itenso.TimePeriod;
 using Microsoft.Extensions.Logging;
+using SalonSync.Logic.GetAvailableAppointments;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using System;
@@ -21,13 +22,15 @@ namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
         private const int MINUTE_INTERVAL = 60;
         private FirestoreProvider _firestoreProvider;
         private CancellationToken _cancellationToken;
+        private GetAvailableAppointmentsHandler _getAvailableAppointmentsHandler;
 
         public LoadAppointmentScheduleFormHandler(ILogger<LoadAppointmentScheduleFormHandler> logger,
-            FirestoreProvider firestoreProvider)
+            FirestoreProvider firestoreProvider, GetAvailableAppointmentsHandler getAvailableAppointmentsHandler)
         {
             _logger = logger;
             _firestoreProvider = firestoreProvider;
             _cancellationToken = new CancellationTokenSource().Token;
+            _getAvailableAppointmentsHandler = getAvailableAppointmentsHandler;
         }
 
         public LoadAppointmentScheduleFormResult Handle(LoadAppointmentScheduleFormItem LoadAppointmentScheduleFormItem)
@@ -58,57 +61,19 @@ namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
 
             foreach (HairStylist sty in stylists)
             {
-                var stylistRef = _firestoreProvider.ConvertIdToReference<HairStylist>(sty.Id);
-                // Grab all appointments with this stylist for the current day
-                var existingAppointments = _firestoreProvider.WhereEqualTo<Appointment>("HairStylist", stylistRef, _cancellationToken).Result.ToList();
-                List<DateTime> listOfTimes = new List<DateTime>();
-
-                for (int dayNum = 0; dayNum < NUMBER_OF_DAYS_AVAILABLE_TO_SCHEDULE; dayNum++)
+                var item = new GetAvailableAppointmentsItem()
                 {
-                    // Create a time collection for the day to schedule
-                    DateTime currentDay = DateTime.Now.AddDays(dayNum);
-                    TimePeriodCollection aptTimeCollection = new TimePeriodCollection();
-                    var startOfDay = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, OPENING_HOUR, 0, 0);
-                    var endOfDay = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, CLOSING_HOUR, 0, 0);
-
-                    // Add all appointments for the day to the time collection
-                    existingAppointments.Where(x => x.StartTimeOfAppointment.ToDateTime().ToLocalTime().Date == currentDay.Date).ToList().ForEach(a =>
-                    {
-                        var s = a.StartTimeOfAppointment.ToDateTime().ToLocalTime();
-                        var e = a.EndTimeOfAppointment.ToDateTime().ToLocalTime();
-                        aptTimeCollection.Add(new TimeRange(TimeTrim.Hour(currentDay, s.Hour, s.Minute),
-                                        TimeTrim.Hour(currentDay, e.Hour, e.Minute)));
-                    });
-
-                    _logger.LogInformation(string.Format("Stylist {0} {1} has {2} appointments on {3}.", sty.FirstName, sty.LastName, aptTimeCollection.Count, currentDay.ToShortDateString()));
-
-                    // Handle the time collection
-                    if (!aptTimeCollection.HasOverlaps())
-                    {
-                        TimeRange testTime = new TimeRange(startOfDay, new TimeSpan(HOUR_LENGTH_OF_APPOINTMENT, 0, 0));
-                        bool reachedEndOfDay = false;
-                        while (!reachedEndOfDay)
-                        {
-                            if (!aptTimeCollection.HasOverlapPeriods(testTime))
-                            {
-                                listOfTimes.Add(testTime.Start);
-                            }
-                            if (endOfDay <= testTime.End)
-                            {
-                                reachedEndOfDay = true;
-                            }
-                            testTime.Move(new TimeSpan(0, MINUTE_INTERVAL, 0));
-                        }
-                    }
-                    else
-                    {
-                        // it is already invalid!
-                        // log error
-                        _logger.LogError(string.Format("There are overlaps in the schedule for stylist: {0} on {1}!", sty.FirstName, currentDay.ToShortDateString()));
-                        continue;
-                    }
+                    StylistId = sty.Id,
+                    StartDate = DateTime.Now.Date,
+                    EndDate = DateTime.Now.Date.AddDays(NUMBER_OF_DAYS_AVAILABLE_TO_SCHEDULE),
+                };
+                var result = _getAvailableAppointmentsHandler.Handle(item);
+                if (result.GetAvailableAppointmentsResultStatus != GetAvailableAppointmentsResultStatus.Success)
+                {
+                    //handle error
+                    // return
                 }
-                availableTimes.Add(sty.Id, listOfTimes);
+                availableTimes.Add(sty.Id, result.AvailableAppointments);
             }
 
             return availableTimes;

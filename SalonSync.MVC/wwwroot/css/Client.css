@@ -10,3 +10,12 @@
         left: 0;
         color: var(--sl-color-primary-500);
     }
+
+.appointment-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px 30px 10px !important;
+    border-radius: 0px 0px 3px 3px;
+    background-color: var(--sl-color-primary-100);
+}

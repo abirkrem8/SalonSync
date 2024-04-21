@@ -11,6 +11,8 @@ using SalonSync.Logic.Load.LoadIndexScreen;
 using SalonSync.Logic.Load.LoadStylistInformation;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Logic.Load.LoadClientInformation;
+using SalonSync.Logic.Load.LoadClientList;
+using SalonSync.Logic.GetAvailableAppointments;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
@@ -60,6 +62,7 @@ var mapperConfig = new MapperConfiguration(mc =>
     mc.AddProfile(new MappingProfile());
     mc.AddProfile(new AppointmentScheduleMappingProfile());
     mc.AddProfile(new LoadClientInformationMappingProfile());
+    mc.AddProfile(new LoadClientListMappingProfile());
 });
 
 logger.LogInformation("Setting up Automapper");
@@ -71,10 +74,12 @@ builder.Services.AddMvc();
 logger.LogInformation("Setting up Dependency Injection Handlers");
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
+builder.Services.AddTransient<GetAvailableAppointmentsHandler>();
 builder.Services.AddTransient<LoadIndexScreenHandler>();
 builder.Services.AddTransient<LoadStylistInformationHandler>();
 builder.Services.AddTransient<LoadAppointmentScheduleFormHandler>();
 builder.Services.AddTransient<LoadClientInformationHandler>();
+builder.Services.AddTransient<LoadClientListHandler>();
 
 logger.LogInformation("Building application...");
 var app = builder.Build();
@@ -103,9 +108,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
+    pattern: "{controller=Home}/{action=ClientList}/{id?}");
+app.MapControllerRoute(
+    name: "default",
     pattern: "{controller=Information}/{action=Stylist}/{id?}");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Information}/{action=Client}/{id?}");
+    pattern: "{controller=Information}/{action=Client}/{clientId?}");
 
 app.Run();

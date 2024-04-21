@@ -9,6 +9,7 @@
 
 <link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="~/css/adminlte.min.css">
 <link rel="stylesheet" href="~/css/light.css" />
 <link rel="stylesheet" href="~/css/site.css" />
@@ -41,7 +42,7 @@
 <body>
     <div class="col" style="width:80vw">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <!-- Widget: user widget style 1 -->
                 <div class="card card-widget widget-user">
                     <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -53,80 +54,57 @@
                         <img class="img-circle elevation-2" src="@("/img/stylists/" + Model.HairStylist.ProfileImageURL)" alt="User Avatar">
                     </div>
                     <div class="card-footer">
-                        <div class="row">
-                            <div class="col-sm-5 border-right">
-                                <div class="description-block">
-                                    <h5 class="description-header">@Model.Clients.Count</h5>
-                                    <span class="description-text">Clients</span>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-7">
-                                <div class="description-block">
-                                    <h5 class="description-header">@Model.UpcomingAppointments.Count</h5>
-                                    <span class="description-text">Appointments</span>
-                                </div>
-                                <!-- /.description-block -->
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
+                        <strong><i class="fas fa-book mr-1"></i> Education</strong>
+
+                        <p class="text-muted">
+                            @Model.HairStylist.Education
+                        </p>
+                        <hr>
+
+                        <strong><i class="fas fa-scissors mr-1"></i> Experience</strong>
+
+                        <p class="text-muted">@Model.HairStylist.Experience</p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+
+                        <p class="text-muted">@Model.HairStylist.Location</p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-pencil-alt mr-1"></i> Specialties</strong>
+
+                        <p class="text-muted">
+                            @Model.HairStylist.Specialties
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+
+                        <p class="text-muted">@Model.HairStylist.Notes</p>
                     </div>
                     <!-- /.widget-user -->
                 </div>
                 <!--/.card-->
+
             </div>
             <!--/.col-->
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <p class="d-flex flex-column">
-                                <span class="text-bold text-lg">@Model.PastAppointments.Count</span>
-                                <span>Appointments Over Time</span>
-                            </p>
-                            <p class="ml-auto d-flex flex-column text-right">
-                                <span class="text-success">
-                                    <i class="fas fa-arrow-up"></i> 12.5%
-                                </span>
-                                <span class="text-muted">Since last week</span>
-                            </p>
-                        </div>
-                        <!-- /.d-flex -->
-
-                        <div class="position-relative mb-4">
-                            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                        </div>
-
-                        <div class="d-flex flex-row justify-content-end">
-                            <span class="mr-2">
-                                <i class="fas fa-square text-primary"></i> This Week
-                            </span>
-
-                            <span>
-                                <i class="fas fa-square text-gray"></i> Last Week
-                            </span>
-                        </div>
+            <div class="col-md-8">
+                <div class="card card-secondary card-tabs">
+                    <div class="card-header p-0 pt-1 bg-theme-2">
+                        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="upcoming-appts-tab" data-toggle="pill" href="#upcoming-appts-pane" role="tab" aria-controls="upcoming-appts-pane" aria-selected="true">Upcoming Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="past-appts-tab" data-toggle="pill" href="#past-appts-pane" role="tab" aria-controls="past-appts-pane" aria-selected="false">Past Appointments</a>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <!-- /.card -->
-            </div>
-            <!--/.col-->
-        </div>
-        <!--/.row-->
-        <div class="card card-secondary card-outline">
+                    <div class="card-body" style="padding:0">
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-5 col-sm-3">
-                        <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
-                            <a class="nav-link active" id="upcoming-appts-tab" data-toggle="pill" href="#upcoming-appts-pane" role="tab" aria-controls="upcoming-appts-pane" aria-selected="true">Upcoming Appointments</a>
-                            <a class="nav-link" id="past-appts-tab" data-toggle="pill" href="#past-appts-pane" role="tab" aria-controls="past-appts-pane" aria-selected="false">Past Appointments</a>
-                            <a class="nav-link" id="clients-tab" data-toggle="pill" href="#clients-pane" role="tab" aria-controls="clients-pane" aria-selected="false">Clients</a>
-                        </div>
-                    </div>
-                    <div class="col-7 col-sm-9">
                         <div class="tab-content" id="vert-tabs-tabContent">
                             <div class="tab-pane fade show active" id="upcoming-appts-pane" role="tabpanel" aria-labelledby="upcoming-appts-tab">
                                 <table class="table table-striped table-hover" id="upcoming-appts-table" style="width:100%">
@@ -135,6 +113,7 @@
                                             <th>Date</th>
                                             <th>Client</th>
                                             <th>Phone Number</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -144,6 +123,7 @@
                                                 <td>@apt.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")</td>
                                                 <td>@apt.ClientFullName</td>
                                                 <td>@apt.ClientPhoneNumber</td>
+                                                <td>@Html.ActionLink("Client Info", "Client", "Information", new { clientId = apt.ClientId }, null)</td>
                                             </tr>
 
                                         }
@@ -158,6 +138,7 @@
                                             <th>Date</th>
                                             <th>Client</th>
                                             <th>Phone Number</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -167,29 +148,8 @@
                                                 <td>@apt.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")</td>
                                                 <td>@apt.ClientFullName</td>
                                                 <td>@apt.ClientPhoneNumber</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--/.tab-pane-->
-                            <div class="tab-pane fade" id="clients-pane" role="tabpanel" aria-labelledby="clients-tab">
-                                <table class="table table-striped table-hover" id="clients-table" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Phone Number</th>
-                                            <th>Number of Appointments</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var client in Model.Clients)
-                                        {
-                                            <tr>
-                                                <td>@client.FirstName @client.LastName</td>
-                                                <td>@client.PhoneNumber</td>
-                                                <td>     @Html.ActionLink("View Client", "Client", "Information", new { clientId = client.Id }, null)
-</td>
+                                                <td>@Html.ActionLink("Client Info", "Client", "Information", new { clientId = apt.ClientId }, null)</td>
+
                                             </tr>
                                         }
                                     </tbody>
@@ -199,9 +159,51 @@
                         </div>
                         <!--/.tab-content-->
                     </div>
-                    <!--col-->
+
+                    @*<div class="card">
+                        <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                        <h3 class="card-title">Online Store Visitors</h3>
+                        <a href="javascript:void(0);">View Report</a>
+                        </div>
+                        </div>
+                        <div class="card-body">
+                        <div class="d-flex">
+                        <p class="d-flex flex-column">
+                        <span class="text-bold text-lg">820</span>
+                        <span>Visitors Over Time</span>
+                        </p>
+                        <p class="ml-auto d-flex flex-column text-right">
+                        <span class="text-success">
+                        <i class="fas fa-arrow-up"></i> 12.5%
+                        </span>
+                        <span class="text-muted">Since last week</span>
+                        </p>
+                        </div>
+                        <!-- /.d-flex -->
+
+                        <div class="position-relative mb-4">
+                        <canvas id="visitors-chart" height="200"></canvas>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-end">
+                        <span class="mr-2">
+                        <i class="fas fa-square text-primary"></i> This Week
+                        </span>
+
+                        <span>
+                        <i class="fas fa-square text-gray"></i> Last Week
+                        </span>
+                        </div>
+                        </div>
+                        </div>
+                        <!-- /.card -->*@
+
                 </div>
-                <!--row-->
+                <!--/.col-->
+            </div>
+            <!--/.row-->
+            <div class="row">
             </div>
         </div>
     </div>
@@ -209,6 +211,7 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
@@ -221,15 +224,11 @@
         });
         new DataTable('#upcoming-appts-table', {
             pagingType: 'simple_numbers',
-            pageLength: 10
+            pageLength: 8
         });
         new DataTable('#past-appts-table', {
             pagingType: 'simple_numbers',
-            pageLength: 10
-        });
-        new DataTable('#clients-table', {
-            pagingType: 'simple_numbers',
-            pageLength: 10
+            pageLength: 8
         });
     </script>
 </body>
