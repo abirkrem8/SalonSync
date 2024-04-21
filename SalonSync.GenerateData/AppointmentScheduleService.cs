@@ -13,12 +13,13 @@ using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Models.Enums;
 using SalonSync.Logic.AddAppointmentNotes;
 using SalonSync.Logic.GetAvailableAppointments;
+using HairApplication.Logic.CreateNewClient;
 
 namespace SalonSync.GenerateData
 {
     public interface IAppointmentScheduleService
     {
-        int Run(int numberOfDaysToSchedule, bool historical);
+        int Run(CommandLineOptions options);
     }
 
     public class AppointmentScheduleService : IAppointmentScheduleService
@@ -26,6 +27,7 @@ namespace SalonSync.GenerateData
         private AppointmentScheduleHandler _appointmentScheduleHandler;
         private GetAvailableAppointmentsHandler _getAvailableAppointmentsHandler;
         private AddAppointmentNotesHandler _addAppointmentNotesHandler;
+        private CreateNewClientHandler _createNewClientHandler;
         private FirestoreProvider _firestoreProvider;
         private ILogger<AppointmentScheduleService> _logger;
         private Random _random;
@@ -36,11 +38,13 @@ namespace SalonSync.GenerateData
         public AppointmentScheduleService(ILogger<AppointmentScheduleService> logger,
             AppointmentScheduleHandler appointmentScheduleHandler,
             AddAppointmentNotesHandler addAppointmentNotesHandler, FirestoreProvider firestoreProvider,
-            GetAvailableAppointmentsHandler getAvailableAppointmentsHandler)
+            GetAvailableAppointmentsHandler getAvailableAppointmentsHandler,
+            CreateNewClientHandler createNewClientHandler)
         {
             _appointmentScheduleHandler = appointmentScheduleHandler;
             _getAvailableAppointmentsHandler = getAvailableAppointmentsHandler;
             _addAppointmentNotesHandler = addAppointmentNotesHandler;
+            _createNewClientHandler = createNewClientHandler;
             _firestoreProvider = firestoreProvider;
             _logger = logger;
             _random = new Random();
@@ -48,109 +52,125 @@ namespace SalonSync.GenerateData
         }
 
 
-        public int Run(int numberOfDaysToSchedule, bool historical)
+        public int Run(CommandLineOptions options)
         {
             _logger.LogInformation("In the Appointment Scheduling Service!");
 
-            // historical will not include scheduling for today
-            // future scheduling will include today
-            DateTime startDate = historical ? DateTime.Now.AddDays(numberOfDaysToSchedule * -1).Date : DateTime.Now.Date;
-            DateTime endDate = historical ? DateTime.Now.AddDays(-1).Date : DateTime.Now.AddDays(numberOfDaysToSchedule).Date;
-
-            // First grab all of the clients
-            var listOfClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
-
-            var listOfStylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
-
-            foreach (var stylist in listOfStylists)
+            if (options.CreateNewClients && options.NumberOfNewClientsToCreate > 0)
             {
-                // schedule up to two appointments per day
-                // grab all appointments that are available for the stylist
-                var item = new GetAvailableAppointmentsItem()
+                var createClientsResult = _createNewClientHandler.Handle(new CreateNewClientItem { NumberOfNewClientsToCreate = options.NumberOfNewClientsToCreate });
+                if (createClientsResult.CreateNewClientResultStatus != CreateNewClientResultStatus.Success)
                 {
-                    StylistId = stylist.Id,
-                    StartDate = startDate,
-                    EndDate = endDate
-                };
-                var availableAppointmentsResult = _getAvailableAppointmentsHandler.Handle(item);
-                if (availableAppointmentsResult.GetAvailableAppointmentsResultStatus != GetAvailableAppointmentsResultStatus.Success)
-                {
-                    // log error and quit
+                    //ERROR
                 }
-                var thisStylistsAvailableAppointments = availableAppointmentsResult.AvailableAppointments;
+                // success, carry on
+            }
 
-                // For each date, schedule up to two appointments
-                for (DateTime dayToSchedule = startDate;
-                dayToSchedule <= endDate;
-                dayToSchedule = dayToSchedule.AddDays(1))
+
+            if (options.NumberOfDaysToSchedule != 0)
+            {
+                // options.ScheduleHistorically will not include scheduling for today
+                // future scheduling will include today
+                DateTime startDate = options.ScheduleHistorically ? DateTime.Now.AddDays(options.NumberOfDaysToSchedule * -1).Date : DateTime.Now.Date;
+                DateTime endDate = options.ScheduleHistorically ? DateTime.Now.AddDays(-1).Date : DateTime.Now.AddDays(options.NumberOfDaysToSchedule).Date;
+
+                _logger.LogInformation(string.Format("Scheduling appointments between {0} and {1}.", startDate.ToShortDateString(), endDate.ToShortDateString()));
+
+                // First grab all of the clients
+                var listOfClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
+
+                var listOfStylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
+
+                foreach (var stylist in listOfStylists)
                 {
-                    var daysAvailableAppointments = thisStylistsAvailableAppointments.Where(x => x.Date == dayToSchedule).ToList();
-
-                    // select two random available appointments to schedule and make sure they don't overlap.
-                    TimePeriodCollection aptTimeCollection = new TimePeriodCollection();
-                    if (daysAvailableAppointments.Count > 1)
+                    // schedule up to two appointments per day
+                    // grab all appointments that are available for the stylist
+                    var item = new GetAvailableAppointmentsItem()
                     {
-                        while (aptTimeCollection.Count < MAX_APPOINTMENTS && daysAvailableAppointments.Count > 0)
-                        {
-                            var randomSelectedApt = daysAvailableAppointments[_random.Next(0, daysAvailableAppointments.Count)];
-                            var aptAsTimeRange = new TimeRange(TimeTrim.Hour(dayToSchedule, randomSelectedApt.Hour, randomSelectedApt.Minute),
-                                                TimeTrim.Hour(dayToSchedule, randomSelectedApt.Hour + APPOINTMENT_LENGTH, randomSelectedApt.Minute));
-
-                            if (aptTimeCollection.Count == 0 || !aptTimeCollection.HasOverlapPeriods(aptAsTimeRange))
-                            {
-                                aptTimeCollection.Add(aptAsTimeRange);
-                                daysAvailableAppointments.Remove(randomSelectedApt);
-                            }
-                            else
-                            {
-                                // overlaps so we don't want to pick it again
-                                daysAvailableAppointments.Remove(randomSelectedApt);
-                            }
-                        }
+                        StylistId = stylist.Id,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    };
+                    var availableAppointmentsResult = _getAvailableAppointmentsHandler.Handle(item);
+                    if (availableAppointmentsResult.GetAvailableAppointmentsResultStatus != GetAvailableAppointmentsResultStatus.Success)
+                    {
+                        // log error and quit
                     }
+                    var thisStylistsAvailableAppointments = availableAppointmentsResult.AvailableAppointments;
 
-                    var aptEnumerator = aptTimeCollection.GetEnumerator();
-                    while (aptEnumerator.MoveNext())
+                    // For each date, schedule up to two appointments
+                    for (DateTime dayToSchedule = startDate;
+                    dayToSchedule <= endDate;
+                    dayToSchedule = dayToSchedule.AddDays(1))
                     {
-                        var apt = aptEnumerator.Current;
-                        var client = listOfClients[_random.Next(0, listOfClients.Count - 1)];
+                        var daysAvailableAppointments = thisStylistsAvailableAppointments.Where(x => x.Date == dayToSchedule).ToList();
 
-                        var scheduleItem = new AppointmentScheduleItem()
+                        // select two random available appointments to schedule and make sure they don't overlap.
+                        TimePeriodCollection aptTimeCollection = new TimePeriodCollection();
+                        if (daysAvailableAppointments.Count > 1)
                         {
-                            HairStylistId = stylist.Id,
-                            IsNewClient = false,
-                            FirstName = client.FirstName,
-                            LastName = client.LastName,
-                            DateOfAppointment = apt.Start.Date,
-                            TimeOfAppointment = apt.Start,
-                            PhoneNumber = client.PhoneNumber,
-                            AppointmentType = (AppointmentType)_random.Next(0, 4)
-                        };
+                            while (aptTimeCollection.Count < MAX_APPOINTMENTS && daysAvailableAppointments.Count > 0)
+                            {
+                                var randomSelectedApt = daysAvailableAppointments[_random.Next(0, daysAvailableAppointments.Count)];
+                                var aptAsTimeRange = new TimeRange(TimeTrim.Hour(dayToSchedule, randomSelectedApt.Hour, randomSelectedApt.Minute),
+                                                    TimeTrim.Hour(dayToSchedule, randomSelectedApt.Hour + APPOINTMENT_LENGTH, randomSelectedApt.Minute));
 
-                        _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!",
-                            scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateOfAppointment.ToShortDateString(),
-                            scheduleItem.TimeOfAppointment.ToShortTimeString()));
-
-                        var result = _appointmentScheduleHandler.Handle(scheduleItem);
-                        if (result.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)
-                        {
-                            // log error!
-                            _logger.LogError(string.Format("There was an error! {0}", result.AppointmentScheduleResultErrors.First().Message));
-                            continue;
+                                if (aptTimeCollection.Count == 0 || !aptTimeCollection.HasOverlapPeriods(aptAsTimeRange))
+                                {
+                                    aptTimeCollection.Add(aptAsTimeRange);
+                                    daysAvailableAppointments.Remove(randomSelectedApt);
+                                }
+                                else
+                                {
+                                    // overlaps so we don't want to pick it again
+                                    daysAvailableAppointments.Remove(randomSelectedApt);
+                                }
+                            }
                         }
 
+                        var aptEnumerator = aptTimeCollection.GetEnumerator();
+                        while (aptEnumerator.MoveNext())
+                        {
+                            var apt = aptEnumerator.Current;
+                            var client = listOfClients[_random.Next(0, listOfClients.Count - 1)];
 
-                        var appointmentNoteItem = new AddAppointmentNotesItem()
-                        {
-                            AppointmentId = result.AppointmentId,
-                            NoteText = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
-                        };
-                        var result2 = _addAppointmentNotesHandler.Handle(appointmentNoteItem);
-                        if (result2.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
-                        {
-                            // log error!
-                            _logger.LogError(string.Format("There was an error! {0}", result2.AddAppointmentNotesResultErrors.First().Message));
-                            continue;
+                            var scheduleItem = new AppointmentScheduleItem()
+                            {
+                                HairStylistId = stylist.Id,
+                                IsNewClient = false,
+                                FirstName = client.FirstName,
+                                LastName = client.LastName,
+                                DateOfAppointment = apt.Start.Date,
+                                TimeOfAppointment = apt.Start,
+                                PhoneNumber = client.PhoneNumber,
+                                AppointmentType = (AppointmentType)_random.Next(0, 4)
+                            };
+
+                            _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!",
+                                scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateOfAppointment.ToShortDateString(),
+                                scheduleItem.TimeOfAppointment.ToShortTimeString()));
+
+                            var result = _appointmentScheduleHandler.Handle(scheduleItem);
+                            if (result.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)
+                            {
+                                // log error!
+                                _logger.LogError(string.Format("There was an error! {0}", result.AppointmentScheduleResultErrors.First().Message));
+                                continue;
+                            }
+
+
+                            var appointmentNoteItem = new AddAppointmentNotesItem()
+                            {
+                                AppointmentId = result.AppointmentId,
+                                NoteText = AppointmentNotes[scheduleItem.AppointmentType][_random.Next(0, 2)],
+                            };
+                            var result2 = _addAppointmentNotesHandler.Handle(appointmentNoteItem);
+                            if (result2.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
+                            {
+                                // log error!
+                                _logger.LogError(string.Format("There was an error! {0}", result2.AddAppointmentNotesResultErrors.First().Message));
+                                continue;
+                            }
                         }
                     }
                 }
