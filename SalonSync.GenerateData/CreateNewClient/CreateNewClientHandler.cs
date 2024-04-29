@@ -55,8 +55,8 @@ namespace HairApplication.Logic.CreateNewClient
                         FirstName = _random.GenerateRandomFirstName(),
                         LastName = _random.GenerateRandomLastName(),
                         PhoneNumber = GenerateRandomPhoneNumber(),
-                        HairLength = ((HairLength)_random.Next(0, 3)).GetDisplayName(),
-                        HairTexture = ((HairTexture)_random.Next(0, 3)).GetDisplayName(),
+                        HairLength = ((HairLength)_random.Next(1, 3)).GetDisplayName(),
+                        HairTexture = ((HairTexture)_random.Next(1, 3)).GetDisplayName(),
                         CreationTimestamp = Timestamp.FromDateTime(DateTime.UtcNow),
                         Id = Guid.NewGuid().ToString()
                     };

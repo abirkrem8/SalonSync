@@ -6,6 +6,7 @@
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
 <link rel="stylesheet" href="~/css/light.css" />
 <link rel="stylesheet" href="~/css/site.css" />
@@ -37,8 +38,7 @@
                         <td>@client.FirstName @client.LastName</td>
                         <td>@client.PhoneNumber</td>
                         <td style="width:20px">
-                            <button class="btn btn-theme" type="button" onclick="location.href='@Url.Action("Client","Information",new {clientId=client.Id})'">View Client</button>
-
+                            <a style="color:darkgray" onclick="location.href='@Url.Action("Client","Information",new {clientId=client.Id})'">View Client <i class="fa-solid fa-circle-arrow-right"></i></a>
                         </td>
 
                     </tr>

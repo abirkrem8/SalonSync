@@ -12,6 +12,8 @@ namespace SalonSync.Logic.Load.LoadClientInformation
         public string ClientId { get; set; }
         public string ClientFullName { get; set; }
         public string ClientPhoneNumber { get; set; }
+        public string ClientHairTexture { get; set; }
+        public string ClientHairLength { get; set; }
         public List<LoadClientInformationResultAppointment> UpcomingAppointmentList { get; set; } = new List<LoadClientInformationResultAppointment>();
         public List<LoadClientInformationResultAppointment> PastAppointmentList { get; set; } = new List<LoadClientInformationResultAppointment>();
         public LoadClientInformationResultStatus LoadClientInformationResultStatus { get; set; }

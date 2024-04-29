@@ -69,6 +69,8 @@ namespace SalonSync.Logic.Load.LoadClientInformation
             result.ClientId = loadClientInformationItem.ClientId;
             result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
             result.ClientPhoneNumber = client.PhoneNumber;
+            result.ClientHairTexture = client.HairTexture;
+            result.ClientHairLength = client.HairLength;
             result.PastAppointmentList = pastAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
             result.UpcomingAppointmentList = upcomingAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
             result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.Success;

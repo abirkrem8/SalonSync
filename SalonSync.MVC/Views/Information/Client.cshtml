@@ -49,10 +49,24 @@
                                 <b>Total Appointments</b> <a class="float-right text-theme">@appointmentCount</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Hair Type</b> <a class="float-right text-theme">Curly</a>
+                                @if (string.IsNullOrEmpty(Model.ClientHairTexture))
+                                {
+                                    <b>Hair Texture</b> <a class="float-right text-theme">Unknown</a>
+                                }
+                                else
+                                {
+                                    <b>Hair Texture</b> <a class="float-right text-theme">@Model.ClientHairTexture</a>
+                                }
                             </li>
                             <li class="list-group-item">
-                                <b>Hair Length</b> <a class="float-right text-theme">Short</a>
+                                @if (string.IsNullOrEmpty(Model.ClientHairLength))
+                                {
+                                    <b>Hair Length</b> <a class="float-right text-theme">Unknown</a>
+                                }
+                                else
+                                {
+                                    <b>Hair Length</b> <a class="float-right text-theme">@Model.ClientHairLength</a>
+                                }
                             </li>
                         </ul>
                     </div>
@@ -126,20 +140,27 @@
                                 <h3 class="timeline-header"><a class="text-theme" href="#">Appointment</a> with @apt.HairStylistFullName</h3>
 
                                 <div class="timeline-body">
-
-                                    @if (!apt.AppointmentNotes.Any())
-                                    {
-                                        <p>No Appointment Notes</p>
-                                    }
-                                    @foreach (var note in apt.AppointmentNotes)
-                                    {
-                                        <div class="feature">
-                                            @note
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            @if (!apt.AppointmentNotes.Any())
+                                            {
+                                                <p>No Appointment Notes</p>
+                                            }
+                                            @foreach (var note in apt.AppointmentNotes)
+                                            {
+                                                <div class="feature">
+                                                    @note
+                                                </div>
+                                            }
                                         </div>
-                                    }
-                                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default-@apt.AppointmentId">
-                                        Launch Default Modal
-                                    </button>
+                                        <div class="col-md-2" style="text-align:right">
+                                            <button type="button" class="btn btn-theme" style="font-size:10px;padding:2px 5px 2px 5px" data-toggle="modal" data-target="#modal-default-@apt.AppointmentId">
+                                                <i class="fa-regular fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
                                     <div class="modal fade" id="modal-default-@apt.AppointmentId">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
