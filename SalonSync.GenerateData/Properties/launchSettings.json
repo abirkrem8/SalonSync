@@ -2,7 +2,7 @@
   "profiles": {
     "SalonSync.GenerateData": {
       "commandName": "Project",
-      "commandLineArgs": "-d 7",
+      "commandLineArgs": "-d 7 ",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

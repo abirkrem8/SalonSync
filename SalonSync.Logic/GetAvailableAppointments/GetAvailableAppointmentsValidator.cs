@@ -12,7 +12,11 @@ namespace SalonSync.Logic.GetAvailableAppointments
     {
         public GetAvailableAppointmentsValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
+            RuleFor(r => r.StylistId).NotNull().NotEmpty();
+            RuleFor(r => r.StartDate).NotNull().NotEmpty();
+            RuleFor(r => r.EndDate).NotNull().NotEmpty();
+            RuleFor(r => r.EndDate).NotNull().NotEmpty().GreaterThan(x => x.StartDate);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace SalonSync.Logic.AddAppointmentNotes
             {
                 // There was an error in validation, quit now
                 // log the error
-                string error = string.Format("Validation Error");
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
                 _logger.LogError(error);
                 result.AddAppointmentNotesResultStatus = AddAppointmentNotesResultStatus.ValidationError;
                 result.AddAppointmentNotesResultErrors.Add(new Error { Message = error });
@@ -42,16 +42,32 @@ namespace SalonSync.Logic.AddAppointmentNotes
             }
 
             // Successful validation, do the handling
-            var appointment = _firestoreProvider.Get<Appointment>(addAppointmentNotesItem.AppointmentId, _cancellationToken).Result;
-            if (appointment.AppointmentNotes == null)
+            try
             {
-                appointment.AppointmentNotes = new List<string>();
-            }
-            appointment.AppointmentNotes.Add(addAppointmentNotesItem.NoteText);
-            _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Wait();
+                // Grab appointment from db
+                var appointment = _firestoreProvider.Get<Appointment>(addAppointmentNotesItem.AppointmentId, _cancellationToken).Result;
+                if (appointment.AppointmentNotes == null)
+                {
+                    appointment.AppointmentNotes = new List<string>();
+                }
+                appointment.AppointmentNotes.Add(addAppointmentNotesItem.NoteText);
+                // update db
+                _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Wait();
 
-            result.AddAppointmentNotesResultStatus = AddAppointmentNotesResultStatus.Success;
-            return result;
+                _logger.LogInformation("Successfully added note to appointment!");
+                result.AddAppointmentNotesResultStatus = AddAppointmentNotesResultStatus.Success;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Exceptions with the Firebase DB
+                // log the error
+                string error = string.Format("Database Error! {0}", ex.Message);
+                _logger.LogError(error);
+                result.AddAppointmentNotesResultStatus = AddAppointmentNotesResultStatus.DatabaseError;
+                result.AddAppointmentNotesResultErrors.Add(new Error { Message = error });
+                return result;
+            }
         }
     }
 }

@@ -58,6 +58,8 @@ namespace SalonSync.GenerateData
 
             if (options.CreateNewClients && options.NumberOfNewClientsToCreate > 0)
             {
+                _logger.LogInformation(string.Format("Flag is set to create new clients!"));
+                _logger.LogInformation(string.Format("Creating {0} new clients for the salon",options.NumberOfNewClientsToCreate));
                 var createClientsResult = _createNewClientHandler.Handle(new CreateNewClientItem { NumberOfNewClientsToCreate = options.NumberOfNewClientsToCreate });
                 if (createClientsResult.CreateNewClientResultStatus != CreateNewClientResultStatus.Success)
                 {
@@ -146,9 +148,9 @@ namespace SalonSync.GenerateData
                                 AppointmentType = (AppointmentType)_random.Next(0, 4)
                             };
 
-                            _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3}!",
+                            _logger.LogInformation(String.Format("Scheduling {0} {1} for an appointment at {2} {3} with {4} {5}!",
                                 scheduleItem.FirstName, scheduleItem.LastName, scheduleItem.DateOfAppointment.ToShortDateString(),
-                                scheduleItem.TimeOfAppointment.ToShortTimeString()));
+                                scheduleItem.TimeOfAppointment.ToShortTimeString(), stylist.FirstName, stylist.LastName));
 
                             var result = _appointmentScheduleHandler.Handle(scheduleItem);
                             if (result.AppointmentScheduleResultStatus != AppointmentScheduleResultStatus.Success)

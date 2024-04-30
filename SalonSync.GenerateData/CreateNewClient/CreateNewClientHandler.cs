@@ -60,7 +60,7 @@ namespace HairApplication.Logic.CreateNewClient
                         CreationTimestamp = Timestamp.FromDateTime(DateTime.UtcNow),
                         Id = Guid.NewGuid().ToString()
                     };
-
+                    _logger.LogInformation(string.Format("Creating new client {0} {1}.", client.FirstName, client.LastName));
                     _firestoreProvider.AddOrUpdate<Client>(client, _cancellationToken).Wait();
                 } catch (Exception ex)
                 {

@@ -12,7 +12,8 @@ namespace SalonSync.Logic.Load.LoadClientInformation
     {
         public LoadClientInformationValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
+            RuleFor(r => r.ClientId).NotNull().NotEmpty();
         }
     }
 }

@@ -37,6 +37,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
     public enum LoadClientInformationResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }

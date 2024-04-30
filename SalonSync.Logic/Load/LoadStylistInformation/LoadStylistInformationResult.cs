@@ -39,7 +39,8 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
     public enum LoadStylistInformationResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 
 

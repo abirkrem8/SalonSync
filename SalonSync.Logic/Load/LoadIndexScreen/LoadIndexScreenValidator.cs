@@ -12,7 +12,7 @@ namespace SalonSync.Logic.Load.LoadIndexScreen
     {
         public LoadIndexScreenValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
         }
     }
 }

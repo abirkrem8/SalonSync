@@ -12,7 +12,8 @@ namespace SalonSync.Logic.Load.LoadStylistInformation
     {
         public LoadStylistInformationValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
+            RuleFor(r => r.HairStylistId).NotNull().NotEmpty();
         }
     }
 }
