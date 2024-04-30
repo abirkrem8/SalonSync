@@ -13,7 +13,7 @@ namespace SalonSync.DeleteAppointments
 {
     public interface IAppointmentDeletionService
     {
-        int Run(int numberOfDaysToLookBack, bool deleteAllApppointments);
+        int Run(CommandLineOptions options);
     }
 
     public class AppointmentDeletionService : IAppointmentDeletionService
@@ -34,22 +34,27 @@ namespace SalonSync.DeleteAppointments
         }
 
 
-        public int Run(int numberOfDaysToLookBack, bool deleteAllApppointments = false)
+        public int Run(CommandLineOptions options)
         {
             _logger.LogInformation("In the Appointment Deletion Service!");
 
             var allAppointments = _firestoreProvider.GetAll<Appointment>(_cancellationToken).Result.ToList();
             List<Appointment> appointmentsToDelete = new List<Appointment>();
 
-            if (deleteAllApppointments)
+            if (options.DeleteAllAppointments)
             {
                 appointmentsToDelete = allAppointments;
             }
             else
             {
+                // options.ScheduleHistorically will not include scheduling for today
+                // future scheduling will include today
+                DateTime startDate = options.DeleteFutureAppointments ? DateTime.Now.Date : DateTime.Now.AddDays(options.NumberOfDaysToDelete * -1).Date;
+                DateTime endDate = options.DeleteFutureAppointments ? DateTime.Now.AddDays(options.NumberOfDaysToDelete).Date : DateTime.Now.AddDays(-1).Date;
+
                 appointmentsToDelete = allAppointments.Where(a =>
-                    a.StartTimeOfAppointment.ToDateTime().ToLocalTime() < DateTime.Now
-                    && a.StartTimeOfAppointment.ToDateTime().ToLocalTime() > DateTime.Now.AddDays(numberOfDaysToLookBack * -1).Date).ToList();
+                    a.StartTimeOfAppointment.ToDateTime().ToLocalTime().Date <= endDate
+                    && a.StartTimeOfAppointment.ToDateTime().ToLocalTime().Date >= startDate).ToList();
             }
 
             appointmentsToDelete.ForEach(a =>
@@ -60,13 +65,21 @@ namespace SalonSync.DeleteAppointments
             return 0;
         }
 
-        private int DeleteAppointmentFromDB(Appointment apt)
+        private void DeleteAppointmentFromDB(Appointment apt)
         {
             // Delete from Appointment Table
-            var aptRef = _firestoreProvider.ConvertIdToReference<Appointment>(apt.Id);
-            aptRef.DeleteAsync().Wait();
-            _logger.LogInformation(String.Format("Removed appointment {0} from the SalonSync Database", apt.Id));
-            return 0;
+            try
+            {
+                var aptRef = _firestoreProvider.ConvertIdToReference<Appointment>(apt.Id);
+                aptRef.DeleteAsync().Wait();
+                _logger.LogInformation(String.Format("Removed appointment {0} from the SalonSync Database", apt.Id));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format("Error while deleting appointment {0} from the database: {1}", apt.Id, ex.Message));
+
+            }
         }
 
     }
