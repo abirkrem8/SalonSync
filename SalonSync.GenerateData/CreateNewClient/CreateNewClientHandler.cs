@@ -4,6 +4,7 @@ using RandomNameGeneratorLibrary;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using SalonSync.Models.Enums;
+using SalonSync.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,16 +41,22 @@ namespace HairApplication.Logic.CreateNewClient
             {
                 // There was an error in validation, quit now
                 // log the error
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
+                _logger.LogError(error);
+                result.CreateNewClientResultStatus = CreateNewClientResultStatus.ValidationError;
+                result.CreateNewClientResultErrors.Add(new Error { Message = error });
                 return result;
             }
 
 
             // Successful validation, do the handling
-
+            int createdClients = 0;
+            // Create new clients, number given in command line
             for (int i = 0; i < CreateNewClientItem.NumberOfNewClientsToCreate; i++)
             {
                 try
                 {
+                    
                     var client = new Client()
                     {
                         FirstName = _random.GenerateRandomFirstName(),
@@ -62,12 +69,16 @@ namespace HairApplication.Logic.CreateNewClient
                     };
                     _logger.LogInformation(string.Format("Creating new client {0} {1}.", client.FirstName, client.LastName));
                     _firestoreProvider.AddOrUpdate<Client>(client, _cancellationToken).Wait();
+                    createdClients++;
                 } catch (Exception ex)
                 {
-                    _logger.LogError("Oh no! Error");
+                    // Not FATAL, continue
+                    _logger.LogError("Oh no! Error while creating new client");
+                    continue;
                 }
             }
 
+            _logger.LogInformation(string.Format("Successfully created {0} new clients for Salon Sync", createdClients));
             result.CreateNewClientResultStatus = CreateNewClientResultStatus.Success;
             return result;
         }

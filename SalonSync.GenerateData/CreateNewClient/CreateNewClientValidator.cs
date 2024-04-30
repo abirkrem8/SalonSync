@@ -12,7 +12,8 @@ namespace HairApplication.Logic.CreateNewClient
     {
         public CreateNewClientValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
+            RuleFor(r => r.NumberOfNewClientsToCreate).GreaterThan(0);
         }
     }
 }
