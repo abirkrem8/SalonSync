@@ -12,7 +12,7 @@ namespace SalonSync.Logic.Load.LoadClientList
     {
         public LoadClientListValidator()
         {
-
+            RuleFor(r => r).NotNull().NotEmpty();
         }
     }
 }

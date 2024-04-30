@@ -37,7 +37,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
             if (!validationResult.IsValid)
             {
                 // There was an error in validation, quit now
-                string error = "Validation Error";
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
                 _logger.LogError(error);
                 result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.ValidationError;
                 result.LoadClientInformationResultErrors.Add(new Error() { Message = error });
@@ -45,34 +45,54 @@ namespace SalonSync.Logic.Load.LoadClientInformation
             }
 
             // Successful validation, do the handling
-            _logger.LogInformation("Loading Client information...");
-            Client client = _firestoreProvider.Get<Client>(loadClientInformationItem.ClientId, _cancellationToken).Result;
-            DocumentReference clientRef = _firestoreProvider.ConvertIdToReference<Client>(loadClientInformationItem.ClientId);
-
-            var appointmentsFromDB = _firestoreProvider.WhereEqualTo<Appointment>("Client", clientRef, _cancellationToken).Result.ToList();
-            List<LoadClientInformationResultAppointment> pastAppointments = new List<LoadClientInformationResultAppointment>();
-            List<LoadClientInformationResultAppointment> upcomingAppointments = new List<LoadClientInformationResultAppointment>();
-
-            appointmentsFromDB.ForEach(appointmentFromDB =>
+            try
             {
-                var apt = _mapper.Map<LoadClientInformationResultAppointment>(appointmentFromDB);
+                _logger.LogInformation("Loading Client Information...");
+                Client client = _firestoreProvider.Get<Client>(loadClientInformationItem.ClientId, _cancellationToken).Result;
+                DocumentReference clientRef = _firestoreProvider.ConvertIdToReference<Client>(loadClientInformationItem.ClientId);
 
-                if (apt.AppointmentStartTime < DateTime.Now)
+                var appointmentsFromDB = _firestoreProvider.WhereEqualTo<Appointment>("Client", clientRef, _cancellationToken).Result.ToList();
+                List<LoadClientInformationResultAppointment> pastAppointments = new List<LoadClientInformationResultAppointment>();
+                List<LoadClientInformationResultAppointment> upcomingAppointments = new List<LoadClientInformationResultAppointment>();
+
+                // Separate appointments into the past and future
+                appointmentsFromDB.ForEach(appointmentFromDB =>
                 {
-                    pastAppointments.Add(apt);
-                } else
-                {
-                    upcomingAppointments.Add(apt);
-                }
-            });
+                    var apt = _mapper.Map<LoadClientInformationResultAppointment>(appointmentFromDB);
 
-            result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
-            result.ClientPhoneNumber = client.PhoneNumber;
-            result.PastAppointmentList = pastAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
-            result.UpcomingAppointmentList = upcomingAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
-            result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.Success;
+                    if (apt.AppointmentStartTime < DateTime.Now)
+                    {
+                        pastAppointments.Add(apt);
+                    }
+                    else
+                    {
+                        upcomingAppointments.Add(apt);
+                    }
+                });
 
-            return result;
+                // Save all info needed for UI
+                result.ClientId = loadClientInformationItem.ClientId;
+                result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
+                result.ClientPhoneNumber = client.PhoneNumber;
+                result.ClientHairTexture = client.HairTexture;
+                result.ClientHairLength = client.HairLength;
+                result.PastAppointmentList = pastAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
+                result.UpcomingAppointmentList = upcomingAppointments.OrderByDescending(x => x.AppointmentStartTime).ToList();
+                result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.Success;
+
+                _logger.LogInformation(string.Format("Successfully loaded Client information for {0}", result.ClientFullName));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Exceptions with the Firebase DB
+                // log the error
+                string error = string.Format("Database Error! {0}", ex.Message);
+                _logger.LogError(error);
+                result.LoadClientInformationResultStatus = LoadClientInformationResultStatus.DatabaseError;
+                result.LoadClientInformationResultErrors.Add(new Error { Message = error });
+                return result;
+            }
         }
     }
 }

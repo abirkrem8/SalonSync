@@ -21,5 +21,7 @@ namespace SalonSync.Logic.AppointmentSchedule
         public HairTexture ClientHairTexture { get; set; }
         public HairLength ClientHairLength { get; set; }
 
+        public bool HistoricalAppointmentSchedule { get; set; }
+
     }
 }

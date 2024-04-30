@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalonSync.Logic.Load.LoadIndexScreen
+namespace HairApplication.Logic.CreateNewClient
 {
-    public class LoadIndexScreenValidator : AbstractValidator<LoadIndexScreenItem>
+    public class CreateNewClientValidator : AbstractValidator<CreateNewClientItem>
     {
-        public LoadIndexScreenValidator()
+        public CreateNewClientValidator()
         {
             RuleFor(r => r).NotNull().NotEmpty();
+            RuleFor(r => r.NumberOfNewClientsToCreate).GreaterThan(0);
         }
     }
 }

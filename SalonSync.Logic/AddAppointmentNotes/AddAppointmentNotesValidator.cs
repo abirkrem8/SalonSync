@@ -12,7 +12,9 @@ namespace SalonSync.Logic.AddAppointmentNotes
     {
         public AddAppointmentNotesValidator()
         {
-
+            RuleFor(x => x).NotNull().NotEmpty();
+            RuleFor(x => x.AppointmentId).NotNull().NotEmpty();
+            RuleFor(x => x.NoteText).NotNull().NotEmpty();
         }
     }
 }

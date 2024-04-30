@@ -9,6 +9,7 @@ using Google.Cloud.Firestore;
 using Microsoft.Extensions.Logging;
 using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.DeleteAppointments;
+using CommandLine;
 
 
 // Generate fake appointments with exisiting clients and hair stylists at the hair salon for x days in advance. 
@@ -39,7 +40,20 @@ IHost _host = Host.CreateDefaultBuilder().ConfigureServices(services =>
 
 
 var service = _host.Services.GetRequiredService<IAppointmentDeletionService>();
-int exitCode = service.Run(0,true);
-
+int exitCode = Parser.Default.ParseArguments<CommandLineOptions>(args)
+            .MapResult(async (CommandLineOptions opts) =>
+            {
+                try
+                {
+                    // We have the parsed arguments, so let's just pass them down
+                    return service.Run(opts);
+                }
+                catch
+                {
+                    Console.WriteLine("Error!");
+                    return -3; // Unhandled error
+                }
+            },
+            errs => Task.FromResult(-1)).Result; // Invalid arguments
 
 Environment.Exit(exitCode);

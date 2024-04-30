@@ -16,6 +16,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
             /*etc...*/
             CreateMap<Appointment, LoadClientInformationResultAppointment>()
                 .ForMember(dst => dst.AppointmentStartTime, x => x.MapFrom(src => src.StartTimeOfAppointment.ToDateTime().ToLocalTime()))
+                .ForMember(dst => dst.AppointmentId, x => x.MapFrom(src => src.Id))
                 ;
         }
 

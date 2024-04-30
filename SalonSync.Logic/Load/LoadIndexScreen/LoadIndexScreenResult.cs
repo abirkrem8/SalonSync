@@ -22,7 +22,8 @@ namespace SalonSync.Logic.Load.LoadIndexScreen
     public enum LoadIndexScreenResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }
 

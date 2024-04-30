@@ -21,6 +21,8 @@ namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
     public enum LoadAppointmentScheduleFormResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError,
+        AvailableAppointmentsError
     }
 }

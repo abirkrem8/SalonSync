@@ -19,6 +19,7 @@ namespace SalonSync.Logic.GetAvailableAppointments
     public enum GetAvailableAppointmentsResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }

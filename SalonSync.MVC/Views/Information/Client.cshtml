@@ -11,6 +11,7 @@
 <link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" />
 <link rel="stylesheet" href="~/css/adminlte.min.css">
 <link rel="stylesheet" href="~/css/light.css" />
 <link rel="stylesheet" href="~/css/site.css" />
@@ -48,10 +49,24 @@
                                 <b>Total Appointments</b> <a class="float-right text-theme">@appointmentCount</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Hair Type</b> <a class="float-right text-theme">Curly</a>
+                                @if (string.IsNullOrEmpty(Model.ClientHairTexture))
+                                {
+                                    <b>Hair Texture</b> <a class="float-right text-theme">Unknown</a>
+                                }
+                                else
+                                {
+                                    <b>Hair Texture</b> <a class="float-right text-theme">@Model.ClientHairTexture</a>
+                                }
                             </li>
                             <li class="list-group-item">
-                                <b>Hair Length</b> <a class="float-right text-theme">Short</a>
+                                @if (string.IsNullOrEmpty(Model.ClientHairLength))
+                                {
+                                    <b>Hair Length</b> <a class="float-right text-theme">Unknown</a>
+                                }
+                                else
+                                {
+                                    <b>Hair Length</b> <a class="float-right text-theme">@Model.ClientHairLength</a>
+                                }
                             </li>
                         </ul>
                     </div>
@@ -125,18 +140,53 @@
                                 <h3 class="timeline-header"><a class="text-theme" href="#">Appointment</a> with @apt.HairStylistFullName</h3>
 
                                 <div class="timeline-body">
-
-                                    @if (!apt.AppointmentNotes.Any())
-                                    {
-                                        <p>No Appointment Notes</p>
-                                    }
-                                    @foreach (var note in apt.AppointmentNotes)
-                                    {
-                                        <div class="feature">
-                                            @note
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            @if (!apt.AppointmentNotes.Any())
+                                            {
+                                                <p>No Appointment Notes</p>
+                                            }
+                                            @foreach (var note in apt.AppointmentNotes)
+                                            {
+                                                <div class="feature">
+                                                    @note
+                                                </div>
+                                            }
                                         </div>
-                                    }
+                                        <div class="col-md-2" style="text-align:right">
+                                            <button type="button" class="btn btn-theme" style="font-size:10px;padding:2px 5px 2px 5px" data-toggle="modal" data-target="#modal-default-@apt.AppointmentId">
+                                                <i class="fa-regular fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="modal fade" id="modal-default-@apt.AppointmentId">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form asp-action="AddNote" asp-controller="Appointment">
+                                                    <input name="AppointmentId" value="@apt.AppointmentId" hidden />
+                                                    <input name="ClientId" value="@Model.ClientId" hidden />
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Add Appointment Note</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <textarea class="form-control" name="NoteText" cols="40" rows="5" placeholder="Type new appointment note..."></textarea>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-between">
+                                                        <button type="submit" class="btn btn-theme">Add Note</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                    </div>
+                                        <!-- /.modal-dialog -->
                                 </div>
+                                    <!-- /.modal -->
+                            </div>
                                 <div class="timeline-footer appointment-footer">
                                     <div>@apt.AppointmentType</div>
                                     <div>$ @apt.AppointmentCost</div>
@@ -162,25 +212,19 @@
     <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    <script>
 
-        //Object.assign(DataTable.defaults, {
-        //    searching: false,
-        //    ordering: false,
-        //    lengthChange: false
-        //});
-        //new DataTable('#upcoming-appts-table', {
-        //    pagingType: 'simple_numbers',
-        //    pageLength: 10
-        //});
-        //new DataTable('#past-appts-table', {
-        //    pagingType: 'simple_numbers',
-        //    pageLength: 10
-        //});
-        //new DataTable('#clients-table', {
-        //    pagingType: 'simple_numbers',
-        //    pageLength: 10
-        //});
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var successMsg = '@TempData["success-message"]';
+               if (successMsg.length) {
+                  toastr.success(successMsg);
+               }
+               var errorMsg = '@TempData["error-message"]';
+               if (errorMsg.length) {
+                  toastr.error(errorMsg);
+               }
+        });
     </script>
 </body>
 </html>

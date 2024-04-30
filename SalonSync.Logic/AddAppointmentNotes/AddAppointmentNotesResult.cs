@@ -20,6 +20,7 @@ namespace SalonSync.Logic.AddAppointmentNotes
     public enum AddAppointmentNotesResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }

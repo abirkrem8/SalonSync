@@ -13,6 +13,7 @@ using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
 using SalonSync.Logic.Load.LoadClientInformation;
 using SalonSync.Logic.Load.LoadClientList;
 using SalonSync.Logic.GetAvailableAppointments;
+using SalonSync.Logic.AddAppointmentNotes;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
 ILogger logger = factory.CreateLogger("Program");
@@ -75,6 +76,7 @@ logger.LogInformation("Setting up Dependency Injection Handlers");
 builder.Services.AddTransient<MappingProfile>();
 builder.Services.AddTransient<AppointmentScheduleHandler>();
 builder.Services.AddTransient<GetAvailableAppointmentsHandler>();
+builder.Services.AddTransient<AddAppointmentNotesHandler>();
 builder.Services.AddTransient<LoadIndexScreenHandler>();
 builder.Services.AddTransient<LoadStylistInformationHandler>();
 builder.Services.AddTransient<LoadAppointmentScheduleFormHandler>();

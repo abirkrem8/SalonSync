@@ -38,8 +38,7 @@ namespace SalonSync.Logic.Load.LoadClientList
             {
                 // There was an error in validation, quit now
                 // log the error
-                // There was an error in validation, quit now
-                string error = "Validation Error";
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
                 _logger.LogError(error);
                 result.LoadClientListResultStatus = LoadClientListResultStatus.ValidationError;
                 result.LoadClientListResultErrors.Add(new Error() { Message = error });
@@ -47,12 +46,25 @@ namespace SalonSync.Logic.Load.LoadClientList
             }
 
             // Successful validation, do the handling
-            var allClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
+            try
+            {
+                // We want to grab all of the clients to display in a table on the UI
+                var allClients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
 
-
-            result.ClientList = _mapper.Map<List<LoadClientListResultItem>>(allClients).OrderBy(x => x.FirstName).ToList();
-            result.LoadClientListResultStatus = LoadClientListResultStatus.Success;
-            return result;
+                result.ClientList = _mapper.Map<List<LoadClientListResultItem>>(allClients).OrderBy(x => x.FirstName).ToList();
+                result.LoadClientListResultStatus = LoadClientListResultStatus.Success;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Exceptions with the Firebase DB
+                // log the error
+                string error = string.Format("Database Error! {0}", ex.Message);
+                _logger.LogError(error);
+                result.LoadClientListResultStatus = LoadClientListResultStatus.DatabaseError;
+                result.LoadClientListResultErrors.Add(new Error { Message = error });
+                return result;
+            }
         }
     }
 }

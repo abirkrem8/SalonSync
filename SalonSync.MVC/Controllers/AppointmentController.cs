@@ -6,6 +6,7 @@ using SalonSync.Logic.AppointmentSchedule;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
 using SalonSync.Logic.Load.LoadAppointmentScheduleForm;
+using SalonSync.Logic.AddAppointmentNotes;
 
 namespace SalonSync.MVC.Controllers
 {
@@ -16,17 +17,19 @@ namespace SalonSync.MVC.Controllers
         private FirestoreProvider _firestoreProvider;
         private AppointmentScheduleHandler _appointmentScheduleHandler;
         private LoadAppointmentScheduleFormHandler _loadAppointmentScheduleFormHandler;
+        private AddAppointmentNotesHandler _addAppointmentNotesHandler;
         private CancellationToken _cancellationToken;
 
         public AppointmentController(ILogger<HomeController> logger, IMapper mappingProfile,
             FirestoreProvider firestoreProvider, AppointmentScheduleHandler appointmentScheduleHandler,
-            LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler)
+            LoadAppointmentScheduleFormHandler loadAppointmentScheduleFormHandler, AddAppointmentNotesHandler addAppointmentNotesHandler)
         {
             _logger = logger;
             _mapper = mappingProfile;
             _firestoreProvider = firestoreProvider;
             _appointmentScheduleHandler = appointmentScheduleHandler;
             _loadAppointmentScheduleFormHandler = loadAppointmentScheduleFormHandler;
+            _addAppointmentNotesHandler = addAppointmentNotesHandler;
             _cancellationToken = new CancellationTokenSource().Token;
         }
 
@@ -61,6 +64,24 @@ namespace SalonSync.MVC.Controllers
             }
         }
 
+
+        [HttpPost]
+        public IActionResult AddNote(AddAppointmentNoteModel noteModel)
+        {
+            // Now we must schedule the appointment
+            AddAppointmentNotesItem addAppointmentNotesItem = _mapper.Map<AddAppointmentNotesItem>(noteModel);
+            var addAppointmentNotesResult = _addAppointmentNotesHandler.Handle(addAppointmentNotesItem);
+            if (addAppointmentNotesResult.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
+            {
+                string alert = string.Format("Unable to add notes to appointment! {0}", addAppointmentNotesResult.AddAppointmentNotesResultErrors.FirstOrDefault().Message);
+                return RedirectToAction("Client", "Information", new { clientId = noteModel.ClientId,failureAlert = alert });
+            }
+            else
+            {
+                string alert = string.Format("Successfully added note!");
+                return RedirectToAction("Client", "Information", new { clientId = noteModel.ClientId, successAlert = alert });
+            }
+        }
 
         public IActionResult Privacy()
         {

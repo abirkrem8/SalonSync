@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SalonSync.Logic.Shared;
 using SalonSync.Models.Entities;
+using SalonSync.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace SalonSync.Logic.Load.LoadIndexScreen
 
         public LoadIndexScreenResult Handle(LoadIndexScreenItem LoadIndexScreenItem)
         {
-            LoadIndexScreenResult loadIndexScreenResult = new LoadIndexScreenResult();
+            LoadIndexScreenResult result = new LoadIndexScreenResult();
 
             LoadIndexScreenValidator validator = new LoadIndexScreenValidator();
             var validationResult = validator.Validate(LoadIndexScreenItem);
@@ -35,44 +36,64 @@ namespace SalonSync.Logic.Load.LoadIndexScreen
             {
                 // There was an error in validation, quit now
                 // log the error
-                return loadIndexScreenResult;
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
+                _logger.LogError(error);
+                result.LoadIndexScreenResultStatus = LoadIndexScreenResultStatus.ValidationError;
+                result.LoadIndexScreenResultErrors.Add(new Error() { Message = error });
+                return result;
             }
 
             // Successful validation, do the handling
-            var appointments = _firestoreProvider.GetAll<Appointment>(_cancellationToken).Result.ToList();
-            var stylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
-            var calendarEvents = new object[appointments.Count()];
-
-            // Create all of the calendar events for the smart-scheduler
-            for (int i = 0; i < appointments.Count; i++)
+            try
             {
-                var aptStylist = stylists.FirstOrDefault(x => x.Id == appointments[i].HairStylist.Id);
-                if (aptStylist != null)
+                var appointments = _firestoreProvider.GetAll<Appointment>(_cancellationToken).Result.ToList();
+                var stylists = _firestoreProvider.GetAll<HairStylist>(_cancellationToken).Result.ToList();
+                var calendarEvents = new object[appointments.Count()];
+
+                // Create all of the calendar events for the smart-scheduler
+                for (int i = 0; i < appointments.Count; i++)
                 {
-                    var appointmentStartTime = appointments[i].StartTimeOfAppointment.ToDateTime().ToLocalTime();
-                    var description = string.Concat("This appointment is for ", appointments[i].ClientFullName,
-                        " with stylist ", aptStylist.FirstName, " ", aptStylist.LastName, " at ",
-                        appointmentStartTime.ToString("MM/dd/yyyy hh:mm tt"), ".");
-                    calendarEvents[i] = new
+                    var aptStylist = stylists.FirstOrDefault(x => x.Id == appointments[i].HairStylist.Id);
+                    if (aptStylist != null)
                     {
-                        label = appointments[i].ClientFullName,
-                        dateStart = appointmentStartTime.ToString("MM/dd/yyyy HH:mm:ss"),
-                        dateEnd = appointmentStartTime.AddHours(2).ToString("MM/dd/yyyy HH:mm:ss"),
-                        backgroundColor = aptStylist.HexColor,
-                        description
-                    };
+                        var appointmentStartTime = appointments[i].StartTimeOfAppointment.ToDateTime().ToLocalTime();
+                        var description = string.Concat("This appointment is for ", appointments[i].ClientFullName,
+                            " with stylist ", aptStylist.FirstName, " ", aptStylist.LastName, " at ",
+                            appointmentStartTime.ToString("MM/dd/yyyy hh:mm tt"), ".");
+                        // Create event object for json parsing
+                        calendarEvents[i] = new
+                        {
+                            label = appointments[i].ClientFullName,
+                            dateStart = appointmentStartTime.ToString("MM/dd/yyyy HH:mm:ss"),
+                            dateEnd = appointmentStartTime.AddHours(2).ToString("MM/dd/yyyy HH:mm:ss"),
+                            backgroundColor = aptStylist.HexColor,
+                            description
+                        };
+                    }
+                    else
+                    {
+                        // no existing stylist linked to appointment, log error but continue
+                        _logger.LogError(String.Format("No existing stylist: {0}", appointments[i].HairStylist.Id));
+                        continue;
+                    }
                 }
-                else
-                {
-                    // log error but continue
-                }
+
+                result.CalendarEvents = JsonSerializer.Serialize(calendarEvents);
+                result.HairStylists = stylists;
+                result.LoadIndexScreenResultStatus = LoadIndexScreenResultStatus.Success;
+                _logger.LogInformation("Successfully loading all of the appointments into the calendar!");
+                return result;
             }
-
-            loadIndexScreenResult.CalendarEvents = JsonSerializer.Serialize(calendarEvents);
-            loadIndexScreenResult.HairStylists = stylists;
-            loadIndexScreenResult.LoadIndexScreenResultStatus = LoadIndexScreenResultStatus.Success;
-
-            return loadIndexScreenResult;
+            catch (Exception ex)
+            {
+                // Exceptions with the Firebase DB
+                // log the error
+                string error = string.Format("Database Error while loading appointments! {0}", ex.Message);
+                _logger.LogError(error);
+                result.LoadIndexScreenResultStatus = LoadIndexScreenResultStatus.DatabaseError;
+                result.LoadIndexScreenResultErrors.Add(new Error { Message = error });
+                return result;
+            }
         }
     }
 }

@@ -36,7 +36,10 @@ namespace SalonSync.Logic.AppointmentSchedule
             {
                 // There was an error in validation, quit now
                 // log the error
+                string error = string.Format("Validation Error: {0}", validationResult.Errors.FirstOrDefault());
+                _logger.LogError(error);
                 result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.ValidationError;
+                result.AppointmentScheduleResultErrors.Add(new Error { Message = error });
                 return result;
             }
 
@@ -48,50 +51,66 @@ namespace SalonSync.Logic.AppointmentSchedule
             Appointment appointment;
             DocumentReference appointmentReference;
 
-
-            // Grab the stylist reference
-            hairStylist = _firestoreProvider.Get<HairStylist>(appointmentScheduleItem.HairStylistId, _cancellationToken).Result;
-            stylistReference = _firestoreProvider.ConvertIdToReference<HairStylist>(hairStylist.Id);
-
-            // New client? Add to DB and grab Reference
-            if (appointmentScheduleItem.IsNewClient)
+            try
             {
-                client = new Client(appointmentScheduleItem.FirstName, appointmentScheduleItem.LastName,
-                    appointmentScheduleItem.PhoneNumber, appointmentScheduleItem.ClientHairTexture, appointmentScheduleItem.ClientHairLength);
+                _logger.LogInformation("Starting handling for scheduling new appointment!");
+                // Grab the stylist reference
+                hairStylist = _firestoreProvider.Get<HairStylist>(appointmentScheduleItem.HairStylistId, _cancellationToken).Result;
+                stylistReference = _firestoreProvider.ConvertIdToReference<HairStylist>(hairStylist.Id);
 
-                clientReference = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
-            }
-            else
-            {
-                // grab all clients and find the ONE with the same phone number
-                var clients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
-
-                var matchingClients = clients.Where(x => x.PhoneNumber.Equals(appointmentScheduleItem.PhoneNumber)).ToList();
-                if (matchingClients.Count() < 1)
+                // New client? Add to DB and grab Reference
+                if (appointmentScheduleItem.IsNewClient)
                 {
-                    // throw error!
-                    // log error and send it back to view model
-                    string error = string.Format("An existing client was not found under the phone number: {0}", appointmentScheduleItem.PhoneNumber);
-                    _logger.LogError(error);
-                    result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.NoExistingClient;
-                    result.AppointmentScheduleResultErrors.Add(new Error { Message = error });
-                    return result;
+                    client = new Client(appointmentScheduleItem.FirstName, appointmentScheduleItem.LastName,
+                        appointmentScheduleItem.PhoneNumber, appointmentScheduleItem.ClientHairTexture, appointmentScheduleItem.ClientHairLength);
+
+                    clientReference = _firestoreProvider.AddOrUpdate(client, _cancellationToken).Result;
                 }
-                client = matchingClients[0];
-                clientReference = _firestoreProvider.ConvertIdToReference<Client>(client.Id);
+                else
+                {
+                    // grab all clients and find the ONE with the same phone number
+                    var clients = _firestoreProvider.GetAll<Client>(_cancellationToken).Result.ToList();
+
+                    var matchingClients = clients.Where(x => x.PhoneNumber.Equals(appointmentScheduleItem.PhoneNumber)).ToList();
+                    if (matchingClients.Count() < 1)
+                    {
+                        // throw error! No clients found
+                        // log error and send it back to view model
+                        string error = string.Format("An existing client was not found under the phone number: {0}", appointmentScheduleItem.PhoneNumber);
+                        _logger.LogError(error);
+                        result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.NoExistingClient;
+                        result.AppointmentScheduleResultErrors.Add(new Error { Message = error });
+                        return result;
+                    }
+                    client = matchingClients[0];
+                    clientReference = _firestoreProvider.ConvertIdToReference<Client>(client.Id);
+                }
+
+                // Create Appointment object and add to DB, grab ID
+                appointment = new Appointment(stylistReference, clientReference, hairStylist.FirstName, hairStylist.LastName, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment, appointmentScheduleItem.AppointmentType);
+                appointmentReference = _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
+
+                result.AppointmentId = appointmentReference.Id;
+                result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
+                result.StylistFullName = string.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
+                result.TimeOfAppointment = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
+
+                _logger.LogInformation(string.Format("Successfully created a new appointment for {0} on {1} at {2} with {3}",
+                    result.ClientFullName, result.TimeOfAppointment.ToShortDateString(), result.TimeOfAppointment.ToShortDateString(), result.StylistFullName));
+
+                result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.Success;
+                return result;
             }
-
-            // Create Appointment object and add to DB, grab ID
-            appointment = new Appointment(stylistReference, clientReference, hairStylist.FirstName,hairStylist.LastName, client.FirstName, client.LastName, client.PhoneNumber, appointmentScheduleItem.DateOfAppointment, appointmentScheduleItem.TimeOfAppointment, appointmentScheduleItem.AppointmentType);
-            appointmentReference= _firestoreProvider.AddOrUpdate(appointment, _cancellationToken).Result;
-
-            result.AppointmentId = appointmentReference.Id;
-            result.ClientFullName = string.Concat(client.FirstName, " ", client.LastName);
-            result.StylistFullName = string.Concat(hairStylist.FirstName, " ", hairStylist.LastName);
-            result.TimeOfAppointment = appointment.StartTimeOfAppointment.ToDateTime().ToLocalTime();
-            result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.Success;
-
-            return result;
+            catch (Exception ex)
+            {
+                // Exceptions with the Firebase DB
+                // log the error
+                string error = string.Format("Database Error! {0}", ex.Message);
+                _logger.LogError(error);
+                result.AppointmentScheduleResultStatus = AppointmentScheduleResultStatus.DatabaseError;
+                result.AppointmentScheduleResultErrors.Add(new Error { Message = error });
+                return result;
+            }
         }
     }
 }

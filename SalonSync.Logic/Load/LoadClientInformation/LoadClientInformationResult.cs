@@ -9,8 +9,11 @@ namespace SalonSync.Logic.Load.LoadClientInformation
 {
     public class LoadClientInformationResult
     {
+        public string ClientId { get; set; }
         public string ClientFullName { get; set; }
         public string ClientPhoneNumber { get; set; }
+        public string ClientHairTexture { get; set; }
+        public string ClientHairLength { get; set; }
         public List<LoadClientInformationResultAppointment> UpcomingAppointmentList { get; set; } = new List<LoadClientInformationResultAppointment>();
         public List<LoadClientInformationResultAppointment> PastAppointmentList { get; set; } = new List<LoadClientInformationResultAppointment>();
         public LoadClientInformationResultStatus LoadClientInformationResultStatus { get; set; }
@@ -21,6 +24,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
 
     public class LoadClientInformationResultAppointment
     {
+        public string AppointmentId { get; set;}
         public string AppointmentType { get; set; }
         public int AppointmentCost { get; set; }
         public string HairStylistFullName { get; set; }
@@ -33,6 +37,7 @@ namespace SalonSync.Logic.Load.LoadClientInformation
     public enum LoadClientInformationResultStatus
     {
         Success,
-        ValidationError
+        ValidationError,
+        DatabaseError
     }
 }

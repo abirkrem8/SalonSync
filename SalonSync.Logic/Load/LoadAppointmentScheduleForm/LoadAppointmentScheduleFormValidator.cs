@@ -12,6 +12,7 @@ namespace SalonSync.Logic.Load.LoadAppointmentScheduleForm
     {
         public LoadAppointmentScheduleFormValidator()
         {
+            RuleFor(r => r).NotNull().NotEmpty();
 
         }
     }
