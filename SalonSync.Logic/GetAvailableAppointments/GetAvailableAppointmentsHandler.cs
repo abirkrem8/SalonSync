@@ -13,10 +13,10 @@ namespace SalonSync.Logic.GetAvailableAppointments
 {
     public class GetAvailableAppointmentsHandler
     {
-        private const int OPENING_HOUR = 8;
+        private const int OPENING_HOUR = 9;
         private const int CLOSING_HOUR = 18;
         private const int HOUR_LENGTH_OF_APPOINTMENT = 2;
-        private const int MINUTE_INTERVAL = 60;
+        private const int MINUTE_INTERVAL = 30;
         private ILogger<GetAvailableAppointmentsHandler> _logger;
         private FirestoreProvider _firestoreProvider;
         private CancellationToken _cancellationToken;

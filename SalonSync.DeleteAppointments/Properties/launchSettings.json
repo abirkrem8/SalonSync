@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SalonSync.DeleteAppointments": {
+      "commandName": "Project",
+      "commandLineArgs": "-a true"
+    }
+  }
+}
