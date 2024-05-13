@@ -4,7 +4,7 @@ namespace SalonSync.MVC.Models
 {
     public class IndexViewModel
     {
-        public string CalendarEvents { get; set; }
-        public List<HairStylist> HairStylists { get; set; }
+        public string CalendarEvents { get; set; } = "";
+        public List<HairStylist> HairStylists { get; set; } = new List<HairStylist>();
     }
 }

@@ -36,14 +36,24 @@ namespace SalonSync.MVC.Controllers
         [HttpGet]
         public IActionResult Schedule(string alert = "")
         {
-            var result = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
-            var viewModel = _mapper.Map<AppointmentScheduleViewModel>(result);
-            if (!string.IsNullOrEmpty(alert))
-            {
-                TempData["error-message"] = alert;
-            }
-            return View(viewModel);
+            AppointmentScheduleViewModel model = new AppointmentScheduleViewModel();
 
+            var result = _loadAppointmentScheduleFormHandler.Handle(new LoadAppointmentScheduleFormItem());
+            if (result.LoadAppointmentScheduleFormResultStatus != LoadAppointmentScheduleFormResultStatus.Success)
+            {
+                string err = String.Format("An error occurred while loading this screen - {0}",
+                    result.LoadAppointmentScheduleFormResultErrors.FirstOrDefault().Message);
+                TempData["error-message"] = err;
+            }
+            else
+            {
+                model = _mapper.Map<AppointmentScheduleViewModel>(result);
+                if (!string.IsNullOrEmpty(alert))
+                {
+                    TempData["success-message"] = alert;
+                }
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -62,6 +72,7 @@ namespace SalonSync.MVC.Controllers
                 string alert = string.Format("Successfully scheduled an appointment for {0} on {1} at {2} with {3}!", appointmentScheduleResult.ClientFullName, appointmentScheduleResult.TimeOfAppointment.ToShortDateString(), appointmentScheduleResult.TimeOfAppointment.ToShortTimeString(), appointmentScheduleResult.StylistFullName);
                 return RedirectToAction("Index", "Home", new { alert = alert });
             }
+
         }
 
 
@@ -74,7 +85,7 @@ namespace SalonSync.MVC.Controllers
             if (addAppointmentNotesResult.AddAppointmentNotesResultStatus != AddAppointmentNotesResultStatus.Success)
             {
                 string alert = string.Format("Unable to add notes to appointment! {0}", addAppointmentNotesResult.AddAppointmentNotesResultErrors.FirstOrDefault().Message);
-                return RedirectToAction("Client", "Information", new { clientId = noteModel.ClientId,failureAlert = alert });
+                return RedirectToAction("Client", "Information", new { clientId = noteModel.ClientId, failureAlert = alert });
             }
             else
             {

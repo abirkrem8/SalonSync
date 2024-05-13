@@ -73,14 +73,14 @@
                                     <sl-select name="ClientHairTexture" label="@Html.DisplayNameFor(x=>x.ClientHairTexture)" required pill defaultValue="NONE">
                                         @foreach (HairTexture texture in Enum.GetValues(typeof(HairTexture)))
                                         {
-                                            <sl-option value=@texture>@texture.GetDisplayName()</sl-option>
+                                                <sl-option value=@texture>@texture.GetDisplayName()</sl-option>
                                         }
                                     </sl-select>
                                     <br />
                                     <sl-select name="ClientHairLength" label="@Html.DisplayNameFor(x=>x.ClientHairLength)" required pill defaultValue="NONE">
                                         @foreach (HairLength hairLength in Enum.GetValues(typeof(HairLength)))
                                         {
-                                            <sl-option value=@hairLength>@hairLength.GetDisplayName()</sl-option>
+                                                <sl-option value=@hairLength>@hairLength.GetDisplayName()</sl-option>
                                         }
                                     </sl-select>
                                     <br />
@@ -98,14 +98,14 @@
                                 <sl-select name="AppointmentType" label="@Html.DisplayNameFor(x=>x.AppointmentType)" required pill defaultValue="NONE">
                                     @foreach (AppointmentType appointmentType in Enum.GetValues(typeof(AppointmentType)))
                                     {
-                                        <sl-option value=@appointmentType>@appointmentType.GetDisplayName()</sl-option>
+                                            <sl-option value=@appointmentType>@appointmentType.GetDisplayName()</sl-option>
                                     }
                                 </sl-select>
                                 <br />
                                 <sl-select name="SelectedStylist" label="@Html.DisplayNameFor(x=>x.SelectedStylist)" required pill defaultValue="none">
                                     @foreach (var stylist in Model.HairStylists)
                                     {
-                                        <sl-option value="@stylist.Id|@stylist.FirstName|@stylist.LastName">@stylist.FirstName @stylist.LastName</sl-option>
+                                            <sl-option value="@stylist.Id|@stylist.FirstName|@stylist.LastName">@stylist.FirstName @stylist.LastName</sl-option>
                                     }
                                 </sl-select>
                                 <br />
@@ -152,7 +152,7 @@
                                     <h5 class="confirm-label">Time of Appointment</h5>
                                     <h5 class="confirm-item" id="time-confirm-content"></h5>
                                 </div>
-                                
+
                             </div>
                             <button id="offical-submit-button" type="submit" class="btn btn-theme">Submit</button>
                         </div>
@@ -175,10 +175,14 @@
         var stepperForm
 
         document.addEventListener('DOMContentLoaded', function () {
-            var errorMsg = '@TempData["error-message"]';
-            if (errorMsg.length) {
-               toastr.error(errorMsg);
-            }
+            var successMsg = '@TempData["success-message"]';
+           if (successMsg.length) {
+              toastr.success(successMsg);
+           }
+           var errorMsg = '@TempData["error-message"]';
+           if (errorMsg.length) {
+              toastr.error(errorMsg);
+           }
 
 
           var stepperFormEl = document.querySelector('#stepperForm')

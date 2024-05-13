@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" />
 <link rel="stylesheet" href="~/css/light.css" />
 <link rel="stylesheet" href="~/css/site.css" />
 <link rel="stylesheet" href="~/css/Index.css" />
@@ -56,9 +57,20 @@
 <script type="module" src='https://cdn.jsdelivr.net/npm/&#64;shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 <script>
-
+    document.addEventListener('DOMContentLoaded', function () {
+        var successMsg = '@TempData["success-message"]';
+           if (successMsg.length) {
+              toastr.success(successMsg);
+           }
+           var errorMsg = '@TempData["error-message"]';
+           if (errorMsg.length) {
+              toastr.error(errorMsg);
+           }
+    });
     Object.assign(DataTable.defaults, {
         searching: false,
         ordering: false,
@@ -68,4 +80,6 @@
         pagingType: 'simple_numbers',
         pageLength: 8
     });
+
+
 </script>

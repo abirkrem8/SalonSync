@@ -73,10 +73,14 @@
 
 <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
-     document.addEventListener('DOMContentLoaded', function () {
-         var successMsg = '@TempData["success-message"]';
-            if (successMsg.length) {
-               toastr.success(successMsg);
-            }
-     });
+    document.addEventListener('DOMContentLoaded', function () {
+        var successMsg = '@TempData["success-message"]';
+           if (successMsg.length) {
+              toastr.success(successMsg);
+           }
+           var errorMsg = '@TempData["error-message"]';
+           if (errorMsg.length) {
+              toastr.error(errorMsg);
+           }
+    });
 </script>

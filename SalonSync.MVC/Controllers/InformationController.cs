@@ -29,21 +29,28 @@ namespace SalonSync.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult Stylist(string stylistId)
+        public IActionResult Stylist(string stylistId, string alert = "")
         {
+            
+            StylistDetailViewModel model = new StylistDetailViewModel();
             LoadStylistInformationItem loadStylistInformationItem = new LoadStylistInformationItem() { HairStylistId = stylistId };
             LoadStylistInformationResult result = _loadStylistInformationHandler.Handle(loadStylistInformationItem);
 
-            if (result != null && result.LoadStylistInformationResultStatus == LoadStylistInformationResultStatus.Success)
+            if (result.LoadStylistInformationResultStatus != LoadStylistInformationResultStatus.Success)
             {
-                StylistDetailViewModel viewModel = _mapper.Map<StylistDetailViewModel>(result);
-                return View(viewModel);
+                string err = String.Format("An error occurred while loading this screen - {0}",
+                    result.LoadStylistInformationResultErrors.FirstOrDefault().Message);
+                TempData["error-message"] = err;
             }
             else
             {
-                // log error
-                return RedirectToAction("Error", "Home");
+                model = _mapper.Map<StylistDetailViewModel>(result);
+                if (!string.IsNullOrEmpty(alert))
+                {
+                    TempData["success-message"] = alert;
+                }
             }
+            return View(model);
         }
 
         [HttpGet]
@@ -68,7 +75,10 @@ namespace SalonSync.MVC.Controllers
             else
             {
                 // log error
-                return RedirectToAction("Error", "Home");
+                string err = String.Format("An error occurred while loading this screen - {0}",
+                    result.LoadClientInformationResultErrors.FirstOrDefault().Message);
+                TempData["error-message"] = err;
+                return View(new ClientInformationViewModel());
             }
         }
 

@@ -28,35 +28,48 @@ namespace SalonSync.MVC.Controllers
         }
         public IActionResult Index(string alert = "")
         {
+            IndexViewModel model = new IndexViewModel();
             var result = _loadIndexScreenHandler.Handle(new LoadIndexScreenItem());
+
             if (result.LoadIndexScreenResultStatus != LoadIndexScreenResultStatus.Success)
             {
-                // handle error
-                // log error
-                // redirect to error page
+                string err = String.Format("An error occurred while loading this screen - {0}",
+                    result.LoadIndexScreenResultErrors.FirstOrDefault().Message);
+                TempData["error-message"] = err;
+            }
+            else
+            {
+                model = _mapper.Map<IndexViewModel>(result);
+                if (!string.IsNullOrEmpty(alert))
+                {
+                    TempData["success-message"] = alert;
+                }
             }
 
-            IndexViewModel viewModel = _mapper.Map<IndexViewModel>(result);
-            if (!string.IsNullOrEmpty(alert))
-            {
-                TempData["success-message"] = alert;
-            }
-            return View(viewModel);
+            return View(model);
         }
 
-        public IActionResult ClientList()
+        public IActionResult ClientList(string alert = "")
         {
+            ClientListViewModel model = new ClientListViewModel();
+
             var result = _loadClientListHandler.Handle(new LoadClientListItem());
             if (result.LoadClientListResultStatus != LoadClientListResultStatus.Success)
             {
-                // handle error
-                // log error
-                // redirect to error page
+                string err = String.Format("An error occurred while loading this screen - {0}",
+                    result.LoadClientListResultErrors.FirstOrDefault().Message);
+                TempData["error-message"] = err;
             }
+            else
+            {
+                model = _mapper.Map<ClientListViewModel>(result);
+                if (!string.IsNullOrEmpty(alert))
+                {
+                    TempData["success-message"] = alert;
+                }
+            }
+            return View(model);
 
-            ClientListViewModel viewModel = _mapper.Map<ClientListViewModel>(result);
-
-            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
