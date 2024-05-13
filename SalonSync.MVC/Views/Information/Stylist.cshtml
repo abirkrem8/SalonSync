@@ -124,7 +124,7 @@
                                                 <td>@apt.DateTimeOfAppointment.ToString("MM/dd/yyyy hh:mm tt")</td>
                                                 <td>@apt.ClientFullName</td>
                                                 <td>@apt.ClientPhoneNumber</td>
-                                                <td>@Html.ActionLink("Client Info", "Client", "Information", new { clientId = apt.ClientId }, null)</td>
+                                                <td><a style="color:darkgray" onclick="location.href='@Url.Action("Client","Information",new {clientId=apt.ClientId})'">Client Profile <i class="fa-solid fa-circle-arrow-right"></i></a></td>
                                             </tr>
 
                                         }
