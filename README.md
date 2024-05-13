@@ -20,11 +20,11 @@ Overall, Salon Sync exemplifies the synergy between front-end, back-end, and dat
 Salon Sync was developed as a portfolio project to demonstrate my full stack development skills and address the need for a salon management solution. Through this project, I deepened my understanding of MVC frameworks and crafted an intuitive user interface. Salon Sync challenged me to handle various aspects of software development, from database design to seamless integration of technologies. It reflects my commitment to creating practical solutions that prioritize usability and efficiency.
 
 ## Features
-- **Effortless Scheduling:** Easily schedule appointments with available time slots displayed to avoid overlaps.
-- **Interactive Calendar:** View the schedule for today and the upcoming month's appointments on the homepage calendar.
-- **Stylist Profiles:** Create and manage stylist profiles, including personal information, specialties, and availability.
+- **Effortless Scheduling:** Easily schedule appointments with available time slots to avoid overlaps.
+- **Appointment Calendar:** View the schedule for today and the upcoming month's appointments on the homepage calendar.
 - **Comprehensive Client Records:** Access detailed client records to provide personalized service and track appointment history.
-- **Reporting and Analytics:** Track key metrics such as appointment trends, client retention rates, and stylist performance to gain valuable insights for salon management.
+- **Detailed Appointment Descriptions:** Create and manage appointment notes to track appointment history and services rendered.
+- **Stylist Profiles:** Examine stylist profiles, including personal information, specialties, and availability.
   
 ## Usage
 
